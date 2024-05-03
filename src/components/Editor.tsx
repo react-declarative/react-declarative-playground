@@ -1,6 +1,7 @@
-import MonacoEditor, { loader } from '@monaco-editor/react';
+import MonacoEditor from '@monaco-editor/react';
 import { Typography } from '@mui/material';
 import { useRef } from 'react';
+import { MonacoJsxSyntaxHighlight, getWorker } from 'monaco-jsx-syntax-highlight'
 
 import { useAsyncValue, createLsManager } from 'react-declarative';
 
@@ -42,13 +43,26 @@ export const Editor = ({
             theme="vs-dark"
             defaultValue={value.code}
             onMount={(editor, monaco) => {
+
+                const controller = new MonacoJsxSyntaxHighlight(getWorker(), monaco);
+                const {highlighter} = controller.highlighterBuilder({
+                    editor,
+                });
+                highlighter();
+
+                monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+                    jsx: monaco.languages.typescript.JsxEmit.React,
+                    jsxFactory: 'React.createElement',
+                    reactNamespace: 'React',
+                    target: monaco.languages.typescript.ScriptTarget.ES2020,
+                  });
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(value.types!, 'file:///node_modules/react-declarative/index.d.ts');
                 getValueRef.current = () => editor.getValue();
                 onChange(editor.getValue());
-                codeManager.setValue(editor.getValue());
             }}
             onChange={() => {
                 const value = getValueRef.current();
+                codeManager.setValue(value);
                 onChange(value);
             }}
         />
