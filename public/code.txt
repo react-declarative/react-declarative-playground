@@ -1,0 +1,8 @@
+import { TypedField, FieldType } from "react-declarative";
+
+export const fields: TypedField[] = [
+    {
+        type: FieldType.Typography,
+        placeholder: "Hello world",
+    }
+];
