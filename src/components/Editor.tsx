@@ -1,7 +1,6 @@
 import MonacoEditor from '@monaco-editor/react';
 import { Typography } from '@mui/material';
 import { useRef } from 'react';
-import { MonacoJsxSyntaxHighlight, getWorker } from 'monaco-jsx-syntax-highlight'
 
 import { useAsyncValue, createLsManager } from 'react-declarative';
 
@@ -22,13 +21,15 @@ export const Editor = ({
     const getValueRef = useRef<() => string>(null as never);
 
     const [value] = useAsyncValue(async () => {
-        const [types, code] = await Promise.all([
+        const [types, code, react] = await Promise.all([
             fetchText("react-declarative.d.ts"),
-            fetchText("code.txt")
+            fetchText("code.txt"),
+            fetchText("react.d.ts")
         ]);
         return {
             types,
             code: codeManager.getValue() || code,
+            react,
         };
     });
 
@@ -40,23 +41,24 @@ export const Editor = ({
         <MonacoEditor
             height="100vh"
             defaultLanguage="typescript"
+            
             theme="vs-dark"
-            defaultValue={value.code}
             onMount={(editor, monaco) => {
-
-                const controller = new MonacoJsxSyntaxHighlight(getWorker(), monaco);
-                const {highlighter} = controller.highlighterBuilder({
-                    editor,
-                });
-                highlighter();
-
                 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
+                    ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
                     jsx: monaco.languages.typescript.JsxEmit.React,
                     jsxFactory: 'React.createElement',
                     reactNamespace: 'React',
                     target: monaco.languages.typescript.ScriptTarget.ES2020,
                   });
+                const codeModel = monaco.editor.createModel(
+                    value.code,
+                    "typescript",
+                    monaco.Uri.file("index.tsx"),
+                );
+                editor.setModel(codeModel);
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(value.types!, 'file:///node_modules/react-declarative/index.d.ts');
+                monaco.languages.typescript.typescriptDefaults.addExtraLib(value.react!, 'file:///node_modules/react/index.d.ts');
                 getValueRef.current = () => editor.getValue();
                 onChange(editor.getValue());
             }}
