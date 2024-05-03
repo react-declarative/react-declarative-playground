@@ -11,34 +11,12 @@ registerPlugin("plugin-transform-modules-umd", plugin);
 declare global {
     namespace Executor {
         export const fields: IField[];
+        export const payload: {};
     }
 }
 
 interface IPreviewProps {
     onNotify: (notify: string) => void;
-}
-
-const payload = {
-    profileStatus: {
-        "unknown": "First contact",
-        "active": "Active",
-        "inactive": "Inactive",
-    },
-    profileGroup: {
-        "group-1": "Group 1",
-    },
-    profileSource: {
-        "telegram": "Telegram"
-    },
-    lookingFor: {
-        "house": "House",
-        "garage": "Garage",
-    },
-    countries: {
-        "usa": "USA",
-        "turkey": "Turkey",
-        "uzbekistan": "Uzbekistan",
-    },
 }
 
 export const Preview = ({ 
@@ -107,7 +85,7 @@ export const Preview = ({
                                 fields={window.Executor.fields}
                                 onChange={(data, initial) => !initial && onNotify(JSON.stringify(data, null, 2))}
                                 sx={{ p: 1 }}
-                                payload={payload}
+                                payload={window.Executor.payload}
                             />
                         )
                     }}
