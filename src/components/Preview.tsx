@@ -62,7 +62,7 @@ export const Preview = ({
         }
         console.log('Compiled', new Date());
         transpileSubject.next();
-    }, 1_000), []);
+    }, 2_500), []);
 
     useEffect(() => {
         window.addEventListener("message", ({ data }) => {
