@@ -1,8 +1,197 @@
 import { TypedField, FieldType } from "react-declarative";
 
 export const fields: TypedField[] = [
-    {
+  {
+    type: FieldType.Paper,
+    fieldBottomMargin: "1",
+    fields: [
+      {
         type: FieldType.Typography,
-        placeholder: "Hello world",
-    }
+        typoVariant: "h6",
+        placeholder: "General Information",
+      },
+      {
+        type: FieldType.Group,
+        desktopColumns: "4",
+        tabletColumns: "4",
+        phoneColumns: "12",
+        fields: [
+          {
+            type: FieldType.Text,
+            outlined: false,
+            name: "first_name",
+            title: 'First Name',
+          },
+          {
+            type: FieldType.Text,
+            outlined: false,
+            name: "last_name",
+            title: 'Last Name',
+          },
+          {
+            type: FieldType.Text,
+            outlined: false,
+            name: "middle_name",
+            title: "Middle Name",
+          },
+        ],
+      },
+      {
+        type: FieldType.Group,
+        desktopColumns: "4",
+        tabletColumns: "4",
+        phoneColumns: "12",
+        fields: [
+          {
+            type: FieldType.Text,
+            outlined: false,
+            name: "phone",
+            title: "Phone",
+            inputFormatterAllowed: /^[0-9]/,
+            inputFormatterTemplate: "000000000000000",
+          },
+          {
+            type: FieldType.Text,
+            outlined: false,
+            name: "additional_phone",
+            title: 'Additional Phone',
+            inputFormatterAllowed: /^[0-9]/,
+            inputFormatterTemplate: "000000000000000",
+          },
+          {
+            type: FieldType.Text,
+            outlined: false,
+            name: "email",
+            title: 'Email',
+          },
+        ],
+      },
+      {
+        type: FieldType.Group,
+        desktopColumns: "4",
+        tabletColumns: "4",
+        phoneColumns: "12",
+        fields: [
+          {
+            type: FieldType.Items,
+            outlined: false,
+            name: "source",
+            title: 'Source',
+            itemList: (_, { profileSource }) => Object.keys(profileSource),
+            tr: (entry, _, { profileSource }) => profileSource[entry],
+          },
+          {
+            type: FieldType.Items,
+            outlined: false,
+            name: "looking_for",
+            title: "Looking For",
+            itemList: (_, { lookingFor }) => Object.keys(lookingFor),
+            tr: (entry, _, { lookingFor }) => lookingFor[entry],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    type: FieldType.Paper,
+    fieldBottomMargin: "1",
+    fields: [
+      {
+        type: FieldType.Typography,
+        typoVariant: "h6",
+        placeholder: "Passport Information",
+      },
+      {
+        type: FieldType.Group,
+        desktopColumns: "6",
+        tabletColumns: "6",
+        phoneColumns: "12",
+        fields: [
+          {
+            type: FieldType.Text,
+            outlined: false,
+            name: "series_number",
+            title: "Series Number",
+          },
+          {
+            type: FieldType.Text,
+            outlined: false,
+            name: "issued_by",
+            title: "Issued By",
+            inputFormatterAllowed: /^[0-9 A-Za-z]/,
+            inputFormatterTemplate: "000000000000000",
+          },
+          {
+            type: FieldType.Date,
+            outlined: false,
+            name: "birth_date",
+            title: 'Birth Date',
+          },
+        ],
+      },
+      {
+        type: FieldType.Group,
+        desktopColumns: "6",
+        tabletColumns: "6",
+        phoneColumns: "12",
+        fields: [
+          {
+            type: FieldType.Date,
+            outlined: false,
+            name: "given_date_from",
+            title: "Date Issued",
+          },
+          {
+            type: FieldType.Date,
+            outlined: false,
+            name: "given_date_to",
+            title: 'Expiration Date',
+          },
+          {
+            type: FieldType.Combo,
+            outlined: false,
+            name: "country",
+            title: 'Country',
+            defaultValue: "uzbekistan",
+            itemList: (_, { countries }) => Object.keys(countries),
+            tr: (entry, _, { countries }) => countries[entry],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    type: FieldType.Paper,
+    fieldBottomMargin: "1",
+    fields: [
+      {
+        type: FieldType.Typography,
+        typoVariant: "h6",
+        placeholder: "Other",
+      },
+      {
+        type: FieldType.Combo,
+        title: 'Profile Status',
+        outlined: false,
+        itemList: (_, { profileStatus }) => Object.keys(profileStatus),
+        tr: (entry, _, { profileStatus }) => profileStatus[entry],
+        name: "profile_status",
+      },
+      {
+        type: FieldType.Items,
+        outlined: false,
+        itemList: (_, { profileGroup }) => Object.keys(profileGroup),
+        tr: (entry, _, { profileGroup }) => profileGroup[entry],
+        name: "profile_group",
+        title: 'Profile Group',
+      },
+      {
+        type: FieldType.Text,
+        outlined: false,
+        name: "comment",
+        title: 'Comment',
+        inputRows: 3,
+      },
+    ],
+  },
 ];
