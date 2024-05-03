@@ -150,7 +150,7 @@ export const fields: TypedField[] = [
             outlined: false,
             name: "country",
             title: 'Country',
-            defaultValue: "uzbekistan",
+            defaultValue: "USA",
             itemList: [
                 "USA",
                 "Turkey",
