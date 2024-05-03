@@ -3,6 +3,7 @@ import "./config/polyfills";
 import {
     OneConfig,
     ScrollAdjust,
+    SnackProvider,
 } from "react-declarative";
 
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -37,7 +38,9 @@ const wrappedApp = (
             <ThemeProvider theme={THEME_DARK}>
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
                     <LoaderProvider initialState={0}>
-                        <App />
+                        <SnackProvider>
+                            <App />
+                        </SnackProvider>
                     </LoaderProvider>
                 </LocalizationProvider>
             </ThemeProvider>
