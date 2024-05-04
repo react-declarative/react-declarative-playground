@@ -9,6 +9,9 @@ import Preview from "./Preview";
 import PreviewWrapper from "./PreviewWrapper";
 import { useSnack } from "react-declarative";
 
+const isDevelopment = () => {
+    return process.env.CC_NODE_ENV === "development";
+}
 
 export const App = () => {
     const [loader] = useLoader();
@@ -25,7 +28,7 @@ export const App = () => {
                 });
             }
             if (data.type === "notify-action" && data.notify) {
-                notify(data.notify);
+                isDevelopment() && notify(data.notify);
             }
         });
     }, []);
