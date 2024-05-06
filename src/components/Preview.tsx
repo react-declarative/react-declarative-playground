@@ -12,6 +12,7 @@ declare global {
     namespace Executor {
         export const fields: IField[];
         export const payload: {};
+        export const data: {};
     }
 }
 
@@ -83,6 +84,7 @@ export const Preview = ({
                         return (
                             <One
                                 fields={window.Executor.fields}
+                                data={window.Executor.data}
                                 onChange={(data, initial) => !initial && onNotify(JSON.stringify(data, null, 2))}
                                 sx={{ p: 1 }}
                                 payload={window.Executor.payload}
