@@ -11,7 +11,7 @@ import {
 } from '@mui/icons-material';
 
 const Rect = ({ children }) => (
-    <Paper>
+    <Paper sx={{ m: 1 }}>
         <Box display="flex" alignItems="center" justifyContent="center" p={1}>
             {children}
         </Box>
@@ -21,11 +21,14 @@ const Rect = ({ children }) => (
 export const fields: TypedField[] = [
     {
         type: FieldType.Group,
+        fields: [
+{
+        type: FieldType.Group,
         columns: '12',
         fields: [
             {
                 type: FieldType.Component,
-                compute: () => <Rect>12 total</Rect>,
+                element: () => <Rect>12 total</Rect>,
             },
         ]
     },
@@ -37,7 +40,7 @@ export const fields: TypedField[] = [
         fields: [
             {
                 type: FieldType.Component,
-                compute: () => <Rect>6 phone 6 tabled 12 desktop</Rect>,
+                element: () => <Rect>6 phone 6 tabled 12 desktop</Rect>,
             }
         ],
     },
@@ -49,7 +52,7 @@ export const fields: TypedField[] = [
         fields: [
             {
                 type: FieldType.Component,
-                compute: () => <Rect>6 phone 6 tabled 12 desktop</Rect>,
+                element: () => <Rect>6 phone 6 tabled 12 desktop</Rect>,
             }
         ],
     },
@@ -61,7 +64,7 @@ export const fields: TypedField[] = [
         fields: [
             {
                 type: FieldType.Component,
-                compute: () => <Rect>4 phone 4 tabled 6 desktop</Rect>,
+                element: () => <Rect>4 phone 4 tabled 6 desktop</Rect>,
             }
         ],
     },
@@ -73,7 +76,7 @@ export const fields: TypedField[] = [
         fields: [
             {
                 type: FieldType.Component,
-                compute: () => <Rect>4 phone 4 tabled 6 desktop</Rect>,
+                element: () => <Rect>4 phone 4 tabled 6 desktop</Rect>,
             }
         ],
     },
@@ -85,8 +88,10 @@ export const fields: TypedField[] = [
         fields: [
             {
                 type: FieldType.Component,
-                compute: () => <Rect>4 phone 4 tabled 6 desktop</Rect>,
+                element: () => <Rect>4 phone 4 tabled 6 desktop</Rect>,
             }
+        ],
+    },
         ],
     },
     {
@@ -156,12 +161,12 @@ export const fields: TypedField[] = [
         leadingIcon: VolumeDown,
         trailingIcon: VolumeUp,
         defaultValue: 30,
-        leadingIconClick(v, d, p, onChange) { onChange(v - 10) },
-        trailingIconClick(v, d, p, onChange) { onChange(v + 10) },
+        leadingIconClick(v, onChange) { onChange(v - 10) },
+        trailingIconClick(v, onChange) { onChange(v + 10) },
     },
     {
         type: FieldType.Text,
-        title: 'Computed value',
+        title: 'elementd value',
         compute(obj) {
             if (obj.radio === 'first') {
                 return 'It looks like radio #1 was cheched';
