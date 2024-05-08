@@ -1,6 +1,7 @@
 import "./config/polyfills";
 
 import {
+    ModalProvider,
     OneConfig,
     ScrollAdjust,
     SnackProvider,
@@ -39,7 +40,9 @@ const wrappedApp = (
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
                     <LoaderProvider initialState={0}>
                         <SnackProvider>
-                            <App />
+                            <ModalProvider>
+                                <App />
+                            </ModalProvider>
                         </SnackProvider>
                     </LoaderProvider>
                 </LocalizationProvider>

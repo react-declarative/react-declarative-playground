@@ -33,6 +33,10 @@ const itemList = [
         url: 'code5.txt',
         label: 'Profile card',
     },
+    {
+        url: 'code6.txt',
+        label: 'Gallery of controls',
+    },
 ];
 
 interface IHeaderProps {

@@ -7,7 +7,7 @@ import Split from 'react-split-it';
 import EditorWrapper from "./EditorWrapper";
 import Preview from "./Preview";
 import PreviewWrapper from "./PreviewWrapper";
-import { useSnack } from "react-declarative";
+import { FieldType, useDate, useOne, useSnack, useTime } from "react-declarative";
 import Header from "./Header";
 
 const isDevelopment = () => {
@@ -17,6 +17,23 @@ const isDevelopment = () => {
 export const App = () => {
     const [loader] = useLoader();
     const notify = useSnack();
+
+    const pickOne = useOne({
+        title: 'Waiting for user input', 
+        fields: [
+          { type: FieldType.Text, title: 'Firstname', defaultValue: 'Петр', name: 'f' },
+          { type: FieldType.Text, title: 'Lastname', name: 'l' },
+          { type: FieldType.Text, title: 'Patronymic', name: 'p' },
+        ],
+    });
+    const pickDate = useDate();
+    const pickTime = useTime();
+
+    useEffect(() => {
+        (window as any).pickOne = pickOne;
+        (window as any).pickDate = pickDate;
+        (window as any).pickTime = pickTime;
+    }, []);
 
     const previewRef = useRef<HTMLIFrameElement>(null as never);
     const editorRef = useRef<HTMLIFrameElement>(null as never);
