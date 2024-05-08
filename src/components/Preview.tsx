@@ -38,7 +38,9 @@ export const Preview = ({
                         {
                             "globals": {
                                 "react": "React",
-                                "react-declarative": "Declarative"
+                                "react-declarative": "Declarative",
+                                '@mui/material': "MuiMaterial",
+                                '@mui/icons-material': 'MuiIcons',
                             },
                             "moduleId": "Executor"
                         }

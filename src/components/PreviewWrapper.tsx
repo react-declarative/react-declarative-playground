@@ -1,6 +1,7 @@
 import { Box } from "@mui/material";
 import { useEffect, useMemo, useRef } from "react";
 import { useElementSize } from "react-declarative";
+import { CC_HEADER_HEIGHT } from "../config/params";
 
 interface IPreviewWrapperProps {
     onRef: (ref: HTMLIFrameElement) => void;
@@ -22,8 +23,9 @@ export const PreviewWrapper = ({
             <Box
                 ref={onRef}
                 component="iframe"
+                frameBorder="0"
                 sx={{
-                    height: '100vh',
+                    height: `calc(100vh - ${CC_HEADER_HEIGHT}px)`,
                     width: size.width
                 }}
                 src={previewUrl}

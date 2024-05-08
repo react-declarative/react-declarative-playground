@@ -8,6 +8,7 @@ import EditorWrapper from "./EditorWrapper";
 import Preview from "./Preview";
 import PreviewWrapper from "./PreviewWrapper";
 import { useSnack } from "react-declarative";
+import Header from "./Header";
 
 const isDevelopment = () => {
     return process.env.CC_NODE_ENV === "development";
@@ -17,12 +18,13 @@ export const App = () => {
     const [loader] = useLoader();
     const notify = useSnack();
 
-    const iframeRef = useRef<HTMLIFrameElement>(null as never);
+    const previewRef = useRef<HTMLIFrameElement>(null as never);
+    const editorRef = useRef<HTMLIFrameElement>(null as never);
 
     useEffect(() => {
         window.addEventListener("message", ({ data }) => {
             if (data.type === "code-action" && data.code) {
-                iframeRef.current?.contentWindow?.postMessage({
+                previewRef.current?.contentWindow?.postMessage({
                     type: data.type,
                     code: data.code,
                 });
@@ -84,6 +86,18 @@ export const App = () => {
     return (
         <>
             <CssBaseline />
+            <Header
+                onCode={(code) => {
+                    previewRef.current?.contentWindow?.postMessage({
+                        type: "code-action",
+                        code,
+                    });
+                    editorRef.current?.contentWindow?.postMessage({
+                        type: "code-action",
+                        code,
+                    });
+                }}
+            />
             {loader && (
                 <LinearProgress
                     sx={{
@@ -94,10 +108,12 @@ export const App = () => {
                     }}
                 />
             )}
-             <Split>
-                <EditorWrapper />
+            <Split>
+                <EditorWrapper onRef={(ref) => {
+                    editorRef.current = ref;
+                }} />
                 <PreviewWrapper onRef={(ref) => {
-                    iframeRef.current = ref;
+                    previewRef.current = ref;
                 }} />
             </Split>
         </>

@@ -1,6 +1,6 @@
 import MonacoEditor from '@monaco-editor/react';
 import { Typography } from '@mui/material';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { useAsyncValue, createLsManager } from 'react-declarative';
 
@@ -19,17 +19,30 @@ export const Editor = ({
     onChange,
 }: IEditorProps) => {
     const getValueRef = useRef<() => string>(null as never);
+    const setValueRef = useRef<(text: string) => void>(null as never);
+
+    useEffect(() => {
+        window.addEventListener("message", ({ data }) => {
+            if (data.type === "code-action" && data.code) {
+                setValueRef.current(data.code);
+            }
+        });
+    }, []);
 
     const [value] = useAsyncValue(async () => {
-        const [types, code, react] = await Promise.all([
+        const [types, react, mui, icons, code] = await Promise.all([
             fetchText("react-declarative.d.ts"),
-            fetchText("code.txt"),
-            fetchText("react.d.ts")
+            fetchText("react.d.ts"),
+            fetchText("mui-material.d.ts"),
+            fetchText("mui-icons.d.ts"),
+            fetchText("code1.txt"),
         ]);
         return {
             types,
             code: codeManager.getValue() || code,
             react,
+            mui,
+            icons,
         };
     });
 
@@ -41,7 +54,6 @@ export const Editor = ({
         <MonacoEditor
             height="100vh"
             defaultLanguage="typescript"
-            
             theme="vs-dark"
             onMount={(editor, monaco) => {
                 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
@@ -59,7 +71,10 @@ export const Editor = ({
                 editor.setModel(codeModel);
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(value.types!, 'file:///node_modules/react-declarative/index.d.ts');
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(value.react!, 'file:///node_modules/react/index.d.ts');
+                monaco.languages.typescript.typescriptDefaults.addExtraLib(value.mui!, 'file:///node_modules/@mui/material/index.d.ts');
+                monaco.languages.typescript.typescriptDefaults.addExtraLib(value.icons!, 'file:///node_modules/@mui/icons-material/index.d.ts');
                 getValueRef.current = () => editor.getValue();
+                setValueRef.current = (code) => editor.setValue(code);
                 onChange(editor.getValue());
             }}
             onChange={() => {
