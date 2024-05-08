@@ -156,8 +156,8 @@ export const fields: TypedField[] = [
         leadingIcon: VolumeDown,
         trailingIcon: VolumeUp,
         defaultValue: 30,
-        leadingIconClick(v, onChange) { onChange(v - 10) },
-        trailingIconClick(v, onChange) { onChange(v + 10) },
+        leadingIconClick(v, d, p, onChange) { onChange(v - 10) },
+        trailingIconClick(v, d, p, onChange) { onChange(v + 10) },
     },
     {
         type: FieldType.Text,
