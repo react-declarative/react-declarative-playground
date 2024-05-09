@@ -37,6 +37,10 @@ const itemList = [
         url: 'code6.txt',
         label: 'Gallery of controls',
     },
+    {
+        url: 'code7.txt',
+        label: 'Variant form',
+    },
 ];
 
 interface IHeaderProps {
