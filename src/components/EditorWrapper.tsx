@@ -19,13 +19,16 @@ export const EditorWrapper = ({
     }, []);
 
     return (
-        <Box ref={elementRef}>
+        <Box ref={elementRef} sx={{ position: "relative" }}>
             <Box
                 ref={onRef}
                 component="iframe"
                 frameBorder="0"
                 sx={{
-                    height: `calc(100vh - ${CC_HEADER_HEIGHT}px)`,
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    height: size.height,
                     width: size.width
                 }}
                 src={monacoUrl}

@@ -1,4 +1,4 @@
-import { CssBaseline, LinearProgress } from "@mui/material";
+import { Box, CssBaseline, LinearProgress } from "@mui/material";
 import Editor from "./Editor";
 import useLoader from "../hooks/useLoader";
 
@@ -7,8 +7,9 @@ import Split from 'react-split-it';
 import EditorWrapper from "./EditorWrapper";
 import Preview from "./Preview";
 import PreviewWrapper from "./PreviewWrapper";
-import { FieldType, useDate, useOne, useSnack, useTime } from "react-declarative";
+import { FieldType, useDate, useMediaContext, useOne, useSnack, useTime } from "react-declarative";
 import Header from "./Header";
+import { CC_HEADER_HEIGHT } from "../config/params";
 
 const isDevelopment = () => {
     return process.env.CC_NODE_ENV === "development";
@@ -17,6 +18,8 @@ const isDevelopment = () => {
 export const App = () => {
     const [loader] = useLoader();
     const notify = useSnack();
+
+    const { isMobile } = useMediaContext();
 
     const pickOne = useOne({
         title: 'Waiting for user input', 
@@ -100,8 +103,36 @@ export const App = () => {
         )
     }
 
+    const renderInner = () => {
+        if (isMobile) {
+            return [
+                <PreviewWrapper onRef={(ref) => {
+                    previewRef.current = ref;
+                }} />,
+                <EditorWrapper onRef={(ref) => {
+                    editorRef.current = ref;
+                }} />,
+            ];
+        }
+        return [
+            <EditorWrapper onRef={(ref) => {
+                editorRef.current = ref;
+            }} />,
+            <PreviewWrapper onRef={(ref) => {
+                previewRef.current = ref;
+            }} />,
+        ];
+    }
+
     return (
-        <>
+        <Box
+            sx={{
+                position: "relative",
+                overflow: "hidden",
+                height: `100vh`,
+                width: "100vw",
+            }}
+        >
             <CssBaseline />
             <Header
                 onCode={(code) => {
@@ -125,15 +156,10 @@ export const App = () => {
                     }}
                 />
             )}
-            <Split>
-                <EditorWrapper onRef={(ref) => {
-                    editorRef.current = ref;
-                }} />
-                <PreviewWrapper onRef={(ref) => {
-                    previewRef.current = ref;
-                }} />
+            <Split direction={isMobile ? "vertical" : "horizontal"}>
+                {renderInner()}
             </Split>
-        </>
+        </Box>
     );
 };
 

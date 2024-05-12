@@ -65,6 +65,7 @@
 
     .gutter {
       flex-basis: 5px !important;
+      nav-index: 999;
       flex-shrink: 0;
       flex-grow: 0;
       background: #424242;
@@ -79,10 +80,15 @@
     }
 
     .pane {
+      display: flex;
       flex-shrink: 1;
       flex-grow: 1;
       overflow: hidden;
       position: relative;
+    }
+
+    .pane > :nth-of-type(1) {
+      flex: 1;
     }
   </style>
 </head>
