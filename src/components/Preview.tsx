@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material";
 import { useCallback, useEffect, useMemo } from "react";
-import { Async, ErrorBoundary, IField, One, ScrollView, TSubject, debounce, getErrorMessage, useSnack, useSubject } from "react-declarative";
+import { Async, ErrorBoundary, IField, One, ScrollView, TSubject, cached, debounce, getErrorMessage, useSnack, useSubject } from "react-declarative";
 
 import plugin from "@babel/plugin-transform-modules-umd";
 
@@ -25,7 +25,7 @@ export const Preview = ({
 }: IPreviewProps) => {
     const transpileSubject = useSubject<void>();
 
-    const doTranspile = useCallback((value: string) => {
+    const doTranspile = useMemo(() => cached(([a], [b]) => a !== b, (value: string) => {
         let code: string | null | undefined = null;
         console.log('Compiling', new Date());
         try {
@@ -65,7 +65,7 @@ export const Preview = ({
         }
         console.log('Compiled', new Date());
         transpileSubject.next();
-    }, []);
+    }), []);
 
     const handleTranspile = useMemo(() => debounce((value: string) => {
         doTranspile(value);
