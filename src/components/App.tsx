@@ -138,10 +138,12 @@ export const App = () => {
                 onCode={(code) => {
                     previewRef.current?.contentWindow?.postMessage({
                         type: "code-action",
+                        force: true,
                         code,
                     });
                     editorRef.current?.contentWindow?.postMessage({
                         type: "code-action",
+                        force: true,
                         code,
                     });
                 }}
