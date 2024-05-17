@@ -9,7 +9,8 @@ import Preview from "./Preview";
 import PreviewWrapper from "./PreviewWrapper";
 import { FieldType, useDate, useMediaContext, useOne, useSnack, useTime } from "react-declarative";
 import Header from "./Header";
-import { CC_HEADER_HEIGHT } from "../config/params";
+
+import "./common/Neuron";
 
 const isDevelopment = () => {
     return process.env.CC_NODE_ENV === "development";
