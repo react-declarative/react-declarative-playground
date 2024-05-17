@@ -505,4 +505,8 @@ export const fields: TypedField[] = [
       },
     ],
   },
+  {
+    type: FieldType.Component,
+    element: ({ _fieldData: data }) => <pre>{JSON.stringify(data, null, 2)}</pre>,
+  }
 ]
