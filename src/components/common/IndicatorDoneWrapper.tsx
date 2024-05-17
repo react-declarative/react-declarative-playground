@@ -8,7 +8,7 @@ const backgroundMap: Record<string, SingleValueBackgroundMode> = {
 };
 
 export const IndicatorDoneWrapper = ({
-  tickets_done_count = "50",
+  done_count = "50",
   done_limit_bg = "semi",
   done_low_limit = "100",
   done_medium_limit = "200",
@@ -38,7 +38,7 @@ export const IndicatorDoneWrapper = ({
         backgroundMode={backgroundMode}
         headerLabel="Done"
         steps={steps}
-        value={parseInt(tickets_done_count || "0")}
+        value={parseInt(done_count || "0")}
       />
     </Card>
   );

@@ -142,6 +142,13 @@ export const fields: TypedField[] = [
             title: "Archive",
           },
           {
+            type: FieldType.Slider,
+            name: "archive_count",
+            minSlider: 0,
+            maxSlider: 500,
+            defaultValue: 50,
+          },
+          {
             type: FieldType.Combo,
             name: "archive_limit_bg",
             title: 'Archive limit',
@@ -199,6 +206,13 @@ export const fields: TypedField[] = [
             type: FieldType.Line,
             lineTransparent: true,
             title: "Waiting",
+          },
+          {
+            type: FieldType.Slider,
+            name: "waiting_count",
+            minSlider: 0,
+            maxSlider: 500,
+            defaultValue: 50,
           },
           {
             type: FieldType.Combo,
@@ -260,6 +274,13 @@ export const fields: TypedField[] = [
             title: "Progress",
           },
           {
+            type: FieldType.Slider,
+            name: "inprogress_count",
+            minSlider: 0,
+            maxSlider: 500,
+            defaultValue: 50,
+          },
+          {
             type: FieldType.Combo,
             name: "inprogress_limit_bg",
             title: 'Progress limit',
@@ -317,6 +338,13 @@ export const fields: TypedField[] = [
             type: FieldType.Line,
             lineTransparent: true,
             title: "Done",
+          },
+          {
+            type: FieldType.Slider,
+            name: "done_count",
+            minSlider: 0,
+            maxSlider: 500,
+            defaultValue: 50,
           },
           {
             type: FieldType.Combo,
@@ -378,10 +406,17 @@ export const fields: TypedField[] = [
             title: "Total",
           },
           {
+            type: FieldType.Slider,
+            name: "all_count",
+            minSlider: 0,
+            maxSlider: 500,
+            defaultValue: 50,
+          },
+          {
             type: FieldType.Combo,
             name: "all_limit_bg",
             title: 'Limit of all',
-             defaultValue: "semi",
+            defaultValue: "semi",
             itemList: [
               "semi",
               "solid",
@@ -427,40 +462,47 @@ export const fields: TypedField[] = [
     ]
   },
   {
-     type: FieldType.Group,
-     desktopColumns: "6",
-     tabletColumns: "12",
-     phoneColumns: "12",
-     fields: [
-       {
-         type: FieldType.Line,
-         lineTransparent: true,
-         title: "Monthly progress",
-       },
-       {
-         type: FieldType.Text,
-         name: "monthprogress_low_limit",
-         defaultValue: '100',
-         title: 'Lower limit of monthly progress',
-         inputFormatterAllowed: /^[0-9]/,
-         inputFormatterTemplate: "0000000000000000",
-       },
-       {
-         type: FieldType.Text,
-         name: "monthprogress_medium_limit",
-         title: 'Average progress limit per month',
-         defaultValue: '200',
-         inputFormatterAllowed: /^[0-9]/,
-         inputFormatterTemplate: "0000000000000000",
-       },
-       {
-         type: FieldType.Text,
-         name: "monthprogress_high_limit",
-         title: 'Upper limit of monthly progress',
-         defaultValue: '300',
-         inputFormatterAllowed: /^[0-9]/,
-         inputFormatterTemplate: "0000000000000000",
-       },
-     ],
-   },
+    type: FieldType.Group,
+    desktopColumns: "6",
+    tabletColumns: "12",
+    phoneColumns: "12",
+    fields: [
+      {
+        type: FieldType.Line,
+        lineTransparent: true,
+        title: "Monthly progress",
+      },
+      {
+        type: FieldType.Slider,
+        name: "monthprogress_count",
+        minSlider: 0,
+        maxSlider: 500,
+        defaultValue: 50,
+      },
+      {
+        type: FieldType.Text,
+        name: "monthprogress_low_limit",
+        defaultValue: '100',
+        title: 'Lower limit of monthly progress',
+        inputFormatterAllowed: /^[0-9]/,
+        inputFormatterTemplate: "0000000000000000",
+      },
+      {
+        type: FieldType.Text,
+        name: "monthprogress_medium_limit",
+        title: 'Average progress limit per month',
+        defaultValue: '200',
+        inputFormatterAllowed: /^[0-9]/,
+        inputFormatterTemplate: "0000000000000000",
+      },
+      {
+        type: FieldType.Text,
+        name: "monthprogress_high_limit",
+        title: 'Upper limit of monthly progress',
+        defaultValue: '300',
+        inputFormatterAllowed: /^[0-9]/,
+        inputFormatterTemplate: "0000000000000000",
+      },
+    ],
+  },
 ]

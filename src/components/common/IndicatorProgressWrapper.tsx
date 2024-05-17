@@ -8,7 +8,7 @@ const backgroundMap: Record<string, SingleValueBackgroundMode> = {
 };
 
 export const IndicatorProgressWrapper = ({
-  tickets_inprogress_count = "50",
+  inprogress_count = "50",
   inprogress_limit_bg = "semi",
   inprogress_low_limit = "100",
   inprogress_medium_limit = "200",
@@ -39,7 +39,7 @@ export const IndicatorProgressWrapper = ({
         headerLabel="In progress"
         backgroundMode={backgroundMode}
         steps={steps}
-        value={parseInt(tickets_inprogress_count || "0")}
+        value={parseInt(inprogress_count || "0")}
       />
     </Card>
   );

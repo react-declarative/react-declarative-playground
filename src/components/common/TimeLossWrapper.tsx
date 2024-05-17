@@ -2,20 +2,20 @@ import Card from "./Card";
 import TimeLoss from "../../widgets/TimeLoss";
 
 export const TimeLossWrapper = ({
-    tickets_done_count = "50",
-    tickets_inprogress_count = "50",
-    tickets_waiting_count = "50",
-    tickets_archive_count = "50",
+    done_count = "50",
+    inprogress_count = "50",
+    waiting_count = "50",
+    archive_count = "50",
 }) => {
     const items = [
         {
             title: "Tripolskiy Petr",
             description: "tripolskypetr@gmail.com",
             avatar: "",
-            done: parseInt(tickets_done_count || "0"),
-            inprogress: parseInt(tickets_inprogress_count || "0"),
-            waiting: parseInt(tickets_waiting_count || "0"),
-            archive: parseInt(tickets_archive_count || "0"),
+            done: parseInt(done_count || "0"),
+            inprogress: parseInt(inprogress_count || "0"),
+            waiting: parseInt(waiting_count || "0"),
+            archive: parseInt(archive_count || "0"),
         }
     ]
 

@@ -8,7 +8,7 @@ const backgroundMap: Record<string, SingleValueBackgroundMode> = {
 };
 
 export const IndicatorArchiveWrapper = ({
-  tickets_archive_count = "50",
+  archive_count = "50",
   archive_limit_bg = "semi",
   archive_low_limit = "100",
   archive_medium_limit = "200",
@@ -40,7 +40,7 @@ export const IndicatorArchiveWrapper = ({
         headerLabel="Archive"
         backgroundMode={backgroundMode}
         steps={steps}
-        value={parseInt(tickets_archive_count || "0")}
+        value={parseInt(archive_count || "0")}
       />
     </Card>
   );

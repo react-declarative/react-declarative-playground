@@ -2,7 +2,7 @@ import Card from "./Card";
 import SpeedDonutWidget from "../../widgets/SpeedDonutWidget";
 
 export const MonthProgressWrapper = ({
-  tickets_done_count = "50",
+  monthprogress_count = "50",
   monthprogress_low_limit = "100",
   monthprogress_medium_limit = "200",
   monthprogress_high_limit = "300",
@@ -26,7 +26,7 @@ export const MonthProgressWrapper = ({
   ];
   return (
     <Card label="Monthly progress">
-      <SpeedDonutWidget items={items} value={parseInt(tickets_done_count || "0")} />
+      <SpeedDonutWidget items={items} value={parseInt(monthprogress_count || "0")} />
     </Card>
   );
 };

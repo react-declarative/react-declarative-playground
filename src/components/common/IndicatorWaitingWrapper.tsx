@@ -8,7 +8,7 @@ const backgroundMap: Record<string, SingleValueBackgroundMode> = {
 };
 
 export const IndicatorWaitingWrapper = ({
-  tickets_waiting_count = "50",
+  waiting_count = "50",
   waiting_limit_bg = "semi",
   waiting_low_limit = "100",
   waiting_medium_limit = "200",
@@ -39,7 +39,7 @@ export const IndicatorWaitingWrapper = ({
         headerLabel="Waiting"
         backgroundMode={backgroundMode}
         steps={steps}
-        value={parseInt(tickets_waiting_count || "0")}
+        value={parseInt(waiting_count || "0")}
       />
     </Card>
   );
