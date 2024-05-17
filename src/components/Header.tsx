@@ -49,6 +49,10 @@ const itemList = [
         url: 'code9.txt',
         label: 'Machine learning',
     },
+    {
+        url: 'code10.txt',
+        label: 'Dashboard',
+    },
 ];
 
 interface IHeaderProps {
