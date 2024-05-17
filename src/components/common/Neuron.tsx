@@ -59,7 +59,7 @@ export const Neuron = ({ hiddenLayers }: IPreviewProps) => {
                     left: 0,
                 },
               })}
-              ref={(element) => {
+              ref={(element: HTMLDivElement) => {
                 if (!width) {
                     return;
                 }

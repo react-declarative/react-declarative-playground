@@ -12,6 +12,15 @@ import Header from "./Header";
 
 import "./common/Neuron";
 
+import './common/MonthProgressWrapper';
+import './common/TimeLossWrapper';
+
+import './common/IndicatorProgressWrapper';
+import './common/IndicatorWaitingWrapper';
+import './common/IndicatorArchiveWrapper';
+import './common/IndicatorDoneWrapper';
+import './common/IndicatorAllWrapper';
+
 const isDevelopment = () => {
     return process.env.CC_NODE_ENV === "development";
 }
@@ -23,11 +32,11 @@ export const App = () => {
     const { isMobile } = useMediaContext();
 
     const pickOne = useOne({
-        title: 'Waiting for user input', 
+        title: 'Waiting for user input',
         fields: [
-          { type: FieldType.Text, title: 'Firstname', defaultValue: 'Петр', name: 'f' },
-          { type: FieldType.Text, title: 'Lastname', name: 'l' },
-          { type: FieldType.Text, title: 'Patronymic', name: 'p' },
+            { type: FieldType.Text, title: 'Firstname', defaultValue: 'Петр', name: 'f' },
+            { type: FieldType.Text, title: 'Lastname', name: 'l' },
+            { type: FieldType.Text, title: 'Patronymic', name: 'p' },
         ],
     });
     const pickDate = useDate();
@@ -68,7 +77,7 @@ export const App = () => {
 
     if (isMonacoPage) {
         return (
-            <>          
+            <>
                 <CssBaseline />
                 <Editor
                     onChange={(code) => {
