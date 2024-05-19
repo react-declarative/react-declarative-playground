@@ -56,7 +56,7 @@ export const Neuron = ({ hiddenLayers }: IPreviewProps) => {
         return;
     }
     handleElement(targetRef.current, size.width);
-  }, [size.width]);
+  }, [size.width, hiddenLayers]);
 
   return (
     <Square
