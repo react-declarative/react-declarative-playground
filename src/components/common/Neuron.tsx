@@ -1,8 +1,9 @@
-import { AutoSizer } from "react-declarative";
+import { AutoSizer, Square, useElementSize } from "react-declarative";
 
 import { NeuralNetwork, utilities } from "brain.js";
 
 import Box from "@mui/material/Box";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 interface IPreviewProps {    
     hiddenLayers: number[];
@@ -12,6 +13,13 @@ const CC_INPUT_SIZE = 10;
 const CC_OUTPUT_SIZE = 2;
 
 export const Neuron = ({ hiddenLayers }: IPreviewProps) => {
+
+  const targetRef = useRef<HTMLDivElement>(null);
+
+  const { elementRef, size } = useElementSize({
+    selector: 'div'
+  });
+
   const handleElement = (ref: HTMLDivElement, side: number) => {
     const config = {
         inputSize: CC_INPUT_SIZE,
@@ -40,39 +48,37 @@ export const Neuron = ({ hiddenLayers }: IPreviewProps) => {
     });
   };
 
+  useLayoutEffect(() => {
+    if (!size.width) {
+      return;
+    }
+    if (!targetRef.current) {
+        return;
+    }
+    handleElement(targetRef.current, size.width);
+  }, [size.width]);
+
   return (
-    <Box
+    <Square
+      ref={elementRef}
       sx={{
         position: 'relative',
         marginTop: "20px",
         width: "100%",
       }}
     >
-      <AutoSizer payload={hiddenLayers}>
-        {({ width }) => {
-          return (
-            <Box
-              sx={(theme) => ({
-                [theme.breakpoints.up("sm")]: {
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                },
-              })}
-              ref={(element: HTMLDivElement) => {
-                if (!width) {
-                    return;
-                }
-                if (!element) {
-                    return;
-                }
-                handleElement(element, width);
-              }}
-            />
-          );
-        }}
-      </AutoSizer>
-    </Box>
+      <Box
+        sx={(theme) => ({
+          [theme.breakpoints.up("sm")]: {
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              ...size
+          },
+        })}
+        ref={targetRef}
+      />
+    </Square>
   );
 };
 
