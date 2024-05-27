@@ -23,6 +23,7 @@ declare module "react-declarative" {
   } from "react-declarative/components";
   export { ISize } from "react-declarative/model/ISize";
   import { TypedField as TypedFieldInternal } from "react-declarative/model/TypedField";
+  import { IValidation as IValidationInternal } from "react-declarative/model/IValidation";
   import { IField as IFieldInternal } from "react-declarative/model/IField";
   import { IEntity as IEntityInternal } from "react-declarative/model/IEntity";
   import { IManaged as IManagedInternal } from "react-declarative/model/IManaged";
@@ -109,9 +110,12 @@ declare module "react-declarative" {
   export { createRouteItemManager } from "react-declarative/helpers/routeManager";
   export { createRouteParamsManager } from "react-declarative/helpers/routeManager";
   export { usePreventAutofill } from "react-declarative/hooks/usePreventAutofill";
+  export { useManagedCursor } from "react-declarative/hooks/useManagedCursor";
   export { useItemModal } from "react-declarative/hooks/useItemModal";
   export { useOneInput } from "react-declarative/hooks/useOneInput";
   export { useContextMenu } from "react-declarative/hooks/useContextMenu";
+  export { useChangeDelay } from "react-declarative/hooks/useChangeDelay";
+  export { useOnce } from "react-declarative/hooks/useOnce";
   export { useRouteItem } from "react-declarative/hooks/useRouteItem";
   export { useRouteParams } from "react-declarative/hooks/useRouteParams";
   export { useWatchChanges } from "react-declarative/hooks/useWatchChanges";
@@ -223,6 +227,7 @@ declare module "react-declarative" {
     Data = IAnything,
     Value = IAnything,
   > = IManagedInternal<Data, Value>;
+  export type IValidation = IValidationInternal;
   export type ListHandler<
     FilterData extends {} = IAnything,
     RowData extends IRowData = IAnything,
@@ -489,6 +494,7 @@ declare module "react-declarative" {
     MASTER_DETAIL_HEADER,
     MASTER_DETAIL_ROOT,
   } from "react-declarative/components";
+  export { Sheet } from "react-declarative/components";
   export { Async } from "react-declarative/components";
   export { If } from "react-declarative/components";
   export { OneIcon } from "react-declarative/components";
@@ -550,7 +556,7 @@ declare module "react-declarative" {
   export { Countdown } from "react-declarative/components";
   export { Spinner } from "react-declarative/components";
   export { Grid } from "react-declarative/components";
-  export { Tile } from "react-declarative/components";
+  export { Tile, TileCheckbox } from "react-declarative/components";
   export { CopyButton } from "react-declarative/components";
   export { Copy } from "react-declarative/components";
   export { Chip } from "react-declarative/components";
@@ -582,6 +588,7 @@ declare module "react-declarative" {
   export { useListDropFilters } from "react-declarative/components";
   export { useListStateAction } from "react-declarative/components";
   export { useListUpsertManager } from "react-declarative/components";
+  export { useListToggleHandler } from "react-declarative/components";
   export { useApiPaginator } from "react-declarative/components";
   export { useCursorPaginator } from "react-declarative/components";
   export { useOffsetPaginator } from "react-declarative/components";
@@ -731,10 +738,13 @@ declare module "react-declarative" {
   export type ISearchSlot = ISearchSlotInternal;
   export type IOperationListSlot = IOperationListSlotInternal;
   export type IPositionActionListSlot = IPositionActionListSlotInternal;
+  import type { IAwaiter as IAwaiterInternal } from "react-declarative/utils/createAwaiter";
+  export type IAwaiter<T extends IAnything> = IAwaiterInternal<T>;
   export { VirtualListBox } from "react-declarative/components/One/components/common/VirtualListBox";
   export { list2grid } from "react-declarative/utils/list2grid";
   export { openBlank } from "react-declarative/utils/openBlank";
   export { createDict } from "react-declarative/utils/createDict";
+  export { createAwaiter } from "react-declarative/utils/createAwaiter";
   export { createPointer } from "react-declarative/utils/oop/Pointer";
   export { copyToClipboard } from "react-declarative/utils/copyToClipboard";
   export { downloadBlank } from "react-declarative/utils/downloadBlank";
@@ -768,9 +778,19 @@ declare module "react-declarative" {
   export { formatText } from "react-declarative/utils/formatText";
   export { roundTicks } from "react-declarative/utils/roundTicks";
   export { wordForm } from "react-declarative/utils/wordForm";
+  export {
+    scaleRect,
+    createScaleRect,
+  } from "react-declarative/utils/scaleRect";
+  export {
+    scaleToSize,
+    createScaleToSize,
+  } from "react-declarative/utils/scaleToSize";
+  export { obsolete } from "react-declarative/utils/hof/obsolete";
   export { singleshot } from "react-declarative/utils/hof/singleshot";
   export { singletick } from "react-declarative/utils/hof/singletick";
   export { afterinit } from "react-declarative/utils/hof/afterinit";
+  export { execpool } from "react-declarative/utils/hof/execpool";
   export { retry } from "react-declarative/utils/hof/retry";
   export { singlerun, Task } from "react-declarative/utils/hof/singlerun";
   export {
@@ -888,9 +908,9 @@ declare module "react-declarative" {
     Time: typeof datetimeInternal.Time;
     Date: typeof datetimeInternal.Date;
     parseDate: (date: string | null) => datetimeInternal.Date | null;
-    serializeDate: (date: datetimeInternal.Date) => string | null;
+    serializeDate: (date: datetimeInternal.Date | null) => string | null;
     parseTime: (time: string | null) => datetimeInternal.Time | null;
-    serializeTime: (time: datetimeInternal.Time) => string | null;
+    serializeTime: (time: datetimeInternal.Time | null) => string | null;
     currentDate: () => string;
     currentTime: () => string;
     timeStamp: (str?: string) => number;
@@ -911,8 +931,11 @@ declare module "react-declarative" {
   } from "react-declarative/utils/getTimeStamp";
   export { getGenesisStamp } from "react-declarative/utils/getGenesisStamp";
   export { resolveDocuments } from "react-declarative/api/resolveDocuments";
-  export { iterateDocuments } from "react-declarative/api/iterateDocuments";
   export { pickDocuments } from "react-declarative/api/pickDocuments";
+  export { iterateDocuments } from "react-declarative/api/iterateDocuments";
+  export { iteratePromise } from "react-declarative/api/iteratePromise";
+  export { iterateUnion } from "react-declarative/api/iterateUnion";
+  export { iterateList } from "react-declarative/api/iterateList";
   export { useOpenDocument } from "react-declarative/view/useOpenDocument";
   export { heavy } from "react-declarative/utils/heavy";
 }
@@ -945,6 +968,7 @@ declare module "react-declarative/components" {
   export * from "react-declarative/components/One";
   export * from "react-declarative/components/OneIcon";
   export * from "react-declarative/components/OneButton";
+  export * from "react-declarative/components/Sheet";
   export * from "react-declarative/components/Dot";
   export * from "react-declarative/components/List";
   export * from "react-declarative/components/NoSsr";
@@ -1543,6 +1567,25 @@ declare module "react-declarative/model/TypedField" {
   export default TypedField;
 }
 
+declare module "react-declarative/model/IValidation" {
+  /**
+   * Interface representing validation options for a form field.
+   * @interface
+   * @property [required] - Indicates if the field is required or not.
+   * @property [minLength] - Minimum length required for the field value.
+   * @property [maxLength] - Maximum length allowed for the field value.
+   * @property [pattern] - Regular expression pattern for validating the field value.
+   */
+  export interface IValidation {
+    required?: boolean;
+    numeric?: boolean;
+    minLength?: number;
+    maxLength?: number;
+    pattern?: RegExp;
+  }
+  export default IValidation;
+}
+
 declare module "react-declarative/model/IField" {
   import * as React from "react";
   import { SxProps } from "@mui/material";
@@ -1555,6 +1598,7 @@ declare module "react-declarative/model/IField" {
   import ISearchViewProps from "react-declarative/components/SearchView/model/ISearchViewProps";
   import IFieldMenu from "react-declarative/model/IFieldMenu";
   import ITreeNode from "react-declarative/model/ITreeNode";
+  import IValidation from "react-declarative/model/IValidation";
   /**
    * Represents any possible variable value of <One /> component field.
    *
@@ -1565,6 +1609,15 @@ declare module "react-declarative/model/IField" {
    * Объект поля для прикладного программиста
    */
   export interface IField<Data = IAnything, Payload = IAnything> {
+    /**
+     * Параметры фабрики для создания коллбека isInvalid
+     */
+    validation?: IValidation;
+    /**
+     * Атрибут, который будет передат в data-testid
+     * корневому элементу компоновки
+     */
+    testId?: string;
     /**
      * Общие поля. Поле name позволяет задать забор
      * поля из целевого объекта, не нужен для group,
@@ -2127,6 +2180,7 @@ declare module "react-declarative/model/IField" {
      * Шрифт для поля Typography
      */
     typoVariant?: keyof {
+      h1: "h1";
       h2: "h2";
       h3: "h3";
       h4: "h4";
@@ -2136,6 +2190,7 @@ declare module "react-declarative/model/IField" {
       subtitle2: "subtitle2";
       body1: "body1";
       body2: "body2";
+      caption: "caption";
     };
     /**
      * Поле для ExpansionLayout
@@ -2313,6 +2368,10 @@ declare module "react-declarative/model/IManaged" {
    */
   export interface IWrappedLayout<Data = IAnything, Payload = IAnything> {
     /**
+     * Идентификатор для отладки json шаблона
+     */
+    testId?: PickProp<IField<Data, Payload>, "testId">;
+    /**
      * Represents the `isVisible` property of a field in a form.
      *
      * @typedef isVisible
@@ -2466,6 +2525,10 @@ declare module "react-declarative/model/IManaged" {
    */
   export interface IManagedShallow<Data = IAnything, Payload = IAnything>
     extends IManagedLayout<Data> {
+    /**
+     * Идентификатор для тестирования шаблона
+     */
+    testId?: PickProp<IField<Data, Payload>, "testId">;
     /**
      * Represents the `isDisabled` property of a field object.
      *
@@ -3037,6 +3100,7 @@ declare module "react-declarative/components/List" {
   export { useDropFilters as useListDropFilters } from "react-declarative/components/List/hooks/useDropFilters";
   export { useStateAction as useListStateAction } from "react-declarative/components/List/hooks/useStateAction";
   export { useUpsertManager as useListUpsertManager } from "react-declarative/components/List/hooks/useUpsertManager";
+  export { useToggleHandler as useListToggleHandler } from "react-declarative/components/List/hooks/useToggleHandler";
   export { ClassicChipListSlot } from "react-declarative/components/List/common/ClassicChipListSlot";
   export { ClassicFilterListSlot } from "react-declarative/components/List/common/ClassicFilterListSlot";
   export { DialogFilterListSlot } from "react-declarative/components/List/common/DialogFilterListSlot";
@@ -3679,6 +3743,7 @@ declare module "react-declarative/model/IListProps" {
     isChooser: boolean;
     isInfinite: boolean;
     isCustom: boolean;
+    isPageItem: boolean;
     rows: RowData[];
     limit: number;
     offset: number;
@@ -3784,7 +3849,6 @@ declare module "react-declarative/model/IListProps" {
      */
     handleRerender: () => void;
     computeKeepPageOnReload: () => boolean;
-    ready: () => void;
   }
   /**
    * Represents a slot of position action in a list.
@@ -3797,7 +3861,7 @@ declare module "react-declarative/model/IListProps" {
     FilterData extends {} = IAnything,
     RowData extends IRowData = IAnything,
     Payload extends IAnything = IAnything,
-  > extends Omit<IListCallbacks<FilterData, RowData>, "ready"> {
+  > extends IListCallbacks<FilterData, RowData> {
     filterData: Record<string, any>;
     pagination: ListHandlerPagination;
     sortModel: ListHandlerSortModel<RowData>;
@@ -3831,6 +3895,14 @@ declare module "react-declarative/model/IListProps" {
      * Represents a React component that will be rendered after the chip list.
      */
     AfterChips?: React.ComponentType<IChipListSlot>;
+    /**
+     * Represents a React component type for BeforeSelectionLabel.
+     *
+     * @template FilterData - The type of data used for filtering.
+     * @template RowData - The type of data used for individual rows.
+     * @template Payload - The type of payload for action.
+     */
+    BeforeSelectionLabel?: React.ComponentType<any>;
     /**
      * Represents a React component type for BeforeActionList.
      *
@@ -3888,6 +3960,15 @@ declare module "react-declarative/model/IListProps" {
      */
     customTemplate?: React.ComponentType<ITile<RowData, Payload>>;
     /**
+     * Represents a custom template component for rendering a tile.
+     *
+     * @typedef pageItemTemplate
+     * @property pageItemTemplate - The custom template component used for rendering a tile.
+     * @template {RowData} - The type of data for the tile row.
+     * @template {Payload} - The type of payload associated with the tile.
+     */
+    pageItemTemplate?: React.ComponentType<ITile<RowData, Payload>>;
+    /**
      * Tiling mode for custom template
      */
     tileMode?: TileMode;
@@ -3897,6 +3978,12 @@ declare module "react-declarative/model/IListProps" {
      * @type {number|undefined}
      */
     customTemplateMinHeight?: number;
+    /**
+     * Represents the minimum height for a page template.
+     *
+     * @type {number|undefined}
+     */
+    pageItemTemplateMinHeight?: number;
     /**
      * Represents the debounce time in milliseconds for performing fetch requests.
      */
@@ -3976,14 +4063,14 @@ declare module "react-declarative/model/IListProps" {
     handler: ListHandler<FilterData, RowData>;
     payload?: Payload | (() => Payload);
     rowMark?: ((row: RowData) => string) | ((row: RowData) => Promise<string>);
-    rowColor?: (row: RowData) => string;
+    rowColor?: ((row: RowData) => string) | ((row: RowData) => Promise<string>);
     /**
      * Custom sizeRequest for modal filters
      */
     modalSizeRequest?: (size: ISize) => {
       height: number;
       width: number;
-      sx?: SxProps;
+      sx?: SxProps<any>;
     };
     /**
      * Determines if a row is disabled based on various parameters.
@@ -4034,7 +4121,6 @@ declare module "react-declarative/model/IListProps" {
     setFilterDataSubject?: TSubject<FilterData>;
     rowActions?: IListRowAction[];
     noDisplayedRows?: boolean;
-    withCustomFilters?: boolean;
     withOutlinePaper?: boolean;
     withTransparentPaper?: boolean;
     withSingleChip?: boolean;
@@ -4066,6 +4152,7 @@ declare module "react-declarative/model/IListProps" {
     isChooser?: boolean;
     isInfinite?: boolean;
     isCustom?: boolean;
+    isPageItem?: boolean;
     isDense?: boolean;
     slots?: Partial<ISlotFactoryContext>;
   }
@@ -4496,10 +4583,39 @@ declare module "react-declarative/hooks/usePreventAutofill" {
   export default usePreventAutofill;
 }
 
+declare module "react-declarative/hooks/useManagedCursor" {
+  import { ChangeEvent } from "react";
+  import IField from "react-declarative/model/IField";
+  interface IParams {
+    inputFormatterSymbol?: IField["inputFormatterSymbol"];
+    inputFormatterAllowed?: IField["inputFormatterAllowed"];
+    inputFormatterReplace?: IField["inputFormatterReplace"];
+    inputFormatterTemplate?: IField["inputFormatterTemplate"];
+    inputFormatter?: IField["inputFormatter"];
+    value?: string;
+    onChange?: (value: string) => void;
+  }
+  export const useManagedCursor: ({
+    inputFormatterSymbol: symbol,
+    inputFormatterAllowed: allowed,
+    inputFormatterReplace: replace,
+    inputFormatterTemplate: template,
+    inputFormatter,
+    value: upperValue,
+    onChange,
+  }: IParams) => {
+    inputRef: import("react").MutableRefObject<HTMLInputElement>;
+    inputValue: string;
+    onInputChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  };
+  export default useManagedCursor;
+}
+
 declare module "react-declarative/hooks/useItemModal" {
   import { IItemModalProps } from "react-declarative/components/common/ItemModal";
   interface IParams extends IItemModalProps {
     payload: Record<string, unknown>;
+    _autofocusDelay?: number;
   }
   export const useItemModal: (params: IParams) => () => void;
   export default useItemModal;
@@ -4602,6 +4718,19 @@ declare module "react-declarative/hooks/useContextMenu" {
   export default useContextMenu;
 }
 
+declare module "react-declarative/hooks/useChangeDelay" {
+  export const useChangeDelay: (delay?: number) => {
+    delay$: import("react").MutableRefObject<boolean>;
+    doDelay: () => Promise<void>;
+  };
+  export default useChangeDelay;
+}
+
+declare module "react-declarative/hooks/useOnce" {
+  export const useOnce: (fn: () => void) => void;
+  export default useOnce;
+}
+
 declare module "react-declarative/hooks/useRouteItem" {
   import { BrowserHistory, HashHistory, MemoryHistory } from "history";
   import { ISwitchItem } from "react-declarative/helpers/routeManager";
@@ -4651,31 +4780,28 @@ declare module "react-declarative/hooks/useRouteParams" {
 }
 
 declare module "react-declarative/hooks/useWatchChanges" {
+  import TSubject from "react-declarative/model/TSubject";
+  /**
+   * Watches for changes in dependencies and provides a subject to track changes.
+   * An object containing methods and properties for watching changes.
+   */
+  interface IResult<T extends any[] = any[]> {
+    useChanges: () => void;
+    changeSubject: TSubject<void>;
+    waitForChanges: () => Promise<T>;
+    watch: {
+      resetWatcher: () => void;
+      beginWatch: () => void;
+      stopWatch: () => void;
+    };
+  }
   /**
    * Watches for changes in dependencies and provides a subject to track changes.
    *
    * @param deps - The dependencies to watch for changes.
    * @returns An object containing methods and properties for watching changes.
    */
-  export const useWatchChanges: (deps?: any[]) => {
-    /**
-     * Subscribe to the 'changeSubject' and update the state using useState.
-     * The state is updated to the opposite value of the current state.
-     *
-     * This function should be used inside a functional component to automatically update the state when the 'changeSubject' emits a new value.
-     *
-     * @param changeSubject - The subject to subscribe to for changes.
-     * @returns
-     *
-     */
-    readonly useChanges: () => void;
-    readonly changeSubject: import("..").Subject<void>;
-    readonly watch: {
-      resetWatcher: () => void;
-      beginWatch: () => void;
-      stopWatch: () => void;
-    };
-  };
+  export const useWatchChanges: <T extends any[] = any[]>(deps?: T) => IResult;
   export default useWatchChanges;
 }
 
@@ -5222,6 +5348,7 @@ declare module "react-declarative/hooks/useAsyncProgress" {
     readonly progress: number;
     readonly execute: (items: IProcess<Data>[]) => void;
     readonly loading: boolean;
+    readonly label: string;
   };
   export default useAsyncProgress;
 }
@@ -5304,7 +5431,14 @@ declare module "react-declarative/hooks/useAsyncValue" {
   export const useAsyncValue: <Data extends unknown = any>(
     run: () => Data | Promise<Data>,
     params?: IParams,
-  ) => [Data | null, IResult<void, void>, (data: Data) => void];
+  ) => [
+    Data | null,
+    IResult<void, void>,
+    (data: Data) => void,
+    {
+      waitForResult: () => Promise<Data>;
+    },
+  ];
   export default useAsyncValue;
 }
 
@@ -6519,6 +6653,7 @@ declare module "react-declarative/hooks/usePrompt" {
     large?: boolean;
     placeholder?: string;
     canCancel?: boolean;
+    inputType?: string;
   }
   /**
    * A function that creates and displays a prompt modal.
@@ -6537,6 +6672,7 @@ declare module "react-declarative/hooks/usePrompt" {
     placeholder: defaultPlaceholder,
     canCancel: defaultCanCancel,
     large,
+    inputType,
   }?: IParams) => ({
     canCancel,
     title,
@@ -7023,6 +7159,36 @@ declare module "react-declarative/model/History" {
   export default History;
 }
 
+declare module "react-declarative/utils/createAwaiter" {
+  /**
+   * Represents an object used for awaiting a value or a promise.
+   *
+   * @template T - The type of the value to be resolved.
+   *
+   * @interface
+   * @function
+   * @param value - The value or promise to resolve.
+   * @param reason - The reason for rejecting the promise.
+   */
+  export interface IAwaiter<T extends unknown> {
+    resolve(value: T | PromiseLike<T>): void;
+    reject(reason?: any): void;
+  }
+  /**
+   * Creates an awaiter object along with a promise.
+   *
+   * @template T - The type of the value to be resolved.
+   *
+   * @function
+   * @returns An array containing the promise and the awaiter object.
+   */
+  export const createAwaiter: <T extends unknown>() => [
+    Promise<T>,
+    IAwaiter<T>,
+  ];
+  export default createAwaiter;
+}
+
 declare module "react-declarative/components/One/components/common/VirtualListBox" {
   import * as React from "react";
   /**
@@ -7053,6 +7219,9 @@ declare module "react-declarative/components/One/components/common/VirtualListBo
 declare module "react-declarative/utils/list2grid" {
   import { IGridColumn } from "react-declarative/components/Grid";
   import IColumn from "react-declarative/model/IColumn";
+  interface IConfig {
+    minWidth: number;
+  }
   /**
    * Converts a list of columns and a payload into a grid configuration.
    *
@@ -7063,6 +7232,7 @@ declare module "react-declarative/utils/list2grid" {
   export const list2grid: (
     columns: IColumn[],
     payload: Record<string, any>,
+    { minWidth }?: Partial<IConfig>,
   ) => IGridColumn[];
   export default list2grid;
 }
@@ -7076,8 +7246,9 @@ declare module "react-declarative/utils/openBlank" {
    * @returns
    */
   export const openBlank: {
-    (url: string): void;
+    (url: string): Promise<void>;
     override(ref: (url: string) => void): void;
+    listen(fn: (url: string) => void): () => void;
   };
   export default openBlank;
 }
@@ -7122,6 +7293,7 @@ declare module "react-declarative/utils/copyToClipboard" {
   export const copyToClipboard: {
     (text: string): Promise<boolean>;
     override(ref: (text: string) => void | Promise<void>): void;
+    listen(fn: (text: string) => void): () => void;
   };
   export default copyToClipboard;
 }
@@ -7137,8 +7309,9 @@ declare module "react-declarative/utils/downloadBlank" {
    * @returns
    */
   export const downloadBlank: {
-    (url: string, name: string): void;
+    (url: string, name: string): Promise<void>;
     override(ref: (url: string, name: string) => void): void;
+    listen(fn: (dto: { url: string; name: string }) => void): () => void;
   };
   export default downloadBlank;
 }
@@ -7198,6 +7371,7 @@ declare module "react-declarative/utils/reloadPage" {
   export const reloadPage: {
     (): Promise<void>;
     override(ref: () => void): void;
+    listen(fn: () => void): () => void;
   };
   export default reloadPage;
 }
@@ -7648,6 +7822,39 @@ declare module "react-declarative/utils/wordForm" {
   export default wordForm;
 }
 
+declare module "react-declarative/utils/scaleRect" {
+  import ISize from "react-declarative/model/ISize";
+  interface IParams {
+    maxHeight?: number;
+    maxWidth?: number;
+  }
+  export const createScaleRect: ({
+    maxHeight,
+    maxWidth,
+  }?: IParams) => ({ height, width }: ISize) => ISize;
+  export const scaleRect: ({ height, width }: ISize) => ISize;
+  export default createScaleRect;
+}
+
+declare module "react-declarative/utils/scaleToSize" {
+  export const createScaleToSize: (
+    maxSize?: number,
+    maxExec?: number,
+  ) => import("./hof/execpool").IWrappedFn<Blob, [blob: Blob | File]>;
+  export const scaleToSize: import("./hof/execpool").IWrappedFn<
+    Blob,
+    [blob: Blob | File]
+  >;
+  export default scaleToSize;
+}
+
+declare module "react-declarative/utils/hof/obsolete" {
+  export const obsolete: <T extends unknown = any, P extends any[] = any[]>(
+    run: (...args: P) => Promise<T>,
+  ) => (...args: P) => Promise<T>;
+  export default obsolete;
+}
+
 declare module "react-declarative/utils/hof/singleshot" {
   /**
    * @interface IClearable
@@ -7716,8 +7923,54 @@ declare module "react-declarative/utils/hof/afterinit" {
   export default afterinit;
 }
 
+declare module "react-declarative/utils/hof/execpool" {
+  /**
+   * Represents the configuration options for the execution pool.
+   *
+   * @interface
+   * @property maxExec - The maximum number of executions allowed concurrently.
+   * @property delay - The delay in milliseconds between executions.
+   */
+  interface IConfig {
+    maxExec: number;
+    delay: number;
+  }
+  /**
+   * Represents a wrapped function that returns a promise.
+   *
+   * @template T - The type of the result of the wrapped function.
+   * @template P - The types of the parameters of the wrapped function.
+   *
+   * @interface
+   * @function
+   * @param args - The arguments to pass to the wrapped function.
+   * @returns A promise that resolves with the result of the wrapped function.
+   * @function clear - Clears all pending executions in the execution pool.
+   */
+  export interface IWrappedFn<T extends any = any, P extends any[] = any> {
+    (...args: P): Promise<T>;
+    clear(): void;
+  }
+  /**
+   * Creates an execution pool for asynchronous functions with a limited concurrency.
+   *
+   * @template T - The type of the result of the wrapped function.
+   * @template P - The types of the parameters of the wrapped function.
+   *
+   * @function
+   * @param run - The function to be executed in the pool.
+   * @param options - Optional configuration options for the execution pool.
+   * @returns A wrapped function that executes asynchronously within the execution pool.
+   */
+  export const execpool: <T extends unknown = any, P extends any[] = any[]>(
+    run: (...args: P) => Promise<T>,
+    { maxExec, delay }?: Partial<IConfig>,
+  ) => IWrappedFn<T, P>;
+  export default execpool;
+}
+
 declare module "react-declarative/utils/hof/retry" {
-  import { CANCELED_SYMBOL } from "react-declarative/utils/hof/cancelable";
+  import { CANCELED_SYMBOL } from "react-declarative/utils/hof/queued";
   /**
    * Represents a wrapped function that returns a promise.
    * @template T - The type of the promise's resolved value.
@@ -7726,6 +7979,7 @@ declare module "react-declarative/utils/hof/retry" {
   export interface IWrappedFn<T extends any = any, P extends any[] = any> {
     (...args: P): Promise<T | typeof CANCELED_SYMBOL>;
     cancel(): void;
+    clear(): void;
   }
   /**
    * Retries a function multiple times until it succeeds or reaches the maximum number of retries.
@@ -7986,12 +8240,16 @@ declare module "react-declarative/utils/hof/memoize" {
 }
 
 declare module "react-declarative/utils/hof/trycatch" {
+  interface IError extends Error {}
   /**
    * Represents a configuration interface.
    *
    * @interface
    */
   interface IConfig {
+    allowedErrors?: {
+      new (): IError;
+    }[];
     fallback?: (error: Error) => void;
     defaultValue: null | false;
   }
@@ -8016,7 +8274,7 @@ declare module "react-declarative/utils/hof/trycatch" {
     V extends unknown,
   >(
     run: T,
-    { fallback, defaultValue }?: Partial<IConfig>,
+    { allowedErrors, fallback, defaultValue }?: Partial<IConfig>,
   ) => (...args: A) => ReturnType<T> | null;
   export default trycatch;
 }
@@ -10071,10 +10329,11 @@ declare module "react-declarative/utils/createWindowHistory" {
 declare module "react-declarative/utils/createManagedHistory" {
   interface IParams {
     allowed: (pathname: string) => boolean;
+    map: (pathname: string) => string;
   }
   export const createManagedHistory: (
     storageKey: string,
-    { allowed }?: Partial<IParams>,
+    { allowed, map }?: Partial<IParams>,
   ) => import("history").MemoryHistory;
   export default createManagedHistory;
 }
@@ -10259,7 +10518,7 @@ declare module "react-declarative/utils/datetime" {
      * @param stamp - The stamp value representing minutes since 1970-01-01 00:00.
      * @returns - The Time object representing the hour and minute derived from the stamp value.
      */
-    static fromStamp: (stamp: number) => Time;
+    static fromStamp: (stamp: number | null) => Time | null;
   }
   /**
    * Represents a date.
@@ -10287,7 +10546,7 @@ declare module "react-declarative/utils/datetime" {
      * @param stamp - The number of days since '1970-01-01' to convert.
      * @returns - The converted date object.
      */
-    static fromStamp: (stamp: number) => Date;
+    static fromStamp: (stamp: number | null) => Date | null;
   }
   /**
    * Parses a string representation of a date in "dd/mm/yyyy" format and returns a Date object.
@@ -10303,7 +10562,7 @@ declare module "react-declarative/utils/datetime" {
    * @param date - The date to serialize.
    * @returns The serialized date or null if the input is not a valid Date object.
    */
-  export const serializeDate: (date: Date) => string | null;
+  export const serializeDate: (date: Date | null) => string | null;
   /**
    * Parses a string representation of time into a Time object.
    *
@@ -10317,7 +10576,7 @@ declare module "react-declarative/utils/datetime" {
    * @param time - The time object to be serialized.
    * @returns - The serialized time string, or null if the input is invalid.
    */
-  export const serializeTime: (time: Time) => string | null;
+  export const serializeTime: (time: Time | null) => string | null;
   /**
    * Retrieves the current date.
    *
@@ -10444,6 +10703,26 @@ declare module "react-declarative/api/resolveDocuments" {
   export default resolveDocuments;
 }
 
+declare module "react-declarative/api/pickDocuments" {
+  /**
+   * A function that picks a subset of documents from an array of documents, given a limit and offset.
+   *
+   * @template T - The type of the documents in the array.
+   * @param limit - The maximum number of documents to pick.
+   * @param offset - The number of documents to skip before picking.
+   * @returns - A function that takes an array of documents and returns an object with `rows` and `done` properties.
+   *                       The `rows` property contains the picked documents, and `done` property indicates if the picking is finished.
+   */
+  export const pickDocuments: <T extends unknown>(
+    limit: number,
+    offset: number,
+  ) => (rows?: T[]) => {
+    rows: T[];
+    done: boolean;
+  };
+  export default pickDocuments;
+}
+
 declare module "react-declarative/api/iterateDocuments" {
   import IRowData, { RowId } from "react-declarative/model/IRowData";
   /**
@@ -10487,24 +10766,29 @@ declare module "react-declarative/api/iterateDocuments" {
   export default iterateDocuments;
 }
 
-declare module "react-declarative/api/pickDocuments" {
-  /**
-   * A function that picks a subset of documents from an array of documents, given a limit and offset.
-   *
-   * @template T - The type of the documents in the array.
-   * @param limit - The maximum number of documents to pick.
-   * @param offset - The number of documents to skip before picking.
-   * @returns - A function that takes an array of documents and returns an object with `rows` and `done` properties.
-   *                       The `rows` property contains the picked documents, and `done` property indicates if the picking is finished.
-   */
-  export const pickDocuments: <T extends unknown>(
-    limit: number,
-    offset: number,
-  ) => (rows?: T[]) => {
-    rows: T[];
-    done: boolean;
-  };
-  export default pickDocuments;
+declare module "react-declarative/api/iteratePromise" {
+  import IRowData from "react-declarative/model/IRowData";
+  export function iteratePromise<T extends IRowData = IRowData>(
+    fn: () => Promise<T[]>,
+  ): AsyncGenerator<T, void, unknown>;
+  export default iteratePromise;
+}
+
+declare module "react-declarative/api/iterateUnion" {
+  import IRowData from "react-declarative/model/IRowData";
+  export const iterateUnion: <T extends IRowData = IRowData>(
+    iterators: AsyncGenerator<T | T[], void, unknown>[],
+  ) => (limit: number, offset: number) => AsyncGenerator<T, void, unknown>;
+  export default iterateUnion;
+}
+
+declare module "react-declarative/api/iterateList" {
+  import IRowData from "react-declarative/model/IRowData";
+  export function iterateList<T extends IRowData = IRowData>(
+    rows: T[],
+    map?: (row: T) => Promise<T>,
+  ): AsyncGenerator<T, void, unknown>;
+  export default iterateList;
 }
 
 declare module "react-declarative/view/useOpenDocument" {
@@ -10579,6 +10863,11 @@ declare module "react-declarative/components/OneIcon" {
 declare module "react-declarative/components/OneButton" {
   export * from "react-declarative/components/OneButton/OneButton";
   export { default } from "react-declarative/components/OneButton/OneButton";
+}
+
+declare module "react-declarative/components/Sheet" {
+  export * from "react-declarative/components/Sheet/Sheet";
+  export { default } from "react-declarative/components/Sheet/Sheet";
 }
 
 declare module "react-declarative/components/Dot" {
@@ -10921,6 +11210,7 @@ declare module "react-declarative/components/Grid" {
 
 declare module "react-declarative/components/Tile" {
   export * from "react-declarative/components/Tile/Tile";
+  export * from "react-declarative/components/Tile/components/TileCheckbox";
   export * from "react-declarative/components/Tile/model/TileMode";
   export * from "react-declarative/components/Tile/model/ITile";
   export * from "react-declarative/components/Tile/model/ITileProps";
@@ -11084,6 +11374,7 @@ declare module "react-declarative/components/One/layouts/DivLayout" {
       children,
       className,
       style,
+      testId,
     }: IDivLayoutProps<Data, any> & IDivLayoutPrivate<Data>): JSX.Element;
     displayName: string;
   };
@@ -11092,6 +11383,7 @@ declare module "react-declarative/components/One/layouts/DivLayout" {
       children,
       className,
       style,
+      testId,
     }: IDivLayoutProps<Data, any> & IDivLayoutPrivate<Data>): JSX.Element;
     displayName: string;
   };
@@ -11145,6 +11437,7 @@ declare module "react-declarative/components/One/layouts/BoxLayout" {
       className,
       style,
       sx,
+      testId,
     }: IBoxLayoutProps<Data, any> & IBoxLayoutPrivate<Data>): JSX.Element;
     displayName: string;
   };
@@ -11154,6 +11447,7 @@ declare module "react-declarative/components/One/layouts/BoxLayout" {
       className,
       style,
       sx,
+      testId,
     }: IBoxLayoutProps<Data, any> & IBoxLayoutPrivate<Data>): JSX.Element;
     displayName: string;
   };
@@ -11238,6 +11532,7 @@ declare module "react-declarative/components/One/layouts/TabsLayout" {
       columnsOverride,
       isBaselineAlign,
       sx,
+      testId,
       phoneColumns,
       tabletColumns,
       desktopColumns,
@@ -11263,6 +11558,7 @@ declare module "react-declarative/components/One/layouts/TabsLayout" {
       columnsOverride,
       isBaselineAlign,
       sx,
+      testId,
       phoneColumns,
       tabletColumns,
       desktopColumns,
@@ -11336,6 +11632,7 @@ declare module "react-declarative/components/One/layouts/CenterLayout" {
       desktopColumns,
       columnsOverride,
       isBaselineAlign,
+      testId,
       sx,
       fieldRightMargin,
       fieldBottomMargin,
@@ -11354,6 +11651,7 @@ declare module "react-declarative/components/One/layouts/CenterLayout" {
       desktopColumns,
       columnsOverride,
       isBaselineAlign,
+      testId,
       sx,
       fieldRightMargin,
       fieldBottomMargin,
@@ -11409,6 +11707,7 @@ declare module "react-declarative/components/One/layouts/StretchLayout" {
       children,
       className,
       style,
+      testId,
       innerPadding: padding,
     }: IStretchLayoutProps<Data, any> &
       IStretchLayoutPrivate<Data>): JSX.Element;
@@ -11419,6 +11718,7 @@ declare module "react-declarative/components/One/layouts/StretchLayout" {
       children,
       className,
       style,
+      testId,
       innerPadding: padding,
     }: IStretchLayoutProps<Data, any> &
       IStretchLayoutPrivate<Data>): JSX.Element;
@@ -11479,6 +11779,7 @@ declare module "react-declarative/components/One/layouts/GroupLayout" {
       fieldRightMargin,
       fieldBottomMargin,
       style,
+      testId,
       className,
       children,
     }: IGroupLayoutProps<Data, any> & IGroupLayoutPrivate): JSX.Element;
@@ -11496,6 +11797,7 @@ declare module "react-declarative/components/One/layouts/GroupLayout" {
       fieldRightMargin,
       fieldBottomMargin,
       style,
+      testId,
       className,
       children,
     }: IGroupLayoutProps<Data, any> & IGroupLayoutPrivate): JSX.Element;
@@ -11563,6 +11865,7 @@ declare module "react-declarative/components/One/layouts/OutlineLayout" {
       style,
       className,
       children,
+      testId,
       isBaselineAlign,
       fieldRightMargin,
       fieldBottomMargin,
@@ -11581,6 +11884,7 @@ declare module "react-declarative/components/One/layouts/OutlineLayout" {
       style,
       className,
       children,
+      testId,
       isBaselineAlign,
       fieldRightMargin,
       fieldBottomMargin,
@@ -11653,6 +11957,7 @@ declare module "react-declarative/components/One/layouts/PaperLayout" {
       style,
       className,
       children,
+      testId,
       isBaselineAlign,
       fieldRightMargin,
       fieldBottomMargin,
@@ -11673,6 +11978,7 @@ declare module "react-declarative/components/One/layouts/PaperLayout" {
       style,
       className,
       children,
+      testId,
       isBaselineAlign,
       fieldRightMargin,
       fieldBottomMargin,
@@ -11750,6 +12056,7 @@ declare module "react-declarative/components/One/layouts/ExpansionLayout" {
       className,
       children,
       title,
+      testId,
       description,
       expansionOpened,
       outlinePaper,
@@ -11772,6 +12079,7 @@ declare module "react-declarative/components/One/layouts/ExpansionLayout" {
       className,
       children,
       title,
+      testId,
       description,
       expansionOpened,
       outlinePaper,
@@ -12022,6 +12330,7 @@ declare module "react-declarative/components/One/layouts/HeroLayout" {
       columns,
       columnsOverride,
       isBaselineAlign,
+      testId,
       sx,
       phoneColumns,
       tabletColumns,
@@ -12039,6 +12348,7 @@ declare module "react-declarative/components/One/layouts/HeroLayout" {
       columns,
       columnsOverride,
       isBaselineAlign,
+      testId,
       sx,
       phoneColumns,
       tabletColumns,
@@ -12169,6 +12479,7 @@ declare module "react-declarative/components/One/layouts/CustomLayout" {
       className,
       style,
       sx,
+      testId,
       customLayout: CustomLayout,
       ...otherProps
     }: ICustomLayoutProps<Data, any> & ICustomLayoutPrivate<Data>): JSX.Element;
@@ -12180,6 +12491,7 @@ declare module "react-declarative/components/One/layouts/CustomLayout" {
       className,
       style,
       sx,
+      testId,
       customLayout: CustomLayout,
       ...otherProps
     }: ICustomLayoutProps<Data, any> & ICustomLayoutPrivate<Data>): JSX.Element;
@@ -12309,6 +12621,7 @@ declare module "react-declarative/components/One/fields/CheckboxField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -12537,6 +12850,7 @@ declare module "react-declarative/components/One/fields/FileField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -12767,6 +13081,7 @@ declare module "react-declarative/components/One/fields/ComboField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -12937,6 +13252,7 @@ declare module "react-declarative/components/One/fields/ComponentField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -13187,6 +13503,7 @@ declare module "react-declarative/components/One/fields/ItemsField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -13289,6 +13606,7 @@ declare module "react-declarative/components/One/fields/LineField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -13403,6 +13721,7 @@ declare module "react-declarative/components/One/fields/ProgressField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -13543,6 +13862,7 @@ declare module "react-declarative/components/One/fields/RadioField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -13658,6 +13978,7 @@ declare module "react-declarative/components/One/fields/RatingField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -13876,6 +14197,7 @@ declare module "react-declarative/components/One/fields/SliderField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -14024,6 +14346,7 @@ declare module "react-declarative/components/One/fields/SwitchField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -14400,6 +14723,7 @@ declare module "react-declarative/components/One/fields/TextField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -14591,6 +14915,7 @@ declare module "react-declarative/components/One/fields/DateField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -14782,6 +15107,7 @@ declare module "react-declarative/components/One/fields/TimeField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -15136,6 +15462,7 @@ declare module "react-declarative/components/One/fields/CompleteField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -15270,6 +15597,7 @@ declare module "react-declarative/components/One/fields/TypographyField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -15465,6 +15793,7 @@ declare module "react-declarative/components/One/fields/ChooseField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -15694,6 +16023,7 @@ declare module "react-declarative/components/One/fields/YesNoField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -16202,6 +16532,7 @@ declare module "react-declarative/components/One/fields/DictField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -16388,6 +16719,7 @@ declare module "react-declarative/components/One/fields/TreeField" {
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -16802,7 +17134,6 @@ declare module "react-declarative/components/List/List" {
         * @param selectionLabel - Function to display the label for selected items.
         * @param filterData - The additional data for filters. Default value is an empty object.
         * @param withToggledFilters - Flag to indicate if filters are toggled. Default value is false.
-        * @param withCustomFilters - Flag to indicate if custom filters are used. Default value is false.
         * @param fetchDebounce - The debounce time for fetching the list data. Default value is LIST_FETCH_DEBOUNCE.
         * @param sortModel - The array of sort model for the list. Default value is an empty array.
         * @param chips - The array of chips for the list. Default value is an empty array.
@@ -16888,6 +17219,7 @@ declare module "react-declarative/components/List/hooks/useProps" {
           search: never;
           filterData: never;
           isChooser: never;
+          isPageItem: never;
           isInfinite: never;
           isCustom: never;
           payload: never;
@@ -17896,8 +18228,24 @@ declare module "react-declarative/components/List/hooks/useUpsertManager" {
     rows: upperRows,
   }: IParams) => {
     rows: any[];
+    recomputeSubject: import("../../..").Subject<void>;
   };
   export default useUpsertManager;
+}
+
+declare module "react-declarative/components/List/hooks/useToggleHandler" {
+  import IRowData from "react-declarative/model/IRowData";
+  /**
+   * Toggles the selection of a given row and updates the selection state.
+   *
+   * @template RowData The type of data in the row.
+   * @param row The row data to toggle the selection for.
+   * @returns A function that takes an event and toggles the selection for the row.
+   */
+  export const useToggleHandler: <RowData extends IRowData = any>(
+    row: RowData,
+  ) => (radio?: boolean) => (e: any) => void;
+  export default useToggleHandler;
 }
 
 declare module "react-declarative/components/List/common/ClassicChipListSlot" {
@@ -17927,7 +18275,6 @@ declare module "react-declarative/components/List/common/ClassicFilterListSlot" 
    * @param props.filterData - The filter data for the component.
    * @param props.filters - The filters for the component.
    * @param props.change - The function to call when the filter changes.
-   * @param props.ready - Indicates if the component is ready.
    * @param props.label - The label for the component.
    * @param props.loading - Indicates if the component is loading.
    * @param props.withSearch - Indicates if the component has search functionality.
@@ -17946,7 +18293,6 @@ declare module "react-declarative/components/List/common/ClassicFilterListSlot" 
     filterData,
     filters,
     change,
-    ready,
     label,
     loading,
     withSearch,
@@ -18758,6 +19104,7 @@ declare module "react-declarative/components/VisibilityView/VisibilityView" {
     onChange,
     groups,
     data,
+    ignore,
     keyToTitle,
   }: IVisibilityViewProps) => JSX.Element;
   export default VisibilityView;
@@ -18825,6 +19172,7 @@ declare module "react-declarative/components/VisibilityView/hooks/useVisibilityV
     groups,
     data,
     keyToTitle,
+    ignore,
     expandAll,
     readonly,
     fullScreen,
@@ -20146,6 +20494,7 @@ declare module "react-declarative/components/One/api/usePreventLeave" {
   import IOneProps from "react-declarative/model/IOneProps";
   import IAnything from "react-declarative/model/IAnything";
   import TSubject from "react-declarative/model/TSubject";
+  import IOneApi from "react-declarative/model/IOneApi";
   /**
    * Interface for the parameters of the IPreventLeaveParams class.
    * @template Data - The type of data.
@@ -20155,6 +20504,7 @@ declare module "react-declarative/components/One/api/usePreventLeave" {
     history?: BrowserHistory | MemoryHistory | HashHistory;
     waitForChangesDelay?: number;
     readonly?: boolean;
+    data?: Data | null;
     updateSubject?: TSubject<[ID, Data]>;
     changeSubject?: TSubject<Data>;
     shouldAutoSave?: () => boolean;
@@ -20175,19 +20525,23 @@ declare module "react-declarative/components/One/api/usePreventLeave" {
    */
   export interface IPreventLeaveReturn<Data = IAnything> {
     oneProps: {
+      apiRef: Exclude<IOneProps<Data>["apiRef"], undefined>;
+      handler: () => Data | null;
       change: (data: Data, initial?: boolean) => void;
-      invalidity: IOneProps<Data>["invalidity"];
-      readonly: IOneProps<Data>["readonly"];
-      changeSubject: IOneProps<Data>["changeSubject"];
+      invalidity: Exclude<IOneProps<Data>["invalidity"], undefined>;
+      readonly: Exclude<IOneProps<Data>["readonly"], undefined>;
+      changeSubject: Exclude<IOneProps<Data>["changeSubject"], undefined>;
       fallback?: (e: Error) => void;
     };
+    apiRef: React.MutableRefObject<IOneApi<Data>>;
+    invalid: boolean;
     data: Data | null;
     hasChanged: boolean;
     hasLoading: boolean;
     beginSave: () => Promise<boolean>;
     afterSave: () => void;
     dropChanges: () => void;
-    waitForChanges: () => Promise<void>;
+    waitForChanges: () => Promise<Data | null>;
   }
   /**
    * PreventLeave hook documentation
@@ -20229,6 +20583,7 @@ declare module "react-declarative/components/One/api/usePreventLeave" {
     history,
     waitForChangesDelay,
     readonly: upperReadonly,
+    data: upperData,
     onChange,
     onLoadStart,
     onLoadEnd,
@@ -20321,6 +20676,7 @@ declare module "react-declarative/components/OneButton/OneButton" {
   >({
     waitForChangesDelay,
     fieldDebounce,
+    withCloseAfterChange,
     noBadge,
     fields,
     handler,
@@ -20339,6 +20695,38 @@ declare module "react-declarative/components/OneButton/OneButton" {
     ...buttonProps
   }: IOneButtonProps<Data, Payload>) => JSX.Element | null;
   export default OneButton;
+}
+
+declare module "react-declarative/components/Sheet/Sheet" {
+  import * as React from "react";
+  import { SxProps } from "@mui/material";
+  import { BoxProps } from "@mui/material/Box";
+  interface ISheetProps extends BoxProps {
+    withFullScreen?: boolean;
+    withHeader?: boolean;
+    maxCols?: number;
+    maxRows?: number;
+    data: string[][];
+    className?: string;
+    style?: React.CSSProperties;
+    sx?: SxProps<any>;
+    ref?: React.Ref<HTMLDivElement | undefined>;
+  }
+  export const Sheet: (
+    {
+      data: upperData,
+      maxCols,
+      maxRows,
+      withHeader,
+      withFullScreen,
+      className,
+      style,
+      sx,
+      ...otherProps
+    }: ISheetProps,
+    ref: React.Ref<HTMLDivElement>,
+  ) => JSX.Element;
+  export default Sheet;
 }
 
 declare module "react-declarative/components/Dot/Dot" {
@@ -20474,24 +20862,28 @@ declare module "react-declarative/components/Switch/Switch" {
    * @param SwitchProps.throwError - Indicates whether to throw an error if an exception occurs. Defaults to false.
    * @returns The Switch component.
    */
-  export const Switch: ({
-    className,
-    style,
-    Loader,
-    Forbidden,
-    NotFound,
-    Error,
-    animation,
-    history,
-    children,
-    fallback,
-    items: upperItems,
-    onLoadStart,
-    onLoadEnd,
-    onInit,
-    onDispose,
-    throwError,
-  }: ISwitchProps) => JSX.Element;
+  export const Switch: {
+    ({
+      className,
+      style,
+      Loader,
+      Forbidden,
+      NotFound,
+      Error,
+      animation,
+      history,
+      children,
+      fallback,
+      items: upperItems,
+      onLoadStart,
+      onLoadEnd,
+      onInit,
+      onDispose,
+      throwError,
+    }: ISwitchProps): JSX.Element;
+    listen(fn: (data: ISwitchResult) => void): () => void;
+    waitForNavigate(): Promise<ISwitchResult>;
+  };
   export default Switch;
 }
 
@@ -20528,20 +20920,10 @@ declare module "react-declarative/components/Square/Square" {
   interface ISquareProps extends BoxProps {
     children: React.ReactNode;
   }
-  /**
-   * Square component.
-   *
-   * @typedef Square
-   * @param className - The class name to apply to the Square component.
-   * @param children - The content to render inside the Square component.
-   * @param otherProps - Additional props to be spread onto the Square component.
-   * @returns - The rendered Square component.
-   */
-  export const Square: ({
-    className,
-    children,
-    ...otherProps
-  }: ISquareProps) => JSX.Element;
+  export const Square: (
+    { className, children, ...otherProps }: ISquareProps,
+    ref: React.Ref<HTMLDivElement>,
+  ) => JSX.Element;
   export default Square;
 }
 
@@ -20810,12 +21192,14 @@ declare module "react-declarative/components/Breadcrumbs/Breadcrumbs" {
 declare module "react-declarative/components/ErrorBoundary/ErrorBoundary" {
   import * as React from "react";
   import { BrowserHistory, HashHistory, MemoryHistory } from "history";
+  import TSubject from "react-declarative/model/TSubject";
   /**
    * Represents the props of an ErrorBoundary component.
    */
   interface IErrorBoundaryProps {
     onError?: (error: Error, errorInfo: any) => void;
-    history: MemoryHistory | BrowserHistory | HashHistory;
+    history?: MemoryHistory | BrowserHistory | HashHistory;
+    reloadSubject?: TSubject<void>;
     children?: React.ReactNode;
   }
   /**
@@ -20843,6 +21227,22 @@ declare module "react-declarative/components/ErrorBoundary/ErrorBoundary" {
       hasError: boolean;
     };
     constructor(props: IErrorBoundaryProps);
+    /**
+     * Listen for error cancelation
+     *
+     * @function componentDidMount
+     * @memberof Component
+     * @returns
+     */
+    componentDidMount: () => void;
+    /**
+     * Clears the garbage
+     *
+     * @function componentWillUnmount
+     * @memberof Component
+     * @returns
+     */
+    componentWillUnmount: () => void;
     /**
      * Listens for updates to the component and handles error state.
      *
@@ -21555,7 +21955,7 @@ declare module "react-declarative/components/ActionModal/ActionModal" {
     sizeRequest?: (size: ISize) => {
       height: number;
       width: number;
-      sx?: SxProps;
+      sx?: SxProps<any>;
     };
     waitForChangesDelay?: number;
     withActionButton?: boolean;
@@ -21869,7 +22269,7 @@ declare module "react-declarative/components/SearchModal/SearchModal" {
     sizeRequest?: (size: ISize) => {
       height: number;
       width: number;
-      sx?: SxProps;
+      sx?: SxProps<any>;
     };
     title?: string;
     AfterTitle?: React.ComponentType<{
@@ -23156,7 +23556,7 @@ declare module "react-declarative/components/FilesView/useFilesView" {
     sizeRequest?: (size: ISize) => {
       height: number;
       width: number;
-      sx?: SxProps;
+      sx?: SxProps<any>;
     };
     data?: string[] | null;
     fullScreen?: boolean;
@@ -25872,7 +26272,7 @@ declare module "react-declarative/components/ChatView/ChatView" {
     chatController: ChatController;
     className?: string;
     style?: React.CSSProperties;
-    sx?: SxProps;
+    sx?: SxProps<any>;
   }
   /**
    * Represents a chat view component.
@@ -26190,7 +26590,7 @@ declare module "react-declarative/components/Grid/model/IGridProps" {
     loading?: boolean;
     hasMore?: boolean;
     rowMark?: ((row: RowData) => string) | ((row: RowData) => Promise<string>);
-    rowColor?: (row: RowData) => string;
+    rowColor?: ((row: RowData) => string) | ((row: RowData) => Promise<string>);
     onSkip?: (initial: boolean) => void;
     onButtonSkip?: () => void;
     rowKey?: keyof T;
@@ -26313,7 +26713,6 @@ declare module "react-declarative/components/Tile/Tile" {
     bufferSize,
     minRowHeight,
     payload: upperPayload,
-    rowColor,
     rowKey,
     noDataLabel,
     errorMessage,
@@ -26328,8 +26727,26 @@ declare module "react-declarative/components/Tile/Tile" {
     scrollXSubject,
     scrollYSubject,
     rowMark,
+    rowColor,
   }: ITileProps<Data, Payload>) => JSX.Element;
   export default Tile;
+}
+
+declare module "react-declarative/components/Tile/components/TileCheckbox" {
+  import SelectionMode from "react-declarative/model/SelectionMode";
+  interface ITileCheckboxProps {
+    isSelected: boolean;
+    selectionMode: SelectionMode;
+    toggleSelection: () => void;
+    disabled?: boolean;
+  }
+  export const TileCheckbox: ({
+    isSelected,
+    selectionMode,
+    toggleSelection,
+    disabled,
+  }: ITileCheckboxProps) => JSX.Element;
+  export default TileCheckbox;
 }
 
 declare module "react-declarative/components/Tile/model/TileMode" {
@@ -26387,7 +26804,7 @@ declare module "react-declarative/components/Tile/model/ITileProps" {
     selectionMode?: SelectionMode;
     recomputeSubject?: TSubject<void>;
     rowMark?: ((row: Data) => string) | ((row: Data) => Promise<string>);
-    rowColor?: (row: Data) => string;
+    rowColor?: ((row: Data) => string) | ((row: Data) => Promise<string>);
     onSelectedRows?: (rowIds: string[], initialChange: boolean) => void;
     selectedRows?: string[];
   }
@@ -27110,7 +27527,6 @@ declare module "react-declarative/components/List/components/SlotFactory/SlotCon
       filterData,
       filters,
       change,
-      ready,
       label,
       loading,
       withSearch,
@@ -27249,6 +27665,7 @@ declare module "react-declarative/components/common/ItemModal/ItemModal" {
   import IManaged from "react-declarative/model/IManaged";
   import IAnything from "react-declarative/model/IAnything";
   export interface IItemModalProps {
+    _autofocusDelay?: number;
     type: Exclude<IField["type"], undefined>;
     onValueChange: Exclude<IManaged["onChange"], undefined>;
     value: IAnything;
@@ -27262,6 +27679,7 @@ declare module "react-declarative/components/common/ItemModal/ItemModal" {
     itemList: IField["itemList"];
   }
   export const ItemModal: ({
+    _autofocusDelay,
     type,
     data,
     payload,
@@ -27897,7 +28315,7 @@ declare module "react-declarative/components/CalendarView/model/ICalendarViewPro
     renderItem: React.ComponentType<ICalendarTile<Data, Payload>>;
     onItemClick: (item: { data: Data; payload: Payload }) => void;
     rowMark?: ((row: Data) => string) | ((row: Data) => Promise<string>);
-    rowColor?: (row: Data) => string;
+    rowColor?: ((row: Data) => string) | ((row: Data) => Promise<string>);
   }
   export default ICalendarViewProps;
 }
@@ -27943,6 +28361,7 @@ declare module "react-declarative/components/VisibilityView/model/IVisibilityVie
     expandAll?: boolean;
     readonly?: boolean;
     data?: Record<string, string[]> | null;
+    ignore?: (key: string) => boolean;
     onChange?: (data: Record<string, string[]>) => void;
     groups: IVisibilityGroup[];
     keyToTitle?: (name: string) => string;
@@ -28656,6 +29075,7 @@ declare module "react-declarative/components/One/components/makeField/makeField"
       fieldBottomMargin,
       outlinePaper,
       transparentPaper,
+      testId,
       ...otherProps
     }: IEntity<Data, any>): JSX.Element | null;
     displayName: string;
@@ -28830,6 +29250,7 @@ declare module "react-declarative/components/OneButton/model/IOneButtonProps" {
         color: never;
       }
     > {
+    withCloseAfterChange?: boolean;
     noBadge?: boolean;
     fieldDebounce?: number;
     waitForChangesDelay?: number;
@@ -29019,7 +29440,7 @@ declare module "react-declarative/components/OutletView/components/OutletModal" 
     sizeRequest?: (size: ISize) => {
       height: number;
       width: number;
-      sx?: SxProps;
+      sx?: SxProps<any>;
     };
     fullScreen?: boolean;
     /**
@@ -29384,7 +29805,7 @@ declare module "react-declarative/components/WizardView/components/WizardOutletM
     sizeRequest?: (size: ISize) => {
       height: number;
       width: number;
-      sx?: SxProps;
+      sx?: SxProps<any>;
     };
     openSubject: TBehaviorSubject<boolean>;
     fullScreen?: boolean;
@@ -30612,7 +31033,6 @@ declare module "react-declarative/components/List/slots/FilterListSlot/IFilterLi
      * @type {boolean|undefined}
      */
     withToggledFilters?: boolean;
-    ready: () => void;
     clean: () => void;
     loading: boolean;
     label: string;
