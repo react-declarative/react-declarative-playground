@@ -5,7 +5,7 @@
 ## Contribute
 
 > [!IMPORTANT]
-> There is another project named [react-declarative](https://github.com/react-declarative/react-declarative) build especially for AppWrite Realtime development. **⭐Star** and **💻Fork** It on github will be appreciated
+> There is made by using [react-declarative](https://github.com/react-declarative/react-declarative) to solve your problems. **⭐Star** and **💻Fork** It on github will be appreciated
 
 ## Try online
 
