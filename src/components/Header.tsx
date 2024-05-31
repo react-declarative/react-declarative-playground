@@ -53,6 +53,14 @@ const itemList = [
         url: 'code10.txt',
         label: 'Dashboard',
     },
+    {
+        url: 'code11.txt',
+        label: 'Adaptive form',
+    },
+    {
+        url: 'code12.txt',
+        label: 'Account info',
+    },
 ];
 
 interface IHeaderProps {

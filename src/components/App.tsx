@@ -21,6 +21,9 @@ import './common/IndicatorArchiveWrapper';
 import './common/IndicatorDoneWrapper';
 import './common/IndicatorAllWrapper';
 
+import './common/AvatarPicker';
+import './common/RemoveAccount';
+
 const isDevelopment = () => {
     return process.env.CC_NODE_ENV === "development";
 }
