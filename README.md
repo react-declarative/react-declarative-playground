@@ -1,4 +1,4 @@
-# react-declarative-playground
+# ⚛️ react-declarative-playground
 
 > Part of the [react-declarative framework](https://github.com/react-declarative/react-declarative)
 
