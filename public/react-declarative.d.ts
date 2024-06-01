@@ -335,6 +335,7 @@ declare module "react-declarative" {
   import { IBoardColumn as IBoardColumnInternal } from "react-declarative/components";
   import { IBoardItem as IBoardItemInternal } from "react-declarative/components";
   import { IBoardRow as IBoardRowInternal } from "react-declarative/components";
+  export { IBoardDivider } from "react-declarative/components";
   export type IBoardColumn<Data = any, Payload = any> = IBoardColumnInternal<
     Data,
     Payload
@@ -594,6 +595,7 @@ declare module "react-declarative" {
   export { useOffsetPaginator } from "react-declarative/components";
   export { useGridAction } from "react-declarative/components";
   export { useGridSelection } from "react-declarative/components";
+  export { useGridProps } from "react-declarative/components";
   export { useLastPagination } from "react-declarative/components";
   export { useQueryPagination } from "react-declarative/components";
   export { usePreventNavigate } from "react-declarative/components";
@@ -930,6 +932,11 @@ declare module "react-declarative" {
     fromTimeStamp,
   } from "react-declarative/utils/getTimeStamp";
   export { getGenesisStamp } from "react-declarative/utils/getGenesisStamp";
+  export { toUtcDate } from "react-declarative/utils/toUtcDate";
+  export {
+    addUtcOffset,
+    removeUtcOffset,
+  } from "react-declarative/utils/addUtcOffset";
   export { resolveDocuments } from "react-declarative/api/resolveDocuments";
   export { pickDocuments } from "react-declarative/api/pickDocuments";
   export { iterateDocuments } from "react-declarative/api/iterateDocuments";
@@ -1609,6 +1616,10 @@ declare module "react-declarative/model/IField" {
    * Объект поля для прикладного программиста
    */
   export interface IField<Data = IAnything, Payload = IAnything> {
+    /**
+     * Отменяет ожидание фокуса для валидации
+     */
+    dirty?: boolean;
     /**
      * Параметры фабрики для создания коллбека isInvalid
      */
@@ -2525,6 +2536,10 @@ declare module "react-declarative/model/IManaged" {
    */
   export interface IManagedShallow<Data = IAnything, Payload = IAnything>
     extends IManagedLayout<Data> {
+    /**
+     * Отменяет ожидание фокуса для валидации
+     */
+    dirty?: PickProp<IField<Data, Payload>, "dirty">;
     /**
      * Идентификатор для тестирования шаблона
      */
@@ -5721,6 +5736,7 @@ declare module "react-declarative/hooks/useElementSize" {
   interface IParams<Size extends ISize> {
     defaultSize?: ISize;
     target?: HTMLElement | null;
+    map?: (child: HTMLElement) => HTMLElement | null;
     closest?: string;
     selector?: string;
     debounce?: number;
@@ -5753,6 +5769,7 @@ declare module "react-declarative/hooks/useElementSize" {
   >({
     defaultSize: { height, width },
     target,
+    map,
     closest,
     selector,
     debounce: delay,
@@ -10632,8 +10649,6 @@ declare module "react-declarative/utils/compose" {
 
 declare module "react-declarative/utils/getMomentStamp" {
   import dayjs from "dayjs";
-  export const DIMENSION = "day";
-  export const GENESIS: dayjs.Dayjs;
   export type stamp = number;
   /**
    * Calculates the moment stamp based on the given end date and dimension.
@@ -10688,6 +10703,17 @@ declare module "react-declarative/utils/getGenesisStamp" {
    */
   export const getGenesisStamp: (stamp?: dayjs.Dayjs) => dayjs.Dayjs;
   export default getGenesisStamp;
+}
+
+declare module "react-declarative/utils/toUtcDate" {
+  export const toUtcDate: (date: Date) => Date;
+  export default toUtcDate;
+}
+
+declare module "react-declarative/utils/addUtcOffset" {
+  import dayjs from "dayjs";
+  export const addUtcOffset: (date: dayjs.Dayjs) => dayjs.Dayjs;
+  export const removeUtcOffset: (date: dayjs.Dayjs) => dayjs.Dayjs;
 }
 
 declare module "react-declarative/api/resolveDocuments" {
@@ -11131,6 +11157,7 @@ declare module "react-declarative/components/AuthView" {
 declare module "react-declarative/components/KanbanView" {
   export * from "react-declarative/components/KanbanView/KanbanView";
   export * from "react-declarative/components/KanbanView/model/IBoard";
+  export * from "react-declarative/components/KanbanView/model/IBoardDivider";
   export * from "react-declarative/components/KanbanView/model/IBoardColumn";
   export * from "react-declarative/components/KanbanView/model/IBoardItem";
   export * from "react-declarative/components/KanbanView/model/IBoardRow";
@@ -11205,6 +11232,7 @@ declare module "react-declarative/components/Grid" {
   export { IColumn as IGridColumn } from "react-declarative/components/Grid/model/IColumn";
   export { IGridAction } from "react-declarative/components/Grid/model/IGridAction";
   export { TSort as TGridSort } from "react-declarative/components/Grid/model/TSort";
+  export { useGridProps } from "react-declarative/components/Grid/hooks/useGridProps";
   export { default } from "react-declarative/components/Grid/Grid";
 }
 
@@ -17843,6 +17871,8 @@ declare module "react-declarative/components/List/api/useListAction" {
       row: Data,
       deselectAll: () => void,
     ) => Promise<void> | void;
+    onSelectionChange?: (selectedRows: RowId[]) => void;
+    selectedRows?: RowId[];
     onLoadStart?: () => void;
     onLoadEnd?: (isOk: boolean) => void;
     throwError?: boolean;
@@ -17872,6 +17902,8 @@ declare module "react-declarative/components/List/api/useListAction" {
     fetchRow,
     onAction,
     onRowAction,
+    onSelectionChange,
+    selectedRows: upperSelectedRows,
   }: IParams<Data>) => {
     readonly deselectAll: () => void;
     readonly selectedRows: RowId[];
@@ -22814,6 +22846,7 @@ declare module "react-declarative/components/OutletView/OutletView" {
   >({
     className,
     readonly,
+    fullScreen,
     waitForChangesDelay,
     initialData: upperInitialData,
     changed: upperChanged,
@@ -24053,6 +24086,7 @@ declare module "react-declarative/components/TabsView/TabsView" {
     onSubmit,
     BeforeTabs,
     AfterTabs,
+    fullScreen,
     otherProps: upperOtherProps,
     ...outletProps
   }: ITabsViewProps<Data, Payload>) => JSX.Element;
@@ -24452,6 +24486,7 @@ declare module "react-declarative/components/FetchView/FetchView" {
 }
 
 declare module "react-declarative/components/FetchView/components/Reveal" {
+  import * as React from "react";
   import { BoxProps } from "@mui/material/Box";
   /**
    * Interface for the props of the Reveal component.
@@ -24463,24 +24498,10 @@ declare module "react-declarative/components/FetchView/components/Reveal" {
     animation?: "slideDown" | "fadeIn" | "scale" | "none";
     appear?: boolean;
   }
-  /**
-   * Reveal component.
-   *
-   * @param children - The content to reveal.
-   * @param className - Custom CSS class name(s) to apply.
-   * @param animation - The animation effect to apply when revealing the content. (default: 'slideDown')
-   * @param appear - Flag indicating whether the content should appear on mount. (default: true)
-   * @param otherProps - Additional props to be spread on the root element.
-   *
-   * @returns - The rendered component.
-   */
-  export const Reveal: ({
-    children,
-    className,
-    animation,
-    appear,
-    ...otherProps
-  }: IRevealProps) => JSX.Element;
+  export const Reveal: (
+    { children, className, animation, appear, ...otherProps }: IRevealProps,
+    ref: React.Ref<HTMLDivElement>,
+  ) => JSX.Element;
   export default Reveal;
 }
 
@@ -24855,6 +24876,7 @@ declare module "react-declarative/components/WizardView/WizardView" {
     style,
     sx,
     payload: upperPayload,
+    fullScreen,
     outlinePaper,
     transparentPaper,
     history: upperHistory,
@@ -25427,7 +25449,7 @@ declare module "react-declarative/components/KanbanView/KanbanView" {
 
 declare module "react-declarative/components/KanbanView/model/IBoard" {
   import IAnything from "react-declarative/model/IAnything";
-  import IBoardColumn from "react-declarative/components/KanbanView/model/IBoardColumn";
+  import { IBoardColumn } from "react-declarative/components/KanbanView/model/IBoardColumn";
   /**
    * Interface representing a board.
    *
@@ -25447,8 +25469,16 @@ declare module "react-declarative/components/KanbanView/model/IBoard" {
   export default IBoard;
 }
 
+declare module "react-declarative/components/KanbanView/model/IBoardDivider" {
+  export type IBoardDivider = {
+    divider: boolean;
+  };
+  export default IBoardDivider;
+}
+
 declare module "react-declarative/components/KanbanView/model/IBoardColumn" {
   import IAnything from "react-declarative/model/IAnything";
+  import IBoardDivider from "react-declarative/components/KanbanView/model/IBoardDivider";
   import IBoardRow from "react-declarative/components/KanbanView/model/IBoardRow";
   /**
    * Interface representing a board column.
@@ -25457,7 +25487,7 @@ declare module "react-declarative/components/KanbanView/model/IBoardColumn" {
    * @template Payload - Type of payload for each row in the column.
    * @template ColumnType - Type of column.
    */
-  export interface IBoardColumn<
+  export interface IBoardColumnInternal<
     Data = IAnything,
     Payload = IAnything,
     ColumnType = IAnything,
@@ -25465,8 +25495,14 @@ declare module "react-declarative/components/KanbanView/model/IBoardColumn" {
     column: ColumnType;
     color?: string;
     label?: string;
+    divider?: boolean;
     rows: IBoardRow<Data, Payload>[];
   }
+  export type IBoardColumn<
+    Data = IAnything,
+    Payload = IAnything,
+    ColumnType = IAnything,
+  > = IBoardColumnInternal<Data, Payload, ColumnType> | IBoardDivider;
   export default IBoardColumn;
 }
 
@@ -26577,6 +26613,8 @@ declare module "react-declarative/components/Grid/api/useGridAction" {
       deselectAll: () => void,
     ) => Promise<void> | void;
     onLoadStart?: () => void;
+    onSelectionChange?: (selectedRows: string[]) => void;
+    selectedRows?: string[];
     onLoadEnd?: (isOk: boolean) => void;
     throwError?: boolean;
     fallback?: (e: Error) => void;
@@ -26610,6 +26648,8 @@ declare module "react-declarative/components/Grid/api/useGridAction" {
     fetchRow,
     onAction,
     onRowAction,
+    onSelectionChange,
+    selectedRows: upperSelectedRows,
   }: IParams<Data>) => {
     readonly deselectAll: () => void;
     readonly selectedRows: string[];
@@ -26779,6 +26819,31 @@ declare module "react-declarative/components/Grid/model/TSort" {
     value: IColumn<T>["field"];
   };
   export default TSort;
+}
+
+declare module "react-declarative/components/Grid/hooks/useGridProps" {
+  import * as React from "react";
+  import IGridProps from "react-declarative/components/Grid/model/IGridProps";
+  export const useGridProps: () => IGridProps<any, any>;
+  /**
+   * Interface representing the props for the IGridPropsProvider component.
+   */
+  interface IGridPropsProviderProps {
+    children: React.ReactNode;
+    value: IGridProps;
+  }
+  /**
+   * Provides Grid properties to its children.
+   * @param props - The component props.
+   * @param props.children - The child components to render.
+   * @param props.value - The Grid properties value.
+   * @returns - The rendered JSX.
+   */
+  export const GridPropsProvider: ({
+    children,
+    value,
+  }: IGridPropsProviderProps) => JSX.Element;
+  export default useGridProps;
 }
 
 declare module "react-declarative/components/Tile/Tile" {
@@ -29474,6 +29539,7 @@ declare module "react-declarative/components/OutletView/model/IOutletViewProps" 
         onSubmit: never;
       }
     > {
+    fullScreen?: boolean;
     waitForChangesDelay?: number;
     history: History;
     readonly?: boolean;
@@ -29823,6 +29889,7 @@ declare module "react-declarative/components/TabsView/model/ITabsViewProps" {
         routes: never;
       }
     > {
+    fullScreen?: boolean;
     transparentHeader?: boolean;
     BeforeTabs?: React.ComponentType<any>;
     AfterTabs?: React.ComponentType<any>;
@@ -29867,6 +29934,7 @@ declare module "react-declarative/components/WizardView/model/IWizardViewProps" 
     > {
     className?: string;
     outlinePaper?: boolean;
+    fullScreen?: boolean;
     transparentPaper?: boolean;
     style?: React.CSSProperties;
     sx?: SxProps<any>;

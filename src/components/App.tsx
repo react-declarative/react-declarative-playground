@@ -63,7 +63,8 @@ export const App = () => {
                 });
             }
             if (data.type === "notify-action" && data.notify) {
-                isDevelopment() && notify(data.notify);
+                const log = isDevelopment() ? notify : console.log;
+                log(data.notify);
             }
         });
     }, []);
