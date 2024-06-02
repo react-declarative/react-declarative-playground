@@ -1588,6 +1588,8 @@ declare module "react-declarative/model/IValidation" {
     numeric?: boolean;
     minLength?: number;
     maxLength?: number;
+    minNum?: number;
+    maxNum?: number;
     pattern?: RegExp;
   }
   export default IValidation;
@@ -26033,7 +26035,9 @@ declare module "react-declarative/components/TreeView/TreeView" {
     className,
     style,
     sx,
+    disabled,
     loading,
+    readOnly,
     items: upperItems,
     value: upperValue,
     onChange,
