@@ -115,6 +115,7 @@ declare module "react-declarative" {
   export { useOneInput } from "react-declarative/hooks/useOneInput";
   export { useContextMenu } from "react-declarative/hooks/useContextMenu";
   export { useChangeDelay } from "react-declarative/hooks/useChangeDelay";
+  export { useSingleshot } from "react-declarative/hooks/useSingleshot";
   export { useOnce } from "react-declarative/hooks/useOnce";
   export { useRouteItem } from "react-declarative/hooks/useRouteItem";
   export { useRouteParams } from "react-declarative/hooks/useRouteParams";
@@ -397,6 +398,7 @@ declare module "react-declarative" {
   export { ActionFilter } from "react-declarative/components";
   export { ActionButton } from "react-declarative/components";
   export { ActionToggle } from "react-declarative/components";
+  export { ActionGroup } from "react-declarative/components";
   export { ActionMenu } from "react-declarative/components";
   export { ActionIcon } from "react-declarative/components";
   export { ActionFab } from "react-declarative/components";
@@ -937,8 +939,12 @@ declare module "react-declarative" {
     addUtcOffset,
     removeUtcOffset,
   } from "react-declarative/utils/addUtcOffset";
+  export { paginateDocuments } from "react-declarative/api/paginateDocuments";
+  export { distinctDocuments } from "react-declarative/api/distinctDocuments";
   export { resolveDocuments } from "react-declarative/api/resolveDocuments";
+  export { filterDocuments } from "react-declarative/api/filterDocuments";
   export { pickDocuments } from "react-declarative/api/pickDocuments";
+  export { mapDocuments } from "react-declarative/api/mapDocuments";
   export { iterateDocuments } from "react-declarative/api/iterateDocuments";
   export { iteratePromise } from "react-declarative/api/iteratePromise";
   export { iterateUnion } from "react-declarative/api/iterateUnion";
@@ -992,6 +998,7 @@ declare module "react-declarative/components" {
   export * from "react-declarative/components/ColorButton";
   export * from "react-declarative/components/ActionChip";
   export * from "react-declarative/components/ActionMenu";
+  export * from "react-declarative/components/ActionGroup";
   export * from "react-declarative/components/ActionButton";
   export * from "react-declarative/components/ActionStopIcon";
   export * from "react-declarative/components/ActionFab";
@@ -1110,6 +1117,8 @@ declare module "react-declarative/model/TypedField" {
    * Поля ввода
    */
   import { ICheckboxFieldProps } from "react-declarative/components/One/fields/CheckboxField";
+  import { IIconFieldProps } from "react-declarative/components/One/fields/IconField";
+  import { IButtonFieldProps } from "react-declarative/components/One/fields/ButtonField";
   import { IFileFieldProps } from "react-declarative/components/One/fields/FileField";
   import { IComboFieldProps } from "react-declarative/components/One/fields/ComboField";
   import { IComponentFieldProps } from "react-declarative/components/One/fields/ComponentField";
@@ -1277,6 +1286,18 @@ declare module "react-declarative/model/TypedField" {
     Data,
     Payload
   >;
+  type Icon<Data = IAnything, Payload = IAnything> = TypedFieldFactoryShallow<
+    FieldType.Icon,
+    IIconFieldProps<Data, Payload>,
+    Data,
+    Payload
+  >;
+  type Button<Data = IAnything, Payload = IAnything> = TypedFieldFactoryShallow<
+    FieldType.Button,
+    IButtonFieldProps<Data, Payload>,
+    Data,
+    Payload
+  >;
   type Combo<Data = IAnything, Payload = IAnything> = TypedFieldFactoryShallow<
     FieldType.Combo,
     IComboFieldProps<Data, Payload>,
@@ -1428,136 +1449,149 @@ declare module "react-declarative/model/TypedField" {
             ? Outline<Data, Payload>
             : Target extends Checkbox<Data, Payload>
               ? Checkbox<Data, Payload>
-              : Target extends Combo<Data, Payload>
-                ? Combo<Data, Payload>
-                : Target extends Component<Data, Payload>
-                  ? Component<Data, Payload>
-                  : Target extends Items<Data, Payload>
-                    ? Items<Data, Payload>
-                    : Target extends Line<Data, Payload>
-                      ? Line<Data, Payload>
-                      : Target extends Progress<Data, Payload>
-                        ? Progress<Data, Payload>
-                        : Target extends Radio<Data, Payload>
-                          ? Radio<Data, Payload>
-                          : Target extends Rating<Data, Payload>
-                            ? Rating<Data, Payload>
-                            : Target extends Slider<Data, Payload>
-                              ? Slider<Data, Payload>
-                              : Target extends Switch<Data, Payload>
-                                ? Switch<Data, Payload>
-                                : Target extends Text<Data, Payload>
-                                  ? Text<Data, Payload>
-                                  : Target extends File<Data, Payload>
-                                    ? File<Data, Payload>
-                                    : Target extends Choose<Data, Payload>
-                                      ? Choose<Data, Payload>
-                                      : Target extends YesNo<Data, Payload>
-                                        ? YesNo<Data, Payload>
-                                        : Target extends Date<Data, Payload>
-                                          ? Date<Data, Payload>
-                                          : Target extends Time<Data, Payload>
-                                            ? Time<Data, Payload>
-                                            : Target extends Complete<
-                                                  Data,
-                                                  Payload
-                                                >
-                                              ? Complete<Data, Payload>
-                                              : Target extends Typography<
+              : Target extends Button<Data, Payload>
+                ? Button<Data, Payload>
+                : Target extends Icon<Data, Payload>
+                  ? Icon<Data, Payload>
+                  : Target extends Combo<Data, Payload>
+                    ? Combo<Data, Payload>
+                    : Target extends Component<Data, Payload>
+                      ? Component<Data, Payload>
+                      : Target extends Items<Data, Payload>
+                        ? Items<Data, Payload>
+                        : Target extends Line<Data, Payload>
+                          ? Line<Data, Payload>
+                          : Target extends Progress<Data, Payload>
+                            ? Progress<Data, Payload>
+                            : Target extends Radio<Data, Payload>
+                              ? Radio<Data, Payload>
+                              : Target extends Rating<Data, Payload>
+                                ? Rating<Data, Payload>
+                                : Target extends Slider<Data, Payload>
+                                  ? Slider<Data, Payload>
+                                  : Target extends Switch<Data, Payload>
+                                    ? Switch<Data, Payload>
+                                    : Target extends Text<Data, Payload>
+                                      ? Text<Data, Payload>
+                                      : Target extends File<Data, Payload>
+                                        ? File<Data, Payload>
+                                        : Target extends Choose<Data, Payload>
+                                          ? Choose<Data, Payload>
+                                          : Target extends YesNo<Data, Payload>
+                                            ? YesNo<Data, Payload>
+                                            : Target extends Date<Data, Payload>
+                                              ? Date<Data, Payload>
+                                              : Target extends Time<
                                                     Data,
                                                     Payload
                                                   >
-                                                ? Typography<Data, Payload>
-                                                : Target extends Fragment<
+                                                ? Time<Data, Payload>
+                                                : Target extends Complete<
                                                       Data,
                                                       Payload
                                                     >
-                                                  ? Fragment<Data, Payload>
-                                                  : Target extends Div<
+                                                  ? Complete<Data, Payload>
+                                                  : Target extends Typography<
                                                         Data,
                                                         Payload
                                                       >
-                                                    ? Div<Data, Payload>
-                                                    : Target extends Custom<
+                                                    ? Typography<Data, Payload>
+                                                    : Target extends Fragment<
                                                           Data,
                                                           Payload
                                                         >
-                                                      ? Custom<Data, Payload>
-                                                      : Target extends Box<
+                                                      ? Fragment<Data, Payload>
+                                                      : Target extends Div<
                                                             Data,
                                                             Payload
                                                           >
-                                                        ? Box<Data, Payload>
-                                                        : Target extends Tabs<
+                                                        ? Div<Data, Payload>
+                                                        : Target extends Custom<
                                                               Data,
                                                               Payload
                                                             >
-                                                          ? Tabs<Data, Payload>
-                                                          : Target extends Center<
+                                                          ? Custom<
+                                                              Data,
+                                                              Payload
+                                                            >
+                                                          : Target extends Box<
                                                                 Data,
                                                                 Payload
                                                               >
-                                                            ? Center<
-                                                                Data,
-                                                                Payload
-                                                              >
-                                                            : Target extends Stretch<
+                                                            ? Box<Data, Payload>
+                                                            : Target extends Tabs<
                                                                   Data,
                                                                   Payload
                                                                 >
-                                                              ? Stretch<
+                                                              ? Tabs<
                                                                   Data,
                                                                   Payload
                                                                 >
-                                                              : Target extends Hero<
+                                                              : Target extends Center<
                                                                     Data,
                                                                     Payload
                                                                   >
-                                                                ? Hero<
+                                                                ? Center<
                                                                     Data,
                                                                     Payload
                                                                   >
-                                                                : Target extends Condition<
+                                                                : Target extends Stretch<
                                                                       Data,
                                                                       Payload
                                                                     >
-                                                                  ? Condition<
+                                                                  ? Stretch<
                                                                       Data,
                                                                       Payload
                                                                     >
-                                                                  : Target extends Init<
+                                                                  : Target extends Hero<
                                                                         Data,
                                                                         Payload
                                                                       >
-                                                                    ? Init<
+                                                                    ? Hero<
                                                                         Data,
                                                                         Payload
                                                                       >
-                                                                    : Target extends Phony<
+                                                                    : Target extends Condition<
                                                                           Data,
                                                                           Payload
                                                                         >
-                                                                      ? Phony<
+                                                                      ? Condition<
                                                                           Data,
                                                                           Payload
                                                                         >
-                                                                      : Target extends Dict<
+                                                                      : Target extends Init<
                                                                             Data,
                                                                             Payload
                                                                           >
-                                                                        ? Dict<
+                                                                        ? Init<
                                                                             Data,
                                                                             Payload
                                                                           >
-                                                                        : Target extends Tree<
+                                                                        : Target extends Phony<
                                                                               Data,
                                                                               Payload
                                                                             >
-                                                                          ? Tree<
+                                                                          ? Phony<
                                                                               Data,
                                                                               Payload
                                                                             >
-                                                                          : never;
+                                                                          : Target extends Dict<
+                                                                                Data,
+                                                                                Payload
+                                                                              >
+                                                                            ? Dict<
+                                                                                Data,
+                                                                                Payload
+                                                                              >
+                                                                            : Target extends Tree<
+                                                                                  Data,
+                                                                                  Payload
+                                                                                >
+                                                                              ? Tree<
+                                                                                  Data,
+                                                                                  Payload
+                                                                                >
+                                                                              : never;
   /**
    * IOneProps - генерик, для прикладного программиста мы можем подменить IField
    * на TypedField.  Это  позволит  автоматически  выбрать  интерфейс  props для
@@ -1618,6 +1652,10 @@ declare module "react-declarative/model/IField" {
    * Объект поля для прикладного программиста
    */
   export interface IField<Data = IAnything, Payload = IAnything> {
+    /**
+     * Иконка для FieldType.Button и FieldType.Icon
+     */
+    icon?: React.ComponentType<any>;
     /**
      * Отменяет ожидание фокуса для валидации
      */
@@ -1717,7 +1755,7 @@ declare module "react-declarative/model/IField" {
       payload: Payload,
       onValueChange: (value: Value) => void,
       onChange: (data: Data) => void,
-    ) => void;
+    ) => void | Promise<void>;
     /**
      * Флаг только на чтение и "круглой окаймовки"
      */
@@ -2775,6 +2813,7 @@ declare module "react-declarative/model/IManaged" {
     incorrect: string | null;
     invalid: string | null;
     object: Data;
+    click: (e: React.MouseEvent<any>) => void | Promise<void>;
     onChange: (
       v: Value,
       config?: {
@@ -3220,6 +3259,8 @@ declare module "react-declarative/model/FieldType" {
     Dict = "dict-field",
     Init = "init-field",
     Phony = "phony-field",
+    Button = "button-field",
+    Icon = "icon-field",
     Complete = "complete-field",
     Items = "items-field",
     Rating = "rating-field",
@@ -4018,6 +4059,7 @@ declare module "react-declarative/model/IListProps" {
     filterLabel?: string;
     actions?: IListAction<RowData, Payload>[];
     operations?: IListOperation<RowData, Payload>[];
+    itemSx?: SxProps;
     limit?: number;
     page?: number;
     sizeByElement?: boolean;
@@ -4187,6 +4229,7 @@ declare module "react-declarative/model/IOption" {
     label?: string;
     action?: string;
     divider?: boolean;
+    primary?: boolean | number;
     icon?: React.ComponentType<any>;
     /**
      * Checks the visibility of a given payload.
@@ -4743,8 +4786,25 @@ declare module "react-declarative/hooks/useChangeDelay" {
   export default useChangeDelay;
 }
 
+declare module "react-declarative/hooks/useSingleshot" {
+  import { IClearable } from "react-declarative/utils/hof/singleshot";
+  export const useSingleshot: <T extends (...args: any[]) => any>(
+    run: T,
+  ) => T & IClearable;
+  export default useSingleshot;
+}
+
 declare module "react-declarative/hooks/useOnce" {
-  export const useOnce: (fn: () => void) => void;
+  interface IParams {
+    onLoadStart?: () => void;
+    onLoadEnd?: (isOk: boolean) => void;
+    fallback?: (e: Error) => void;
+    throwError?: boolean;
+  }
+  export const useOnce: (
+    fn: () => void | Promise<any> | (() => void),
+    params?: IParams,
+  ) => void;
   export default useOnce;
 }
 
@@ -5136,7 +5196,8 @@ declare module "react-declarative/model/IOneProps" {
       payload: Payload,
       onValueChange: (value: Value) => void,
       onChange: (data: Data) => void,
-    ) => void;
+      e: React.MouseEvent,
+    ) => void | Promise<void>;
     /**
      * Вызывается, когда все поля успели отрисоваться
      * в первый раз, после появления формы
@@ -5167,9 +5228,13 @@ declare module "react-declarative/model/IOneProps" {
     outlinePaper?: boolean;
     transparentPaper?: boolean;
     /**
-     * Отключает ввод данных
+     * Блокирует ввод данных
      */
     readonly?: boolean;
+    /**
+     * Отключает поля ввода
+     */
+    disabled?: boolean;
     /**
      * Слоты для полей ввода
      */
@@ -10718,6 +10783,35 @@ declare module "react-declarative/utils/addUtcOffset" {
   export const removeUtcOffset: (date: dayjs.Dayjs) => dayjs.Dayjs;
 }
 
+declare module "react-declarative/api/paginateDocuments" {
+  /**
+   * Resolves the documents from an async generator and paginates them.
+   *
+   * @param iterator - The async generator to resolve documents from.
+   * @returns - A promise that resolves to the flattened array of documents.
+   */
+  export const paginateDocuments: <T extends unknown>(
+    iterator: AsyncGenerator<T | T[], void, unknown>,
+    limit: number,
+    offset: number,
+  ) => Promise<T[]>;
+  export default paginateDocuments;
+}
+
+declare module "react-declarative/api/distinctDocuments" {
+  import IRowData from "react-declarative/model/IRowData";
+  /**
+   * Resolves the documents from an async generator and distincts them.
+   *
+   * @param iterator - The async generator to resolve documents from.
+   * @returns - A promise that resolves to the flattened array of documents.
+   */
+  export function distinctDocuments<T extends IRowData>(
+    iterator: AsyncGenerator<T | T[], void, unknown>,
+  ): AsyncGenerator<T, void, unknown>;
+  export default distinctDocuments;
+}
+
 declare module "react-declarative/api/resolveDocuments" {
   /**
    * Resolves the documents from an async generator and returns them as a flattened array.
@@ -10729,6 +10823,20 @@ declare module "react-declarative/api/resolveDocuments" {
     iterator: AsyncGenerator<T | T[], void, unknown>,
   ) => Promise<T[]>;
   export default resolveDocuments;
+}
+
+declare module "react-declarative/api/filterDocuments" {
+  /**
+   * Filters the documents from an async generator and yield them by the condition
+   *
+   * @param iterator - The async generator to resolve documents from.
+   * @returns - A promise that resolves to the flattened array of documents.
+   */
+  export function filterDocuments<T extends unknown>(
+    iterator: AsyncGenerator<T | T[], void, unknown>,
+    predicate: (value: T) => boolean | Promise<boolean>,
+  ): AsyncGenerator<Awaited<T>, void, unknown>;
+  export default filterDocuments;
 }
 
 declare module "react-declarative/api/pickDocuments" {
@@ -10749,6 +10857,20 @@ declare module "react-declarative/api/pickDocuments" {
     done: boolean;
   };
   export default pickDocuments;
+}
+
+declare module "react-declarative/api/mapDocuments" {
+  /**
+   * Maps the documents from an async generator and yield them
+   *
+   * @param iterator - The async generator to resolve documents from.
+   * @returns - A promise that resolves to the flattened array of documents.
+   */
+  export function mapDocuments<T extends unknown, U = T>(
+    iterator: AsyncGenerator<T | T[], void, unknown>,
+    callbackfn: (value: T) => U | Promise<U>,
+  ): AsyncGenerator<Awaited<U>, void, unknown>;
+  export default mapDocuments;
 }
 
 declare module "react-declarative/api/iterateDocuments" {
@@ -10958,6 +11080,11 @@ declare module "react-declarative/components/ActionChip" {
 declare module "react-declarative/components/ActionMenu" {
   export * from "react-declarative/components/ActionMenu/ActionMenu";
   export { default } from "react-declarative/components/ActionMenu/ActionMenu";
+}
+
+declare module "react-declarative/components/ActionGroup" {
+  export * from "react-declarative/components/ActionGroup/ActionGroup";
+  export { default } from "react-declarative/components/ActionGroup/ActionGroup";
 }
 
 declare module "react-declarative/components/ActionButton" {
@@ -12607,6 +12734,258 @@ declare module "react-declarative/components/One/fields/CheckboxField" {
       onChange,
       title,
     }: ICheckboxFieldProps & ICheckboxFieldPrivate): JSX.Element;
+    displayName: string;
+  };
+  const _default: {
+    <Data extends unknown = any>({
+      className,
+      sx,
+      columns,
+      phoneColumns,
+      tabletColumns,
+      desktopColumns,
+      isDisabled: isDisabledUpper,
+      isVisible: isVisibleUpper,
+      isInvalid: isInvalidUpper,
+      isIncorrect: isIncorrectUpper,
+      isReadonly: isReadonlyUpper,
+      readTransform,
+      writeTransform,
+      change,
+      fallback,
+      ready,
+      compute: upperCompute,
+      shouldRecompute,
+      click,
+      map,
+      object: upperObject,
+      name,
+      title,
+      menu,
+      debug,
+      focus,
+      blur,
+      invalidity,
+      prefix,
+      dirty: upperDirty,
+      disabled: fieldDisabled,
+      readonly: upperReadonly,
+      autoFocus,
+      style,
+      menuItems,
+      groupRef: ref,
+      fieldRightMargin,
+      fieldBottomMargin,
+      outlinePaper,
+      transparentPaper,
+      testId,
+      ...otherProps
+    }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
+    displayName: string;
+  };
+  export default _default;
+}
+
+declare module "react-declarative/components/One/fields/IconField" {
+  import IManaged, { PickProp } from "react-declarative/model/IManaged";
+  import IAnything from "react-declarative/model/IAnything";
+  import IField from "react-declarative/model/IField";
+  /**
+   * Interface representing props for the IconField component.
+   *
+   * @template Data - The type of data for the field.
+   * @template Payload - The type of payload for the field.
+   */
+  export interface IIconFieldProps<Data = IAnything, Payload = IAnything> {
+    /**
+     * Retrieves the 'title' property from the given variable.
+     *
+     * @template T - The type of the variable.
+     * @template K - The key to pick from the variable.
+     *
+     * @param variable - The variable to pick the property from.
+     *
+     * @returns - The picked property.
+     */
+    icon?: PickProp<IField<Data, Payload>, "icon">;
+    /**
+     * Represents the "disabled" property of a field in the given data payload.
+     *
+     * @template Data - The type of the data payload.
+     * @template Payload - The type of the payload object.
+     *
+     * @param disabled - The value of the "disabled" property.
+     *
+     * @returns
+     */
+    disabled?: PickProp<IField<Data, Payload>, "disabled">;
+    /**
+     * Represents the optional property `groupRef` from the `IField` interface.
+     * The `groupRef` property is a subset of the `PickProp` type with the 'groupRef' key.
+     *
+     * @typedef groupRef
+     */
+    groupRef?: PickProp<IField<Data, Payload>, "groupRef">;
+  }
+  /**
+   * Represents a private interface for a Icon field.
+   * @interface
+   * @template Data - The type of data associated with the Icon field.
+   */
+  export interface IIconFieldPrivate<Data = IAnything> {
+    click: PickProp<IManaged<Data>, "click">;
+  }
+  /**
+   * Represents a icon field component.
+   *
+   * @param param - The properties for the icon field.
+   * @returns - The icon field component.
+   */
+  export const IconField: {
+    ({
+      disabled,
+      click,
+      icon,
+    }: IIconFieldProps & IIconFieldPrivate): JSX.Element;
+    displayName: string;
+  };
+  const _default: {
+    <Data extends unknown = any>({
+      className,
+      sx,
+      columns,
+      phoneColumns,
+      tabletColumns,
+      desktopColumns,
+      isDisabled: isDisabledUpper,
+      isVisible: isVisibleUpper,
+      isInvalid: isInvalidUpper,
+      isIncorrect: isIncorrectUpper,
+      isReadonly: isReadonlyUpper,
+      readTransform,
+      writeTransform,
+      change,
+      fallback,
+      ready,
+      compute: upperCompute,
+      shouldRecompute,
+      click,
+      map,
+      object: upperObject,
+      name,
+      title,
+      menu,
+      debug,
+      focus,
+      blur,
+      invalidity,
+      prefix,
+      dirty: upperDirty,
+      disabled: fieldDisabled,
+      readonly: upperReadonly,
+      autoFocus,
+      style,
+      menuItems,
+      groupRef: ref,
+      fieldRightMargin,
+      fieldBottomMargin,
+      outlinePaper,
+      transparentPaper,
+      testId,
+      ...otherProps
+    }: import("../../../model/IEntity").IEntity<Data, any>): JSX.Element | null;
+    displayName: string;
+  };
+  export default _default;
+}
+
+declare module "react-declarative/components/One/fields/ButtonField" {
+  import IManaged, { PickProp } from "react-declarative/model/IManaged";
+  import IAnything from "react-declarative/model/IAnything";
+  import IField from "react-declarative/model/IField";
+  /**
+   * Interface representing props for the ButtonField component.
+   *
+   * @template Data - The type of data for the field.
+   * @template Payload - The type of payload for the field.
+   */
+  export interface IButtonFieldProps<Data = IAnything, Payload = IAnything> {
+    /**
+     * Retrieves the 'title' property from the given variable.
+     *
+     * @template T - The type of the variable.
+     * @template K - The key to pick from the variable.
+     *
+     * @param variable - The variable to pick the property from.
+     *
+     * @returns - The picked property.
+     */
+    icon?: PickProp<IField<Data, Payload>, "icon">;
+    /**
+     * Retrieves the 'title' property from the given variable.
+     *
+     * @template T - The type of the variable.
+     * @template K - The key to pick from the variable.
+     *
+     * @param variable - The variable to pick the property from.
+     *
+     * @returns - The picked property.
+     */
+    title?: PickProp<IField<Data, Payload>, "title">;
+    /**
+     * Retrieves the 'placeholder' property from the given variable.
+     *
+     * @template T - The type of the variable.
+     * @template K - The key to pick from the variable.
+     *
+     * @param variable - The variable to pick the property from.
+     *
+     * @returns - The picked property.
+     */
+    placeholder?: PickProp<IField<Data, Payload>, "placeholder">;
+    /**
+     * Represents the "disabled" property of a field in the given data payload.
+     *
+     * @template Data - The type of the data payload.
+     * @template Payload - The type of the payload object.
+     *
+     * @param disabled - The value of the "disabled" property.
+     *
+     * @returns
+     */
+    disabled?: PickProp<IField<Data, Payload>, "disabled">;
+    /**
+     * Represents the optional property `groupRef` from the `IField` interface.
+     * The `groupRef` property is a subset of the `PickProp` type with the 'groupRef' key.
+     *
+     * @typedef groupRef
+     */
+    groupRef?: PickProp<IField<Data, Payload>, "groupRef">;
+  }
+  /**
+   * Represents a private interface for a Button field.
+   * @interface
+   * @template Data - The type of data associated with the Button field.
+   */
+  export interface IButtonFieldPrivate<Data = IAnything> {
+    value: PickProp<IManaged<Data>, "value">;
+    click: PickProp<IManaged<Data>, "click">;
+  }
+  /**
+   * Represents a button field component.
+   *
+   * @param param - The properties for the button field.
+   * @returns - The button field component.
+   */
+  export const ButtonField: {
+    ({
+      disabled,
+      click,
+      icon,
+      title,
+      value,
+      placeholder,
+    }: IButtonFieldProps & IButtonFieldPrivate): JSX.Element;
     displayName: string;
   };
   const _default: {
@@ -19964,6 +20343,7 @@ declare module "react-declarative/components/Breadcrumbs2/model/Breadcrumbs2Type
   export enum Breadcrumbs2Type {
     Link = "breadcrumbs2-link",
     Button = "breadcrumbs2-button",
+    ActionGroup = "breadcrumbs2-actiongroup",
     Component = "breadcrumbs2-component",
   }
   export default Breadcrumbs2Type;
@@ -19995,6 +20375,7 @@ declare module "react-declarative/components/Breadcrumbs2/model/IBreadcrumbs2Opt
   import IAnything from "react-declarative/model/IAnything";
   import IOption from "react-declarative/model/IOption";
   import Breadcrumbs2Type from "react-declarative/components/Breadcrumbs2/model/Breadcrumbs2Type";
+  import IBreadcrumbs2Action from "react-declarative/components/Breadcrumbs2/model/IBreadcrumbs2Action";
   /**
    * Represents an option configuration for IBreadcrumbs2 component.
    *
@@ -20016,6 +20397,8 @@ declare module "react-declarative/components/Breadcrumbs2/model/IBreadcrumbs2Opt
       disabled: boolean;
     }>;
     sx?: SxProps<any>;
+    outlined?: boolean;
+    actions?: IBreadcrumbs2Action<Data>[];
     compute?: (payload: Data) => Promise<string> | string;
     isVisible?: (payload: Data) => Promise<boolean> | boolean;
     isDisabled?: (payload: Data) => Promise<boolean> | boolean;
@@ -20024,6 +20407,7 @@ declare module "react-declarative/components/Breadcrumbs2/model/IBreadcrumbs2Opt
 }
 
 declare module "react-declarative/view/useOpenDocument/useOpenDocument" {
+  import * as React from "react";
   /**
    * Represents the interface for the parameters of a useOpenDocument hook.
    *
@@ -20038,6 +20422,7 @@ declare module "react-declarative/view/useOpenDocument/useOpenDocument" {
     onClose?: () => void;
     title?: string;
     submitLabel?: string;
+    submitIcon?: React.ComponentType<any>;
     /**
      * Callback function triggered when a form is submitted.
      *
@@ -20098,6 +20483,7 @@ declare module "react-declarative/view/useOpenDocument/useOpenDocument" {
     onClose,
     title,
     submitLabel,
+    submitIcon,
   }?: IParams) => {
     render: () => JSX.Element;
     pickData: (request: IRequest) => void;
@@ -21592,6 +21978,89 @@ declare module "react-declarative/components/ActionMenu/ActionMenu" {
   export default ActionMenu;
 }
 
+declare module "react-declarative/components/ActionGroup/ActionGroup" {
+  import * as React from "react";
+  import { SxProps } from "@mui/material";
+  import { IAsyncProps } from "react-declarative/components/Async";
+  import IOption from "react-declarative/model/IOption";
+  import TSubject from "react-declarative/model/TSubject";
+  /**
+   * Represents the properties of the ActionGroup component.
+   *
+   * @template T - The type of payload.
+   */
+  export interface IActionGroupProps<T extends any = object> {
+    keepMounted?: boolean;
+    options?: Partial<IOption>[];
+    transparent?: boolean;
+    disabled?: boolean;
+    variant?: "text" | "outlined" | "contained";
+    size?: "small" | "medium" | "large";
+    onAction?: (action: string) => void;
+    onToggle?: (opened: boolean) => void;
+    fallback?: (e: Error) => void;
+    deps?: any[];
+    throwError?: boolean;
+    className?: string;
+    reloadSubject?: TSubject<void>;
+    style?: React.CSSProperties;
+    sx?: SxProps<any>;
+    payload?: IAsyncProps<T>["payload"];
+    onLoadStart?: IAsyncProps<T>["onLoadStart"];
+    onLoadEnd?: IAsyncProps<T>["onLoadEnd"];
+    BeforeContent?: React.ComponentType<any>;
+    AfterContent?: React.ComponentType<any>;
+  }
+  /**
+   * ActionGroup is a component that displays a menu of options triggered by a button click.
+   *
+   * @template T - The type of payload passed to the action.
+   *
+   * @param options - An array of option objects that define the content and behavior of each menu option.
+   * @param transparent - Determines whether the menu button should have a transparent style.
+   * @param disabled - Determines whether the menu should be disabled and not respond to user interactions.
+   * @param throwError - Determines whether to throw an error when an asynchronous action fails.
+   * @param fallback - The fallback content to display when an asynchronous action fails.
+   * @param onToggle - A callback function to handle the menu open/close state change event.
+   * @param onAction - A callback function to handle the execution of an action when a menu option is clicked.
+   * @param payload - A payload object to pass to the action callback function.
+   * @param className - Additional CSS class name(s) to apply to the menu button.
+   * @param style - Additional inline styles to apply to the menu button.
+   * @param sx - Additional Stylsx object to apply to the menu button.
+   * @param deps - An array of dependencies to update the menu when changed.
+   * @param onLoadStart - A callback function to handle the start of an asynchronous action.
+   * @param onLoadEnd - A callback function to handle the end of an asynchronous action.
+   * @param keepMounted - Determines whether to keep the menu mounted in the DOM even when closed.
+   * @param BeforeContent - The content to display before the menu options.
+   * @param AfterContent - The content to display after the menu options.
+   * @param reloadSubject - A subject that triggers the reload of the menu options.
+   *
+   * @returns - The rendered ActionGroup component.
+   */
+  export const ActionGroup: <T extends unknown = object>({
+    variant,
+    size,
+    options,
+    disabled,
+    throwError,
+    fallback,
+    onToggle,
+    onAction,
+    payload,
+    className,
+    style,
+    sx,
+    deps,
+    onLoadStart,
+    onLoadEnd,
+    keepMounted,
+    BeforeContent,
+    AfterContent,
+    reloadSubject,
+  }: IActionGroupProps<T>) => JSX.Element;
+  export default ActionGroup;
+}
+
 declare module "react-declarative/components/ActionButton/ActionButton" {
   import * as React from "react";
   import { ButtonProps } from "@mui/material/Button";
@@ -22144,6 +22613,7 @@ declare module "react-declarative/components/ActionModal/ActionModal" {
     throwError?: boolean;
     open?: boolean;
     submitLabel?: string;
+    submitIcon?: React.ComponentType<any>;
   }
   /**
    * The `SMALL_SIZE_REQUEST` variable is a function that returns an object containing the properties for
@@ -22246,6 +22716,7 @@ declare module "react-declarative/components/ActionModal/ActionModal" {
     readonly,
     throwError,
     submitLabel,
+    submitIcon: SubmitIcon,
     AfterTitle,
     BeforeTitle,
     readTransform,
@@ -22355,6 +22826,7 @@ declare module "react-declarative/components/ActionModal/useActionModal" {
     outlinePaper,
     transparentPaper,
     submitLabel,
+    submitIcon,
     throwError,
     dirty,
     readonly,
@@ -22438,6 +22910,7 @@ declare module "react-declarative/components/SearchModal/SearchModal" {
     open?: boolean;
     hidden?: boolean;
     submitLabel?: string;
+    submitIcon?: React.ComponentType<any>;
   }
   /**
    * Represents a Search Modal component.
@@ -22494,6 +22967,7 @@ declare module "react-declarative/components/SearchModal/SearchModal" {
     open,
     throwError,
     submitLabel,
+    submitIcon: SubmitIcon,
     ...listProps
   }: ISearchModalProps<FilterData, RowData, Payload, Field>) => JSX.Element;
   export default SearchModal;
@@ -22591,6 +23065,7 @@ declare module "react-declarative/components/SearchModal/useSearchModal" {
     onLoadEnd,
     onLoadStart,
     submitLabel,
+    submitIcon,
     throwError,
     title,
     hidden,
@@ -23689,6 +24164,7 @@ declare module "react-declarative/components/FilesView/api/usePreventNavigate" {
 }
 
 declare module "react-declarative/components/FilesView/useFilesView" {
+  import * as React from "react";
   import { SxProps } from "@mui/material";
   import { IFilesViewProps } from "react-declarative/components/FilesView/FilesView";
   import IAnything from "react-declarative/model/IAnything";
@@ -23707,6 +24183,7 @@ declare module "react-declarative/components/FilesView/useFilesView" {
     fullScreen?: boolean;
     readonly?: boolean;
     submitLabel?: string;
+    submitIcon?: React.ComponentType<any>;
     withActionButton?: boolean;
     withStaticAction?: boolean;
     payload?: Payload | (() => Payload);
@@ -23747,6 +24224,7 @@ declare module "react-declarative/components/FilesView/useFilesView" {
     withStaticAction,
     readonly,
     submitLabel,
+    submitIcon: SubmitIcon,
     payload: upperPayload,
     fullScreen,
     sizeRequest,
@@ -26080,6 +26558,7 @@ declare module "react-declarative/components/GridView/GridView" {
     extends IGridProps<T, P> {
     className?: string;
     style?: React.CSSProperties;
+    itemSx?: SxProps;
     tileMode?: TileMode;
     outlinePaper?: boolean;
     transparentPaper?: boolean;
@@ -26107,6 +26586,7 @@ declare module "react-declarative/components/GridView/GridView" {
     AfterLabel,
     payload: upperPayload,
     mobileItem: MobileItem,
+    itemSx,
     tileMode,
     outlinePaper,
     transparentPaper,
@@ -26536,7 +27016,7 @@ declare module "react-declarative/components/Grid/api/useOffsetPaginator" {
     loading: boolean;
     error: boolean;
     onSkip: import("../../../hooks/useSinglerunAction").IExecute<void, boolean>;
-    reloadSubject: import("../../..").Subject<void>;
+    reloadSubject: TSubject<void>;
     clear: () => void;
   };
   export default useOffsetPaginator;
@@ -26885,6 +27365,7 @@ declare module "react-declarative/components/Tile/Tile" {
     className,
     style,
     sx,
+    itemSx,
     data,
     loading,
     hasMore,
@@ -26961,6 +27442,7 @@ declare module "react-declarative/components/Tile/model/ITileProps" {
     className?: string;
     style?: React.CSSProperties;
     sx?: SxProps<any>;
+    itemSx?: SxProps<any>;
     loading?: boolean;
     hasMore?: boolean;
     scrollYSubject?: TSubject<number>;
@@ -28002,6 +28484,14 @@ declare module "react-declarative/components/One/components/SlotFactory/SlotCont
       typoVariant,
       style,
     }: import("../..").ITypographySlot) => JSX.Element;
+    Button: ({
+      disabled,
+      click,
+      icon: Icon,
+      title,
+      value,
+      placeholder,
+    }: import("../../slots/ButtonSlot").IButtonSlot) => JSX.Element;
     Text: ({
       invalid,
       incorrect,
@@ -28035,6 +28525,11 @@ declare module "react-declarative/components/One/components/SlotFactory/SlotCont
       inputRef,
       onChange,
     }: import("../..").ITextSlot) => JSX.Element;
+    Icon: ({
+      disabled,
+      click,
+      icon: Icon,
+    }: import("../../slots/IconSlot").IIconSlot) => JSX.Element;
     Date: ({
       invalid,
       incorrect,
@@ -28259,6 +28754,8 @@ declare module "react-declarative/components/One/components/SlotFactory/ISlotFac
   import { IYesNoSlot } from "react-declarative/components/One/slots/YesNoSlot";
   import { IDictSlot } from "react-declarative/components/One/slots/DictSlot";
   import { ITreeSlot } from "react-declarative/components/One/slots/TreeSlot";
+  import { IButtonSlot } from "react-declarative/components/One/slots/ButtonSlot";
+  import { IIconSlot } from "react-declarative/components/One/slots/IconSlot";
   /**
    * A context object that provides access to various component types used by the slot factory.
    * @typedef ISlotFactoryContext
@@ -28284,6 +28781,8 @@ declare module "react-declarative/components/One/components/SlotFactory/ISlotFac
    */
   export interface ISlotFactoryContext {
     CheckBox: ComponentType<ICheckBoxSlot>;
+    Button: ComponentType<IButtonSlot>;
+    Icon: ComponentType<IIconSlot>;
     Combo: ComponentType<IComboSlot>;
     YesNo: ComponentType<IYesNoSlot>;
     Items: ComponentType<IItemsSlot>;
@@ -28448,6 +28947,7 @@ declare module "react-declarative/components/CalendarView/model/ICalendarViewPro
     Payload extends IAnything = IAnything,
   > {
     reloadSubject?: TSubject<void>;
+    itemSx?: SxProps;
     dotSide?: number;
     outlinePaper?: boolean;
     transparentPaper?: boolean;
@@ -29194,6 +29694,7 @@ declare module "react-declarative/components/One/components/makeField/makeField"
     skipDirtyClickListener?: boolean;
     skipFocusReadonly?: boolean;
     skipFocusBlurCall?: boolean;
+    skipClickListener?: boolean;
     defaultProps?: Partial<
       Omit<
         IField<Data>,
@@ -29273,7 +29774,7 @@ declare module "react-declarative/components/One/components/makeLayout/makeLayou
    */
   export interface ILayout<Data extends IAnything = IAnything>
     extends IEntity<Data> {
-    children: React.ReactNode;
+    children: React.ReactElement[];
   }
   /**
    * Renders a component based on input data and conditions.
@@ -29698,6 +30199,7 @@ declare module "react-declarative/components/OutletView/components/OutletModal" 
     throwError?: boolean;
     hidden?: boolean;
     submitLabel?: string;
+    submitIcon?: React.ComponentType<any>;
     /**
      * Maps the payload with the given ID and data.
      *
@@ -29803,6 +30305,7 @@ declare module "react-declarative/components/OutletView/components/OutletModal" 
     withStaticAction,
     throwError,
     submitLabel,
+    submitIcon: SubmitIcon,
     waitForChangesDelay,
     readonly,
     onMount,
@@ -30016,6 +30519,7 @@ declare module "react-declarative/components/WizardView/components/WizardOutletM
     throwError?: boolean;
     hidden?: boolean;
     submitLabel?: string;
+    submitIcon?: React.ComponentType<any>;
     mapPayload?: (data: Record<string, any>[]) => Payload | Promise<Payload>;
     mapInitialData?: (data: Record<string, any>[]) => Data | Promise<Data>;
     onMount?: () => void;
@@ -30084,6 +30588,7 @@ declare module "react-declarative/components/WizardView/components/WizardOutletM
     withStaticAction,
     waitForChangesDelay,
     submitLabel,
+    submitIcon: SubmitIcon,
     openSubject,
     readonly,
     routes,
@@ -31333,6 +31838,18 @@ declare module "react-declarative/components/One/slots/FileSlot/IFileSlot" {
   export default IFileSlot;
 }
 
+declare module "react-declarative/components/One/slots/ButtonSlot" {
+  export * from "react-declarative/components/One/slots/ButtonSlot/IButtonSlot";
+  export * from "react-declarative/components/One/slots/ButtonSlot/ButtonSlot";
+  export { default } from "react-declarative/components/One/slots/ButtonSlot/ButtonSlot";
+}
+
+declare module "react-declarative/components/One/slots/IconSlot" {
+  export * from "react-declarative/components/One/slots/IconSlot/IIconSlot";
+  export * from "react-declarative/components/One/slots/IconSlot/IconSlot";
+  export { default } from "react-declarative/components/One/slots/IconSlot/IconSlot";
+}
+
 declare module "react-declarative/components/One/slots/CheckBoxSlot/ICheckBoxSlot" {
   import {
     ICheckboxFieldPrivate,
@@ -31944,4 +32461,60 @@ declare module "react-declarative/components/List/components/SlotFactory/compone
     disabled,
   }: ICheckboxCellProps<RowData>) => JSX.Element;
   export default CheckboxCell;
+}
+
+declare module "react-declarative/components/One/slots/ButtonSlot/IButtonSlot" {
+  import {
+    IButtonFieldPrivate,
+    IButtonFieldProps,
+  } from "react-declarative/components/One/fields/ButtonField";
+  /**
+   * Represents a checkbox slot for a checkbox field.
+   *
+   * @interface IButtonSlot
+   * @extends IButtonFieldProps
+   * @extends IButtonFieldPrivate
+   */
+  export interface IButtonSlot extends IButtonFieldProps, IButtonFieldPrivate {}
+  export default IButtonSlot;
+}
+
+declare module "react-declarative/components/One/slots/ButtonSlot/ButtonSlot" {
+  import IButtonSlot from "react-declarative/components/One/slots/ButtonSlot/IButtonSlot";
+  /**
+   * Represents a checkbox slot component.
+   *
+   * @param props - The props for the checkbox slot component.
+   * @returns - The rendered checkbox element.
+   */
+  export const ButtonSlot: (props: IButtonSlot) => JSX.Element;
+  export default ButtonSlot;
+}
+
+declare module "react-declarative/components/One/slots/IconSlot/IIconSlot" {
+  import {
+    IIconFieldPrivate,
+    IIconFieldProps,
+  } from "react-declarative/components/One/fields/IconField";
+  /**
+   * Represents a checkbox slot for a checkbox field.
+   *
+   * @interface IIconSlot
+   * @extends IIconFieldProps
+   * @extends IIconFieldPrivate
+   */
+  export interface IIconSlot extends IIconFieldProps, IIconFieldPrivate {}
+  export default IIconSlot;
+}
+
+declare module "react-declarative/components/One/slots/IconSlot/IconSlot" {
+  import IIconSlot from "react-declarative/components/One/slots/IconSlot/IIconSlot";
+  /**
+   * Represents a checkbox slot component.
+   *
+   * @param props - The props for the checkbox slot component.
+   * @returns - The rendered checkbox element.
+   */
+  export const IconSlot: (props: IIconSlot) => JSX.Element;
+  export default IconSlot;
 }
