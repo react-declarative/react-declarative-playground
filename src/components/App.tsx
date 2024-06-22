@@ -24,6 +24,8 @@ import './common/IndicatorAllWrapper';
 import './common/AvatarPicker';
 import './common/RemoveAccount';
 
+import "./common/Currency";
+
 const isDevelopment = () => {
     return process.env.CC_NODE_ENV === "development";
 }
