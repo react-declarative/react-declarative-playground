@@ -21,6 +21,7 @@ const useStyles = makeStyles()((theme) => ({
         left: 0,
         height: "100dvh",
         width: "100dvw",
+        zIndex: 999,
     },
     container: {
         flex: 1,
