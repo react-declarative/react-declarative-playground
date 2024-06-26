@@ -404,6 +404,7 @@ declare module "react-declarative" {
   export { ActionIcon } from "react-declarative/components";
   export { ActionFab } from "react-declarative/components";
   export { ActionChip } from "react-declarative/components";
+  export { ActionBounce, ActionState } from "react-declarative/components";
   export {
     ActionModal,
     useActionModal,
@@ -884,6 +885,8 @@ declare module "react-declarative" {
   export { createManagedHistory } from "react-declarative/utils/createManagedHistory";
   export { createLsManager } from "react-declarative/utils/createLsManager";
   export { createSsManager } from "react-declarative/utils/createSsManager";
+  export { createSsSet } from "react-declarative/utils/createSsSet";
+  export { createLsSet } from "react-declarative/utils/createLsSet";
   export { createCustomTag } from "react-declarative/utils/createCustomTag";
   export { mainColor } from "react-declarative/utils/mainColor";
   export { cacheSrc } from "react-declarative/utils/cacheSrc";
@@ -1002,6 +1005,7 @@ declare module "react-declarative/components" {
   export * from "react-declarative/components/ActionMenu";
   export * from "react-declarative/components/ActionGroup";
   export * from "react-declarative/components/ActionButton";
+  export * from "react-declarative/components/ActionBounce";
   export * from "react-declarative/components/ActionStopIcon";
   export * from "react-declarative/components/ActionFab";
   export * from "react-declarative/components/ActionFilter";
@@ -10558,6 +10562,32 @@ declare module "react-declarative/utils/createSsManager" {
   export default createSsManager;
 }
 
+declare module "react-declarative/utils/createSsSet" {
+  export const createSsSet: <T = string>(
+    STORAGE_KEY: string,
+  ) => {
+    has: (value: T) => boolean;
+    add: (value: T) => void;
+    delete: (value: T) => void;
+    toSet: () => Set<T>;
+    clear: () => void;
+  };
+  export default createSsSet;
+}
+
+declare module "react-declarative/utils/createLsSet" {
+  export const createLsSet: <T = string>(
+    STORAGE_KEY: string,
+  ) => {
+    has: (value: T) => boolean;
+    add: (value: T) => void;
+    delete: (value: T) => void;
+    toSet: () => Set<T>;
+    clear: () => void;
+  };
+  export default createLsSet;
+}
+
 declare module "react-declarative/utils/createCustomTag" {
   /**
    * Interface representing a configuration object.
@@ -11168,6 +11198,12 @@ declare module "react-declarative/components/ActionButton" {
   export * from "react-declarative/components/ActionButton/ActionButton";
   export * from "react-declarative/components/ActionButton/api/usePreventAction";
   export { default } from "react-declarative/components/ActionButton/ActionButton";
+}
+
+declare module "react-declarative/components/ActionBounce" {
+  export * from "react-declarative/components/ActionBounce/ActionBounce";
+  export * from "react-declarative/components/ActionBounce/model/ActionState";
+  export { default } from "react-declarative/components/ActionBounce/ActionBounce";
 }
 
 declare module "react-declarative/components/ActionStopIcon" {
@@ -11914,7 +11950,7 @@ declare module "react-declarative/components/One/layouts/StretchLayout" {
     style?: PickProp<IField<Data, Payload>, "style">;
   }
   /**
-   * Represents a private interface for the StrechLayout component.
+   * Represents a private interface for the StretchLayout component.
    *
    * @interface IStretchLayoutPrivate
    * @template Data - the type of the data.
@@ -12821,6 +12857,9 @@ declare module "react-declarative/components/One/fields/CheckboxField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -12970,6 +13009,9 @@ declare module "react-declarative/components/One/fields/IconField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -13145,6 +13187,9 @@ declare module "react-declarative/components/One/fields/ButtonField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -13384,6 +13429,9 @@ declare module "react-declarative/components/One/fields/FileField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -13625,6 +13673,9 @@ declare module "react-declarative/components/One/fields/ComboField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -13796,6 +13847,9 @@ declare module "react-declarative/components/One/fields/ComponentField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -14057,6 +14111,9 @@ declare module "react-declarative/components/One/fields/ItemsField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -14160,6 +14217,9 @@ declare module "react-declarative/components/One/fields/LineField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -14275,6 +14335,9 @@ declare module "react-declarative/components/One/fields/ProgressField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -14416,6 +14479,9 @@ declare module "react-declarative/components/One/fields/RadioField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -14532,6 +14598,9 @@ declare module "react-declarative/components/One/fields/RatingField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -14751,6 +14820,9 @@ declare module "react-declarative/components/One/fields/SliderField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -14900,6 +14972,9 @@ declare module "react-declarative/components/One/fields/SwitchField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -15287,6 +15362,9 @@ declare module "react-declarative/components/One/fields/TextField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -15489,6 +15567,9 @@ declare module "react-declarative/components/One/fields/DateField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -15691,6 +15772,9 @@ declare module "react-declarative/components/One/fields/TimeField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -16056,6 +16140,9 @@ declare module "react-declarative/components/One/fields/CompleteField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -16191,6 +16278,9 @@ declare module "react-declarative/components/One/fields/TypographyField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -16397,6 +16487,9 @@ declare module "react-declarative/components/One/fields/ChooseField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -16637,6 +16730,9 @@ declare module "react-declarative/components/One/fields/YesNoField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -17156,6 +17252,9 @@ declare module "react-declarative/components/One/fields/DictField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -17353,6 +17452,9 @@ declare module "react-declarative/components/One/fields/TreeField" {
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
@@ -22312,6 +22414,53 @@ declare module "react-declarative/components/ActionButton/api/usePreventAction" 
   export default usePreventAction;
 }
 
+declare module "react-declarative/components/ActionBounce/ActionBounce" {
+  import * as React from "react";
+  import { IPaperViewProps } from "react-declarative/components/PaperView";
+  import TSubject from "react-declarative/model/TSubject";
+  import ActionState from "react-declarative/components/ActionBounce/model/ActionState";
+  interface IActionBounceProps
+    extends Omit<
+      IPaperViewProps,
+      keyof {
+        onAnimationEnd: never;
+        onAnimationStart: never;
+      }
+    > {
+    onAnimationStart?: (
+      state: ActionState,
+      e: React.AnimationEvent<HTMLDivElement>,
+    ) => void;
+    onAnimationEnd?: (
+      state: ActionState,
+      e: React.AnimationEvent<HTMLDivElement>,
+    ) => void;
+    defaultState?: ActionState;
+    stateSubject: TSubject<ActionState>;
+  }
+  export const ActionBounce: ({
+    defaultState,
+    onAnimationEnd,
+    onAnimationStart,
+    className,
+    children,
+    stateSubject,
+    ...otherProps
+  }: IActionBounceProps) => JSX.Element;
+  export default ActionBounce;
+}
+
+declare module "react-declarative/components/ActionBounce/model/ActionState" {
+  export enum ActionState {
+    Initial = "initial-state",
+    Active = "active-state",
+    Abort = "abort-state",
+    Succeed = "succeed-state",
+    Closed = "closed-state",
+  }
+  export default ActionState;
+}
+
 declare module "react-declarative/components/ActionStopIcon/ActionStopIcon" {
   import * as React from "react";
   import { SxProps } from "@mui/material";
@@ -23869,7 +24018,7 @@ declare module "react-declarative/components/PaperView/PaperView" {
    *
    * @interface IPaperViewProps
    */
-  interface IPaperViewProps
+  export interface IPaperViewProps
     extends Omit<
       PaperProps,
       keyof {
@@ -29880,6 +30029,9 @@ declare module "react-declarative/components/One/components/makeField/makeField"
       phoneColumns,
       tabletColumns,
       desktopColumns,
+      phoneHidden: upperPhoneHidden,
+      tabletHidden: upperTabletHidden,
+      desktopHidden: upperDesktopHidden,
       isDisabled: isDisabledUpper,
       isVisible: isVisibleUpper,
       isInvalid: isInvalidUpper,
