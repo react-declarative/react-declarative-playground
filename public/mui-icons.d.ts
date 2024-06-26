@@ -2343,6 +2343,16 @@ declare module "@mui/icons-material" {
     const HelpSharp: React.Component;
     const HelpTwoTone: React.Component;
     const Highlight: React.Component;
+    const PointOfSale: React.Component;
+    const PointOfSaleOutlined: React.Component;
+    const PointOfSaleRounded: React.Component;
+    const PointOfSaleSharp: React.Component;
+    const PointOfSaleTwoTone: React.Component;
+    const MarkChatUnread: React.Component;
+    const MarkChatUnreadOutlined: React.Component;
+    const MarkChatUnreadRounded: React.Component;
+    const MarkChatUnreadSharp: React.Component;
+    const MarkChatUnreadTwoTone: React.Component;
     const HighlightOff: React.Component;
     const HighlightOffOutlined: React.Component;
     const HighlightOffRounded: React.Component;

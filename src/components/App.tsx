@@ -21,6 +21,8 @@ import './common/IndicatorArchiveWrapper';
 import './common/IndicatorDoneWrapper';
 import './common/IndicatorAllWrapper';
 
+import './common/IndicatorCard';
+
 import './common/AvatarPicker';
 import './common/RemoveAccount';
 
