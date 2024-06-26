@@ -1,0 +1,119 @@
+import { TypedField, FieldType, OneButton } from "react-declarative";
+
+declare var StockChart;
+
+const HEADER_HEIGHT = 48;
+
+const header_fields: TypedField[] = [
+  {
+    type: FieldType.Box,
+    sx: {
+      display: 'grid',
+      gridTemplateColumns: 'auto 1fr auto',
+      alignItems: 'center',
+      mb: 1,
+    },
+    fields: [
+      {
+        type: FieldType.Typography,
+        fieldBottomMargin: "0",
+        placeholder: "Stonks",
+        typoVariant: 'h6',
+        style: {
+          fontWeight: 'bold',
+        },
+      },
+      {
+        type: FieldType.Div,
+      },
+      {
+        type: FieldType.Box,
+        desktopHidden: true,
+        child: {
+          type: FieldType.Component,
+          sx: {
+            display: {
+              xs: "inherit",
+              md: "none",
+            },
+          },
+          element: ({
+            _fieldData,
+            onChange,
+          }) => (
+            <OneButton
+              variant="contained"
+              size="small"
+              fields={filter_fields}
+              handler={_fieldData}
+              onChange={onChange}
+            >
+              Filters
+            </OneButton>
+          ),
+        },
+      }
+
+    ],
+  },
+];
+
+const filter_fields: TypedField[] = [
+  {
+    name: "PERCENT_PRICE",
+    type: FieldType.Text,
+  },
+  {
+    name: "LOT_SIZE",
+    type: FieldType.Text,
+  },
+  {
+    name: "MARKET_LOT_SIZE",
+    type: FieldType.Text,
+  },
+  {
+    name: "MIN_NOTIONAL",
+    type: FieldType.Text,
+  },
+  {
+    name: "PRICE_FILTER",
+    type: FieldType.Text,
+  },
+  {
+    name: "MAX_NUM_ORDERS",
+    type: FieldType.Text,
+  }
+];
+
+export const fields: TypedField[] = [
+  {
+    type: FieldType.Group,
+    sx: {
+      height: 'calc(100dvh - 16px)',
+    },
+    fields: [
+      ...header_fields,
+      {
+        type: FieldType.Outline,
+        fieldRightMargin: '1',
+        innerPadding: '4px',
+        desktopColumns: '4',
+        tabletHidden: true,
+        phoneHidden: true,
+        fields: filter_fields,
+      },
+      {
+        type: FieldType.Component,
+        desktopColumns: '8',
+        tabletColumns: '12',
+        phoneColumns: '12',
+        sx: {
+          height: `calc(100% - ${HEADER_HEIGHT}px)`,
+        },
+        element: () => (
+          <StockChart />
+        ),
+      }
+    ]
+  },
+];

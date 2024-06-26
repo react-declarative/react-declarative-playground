@@ -73,6 +73,10 @@ const itemList = [
         url: 'code15.txt',
         label: 'KPI Review',
     },
+    {
+        url: 'code16.txt',
+        label: 'Stocks Chart',
+    },
 ];
 
 interface IHeaderProps {

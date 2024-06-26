@@ -5,6 +5,7 @@
   "dependencies": {
     "@babel/parser": "7.24.5",
     "@babel/plugin-transform-modules-umd": "7.24.1",
+    "lightweight-charts": "3.3.0",
     "@babel/standalone": "7.24.5",
     "@babel/traverse": "7.24.5",
     "@emotion/react": "11.10.4",

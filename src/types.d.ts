@@ -5,3 +5,7 @@ declare module "@babel/plugin-transform-modules-umd" {
 declare module "react-split-it" {
     export = any;
 }
+
+declare module "*.json" {
+    export = any;
+}
