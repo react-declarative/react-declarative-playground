@@ -28,6 +28,7 @@ import './common/RemoveAccount';
 
 import "./common/Currency";
 import "./common/StockChart";
+import useStateContext from "../context/useStateContext";
 
 const isDevelopment = () => {
     return process.env.CC_NODE_ENV === "development";
@@ -38,6 +39,8 @@ export const App = () => {
     const notify = useSnack();
 
     const { isMobile } = useMediaContext();
+
+    const [, setStateContext] = useStateContext();
 
     const pickOne = useOne({
         title: 'Waiting for user input',
@@ -125,21 +128,53 @@ export const App = () => {
     const renderInner = () => {
         if (isMobile) {
             return [
-                <PreviewWrapper onRef={(ref) => {
-                    previewRef.current = ref;
-                }} />,
-                <EditorWrapper onRef={(ref) => {
-                    editorRef.current = ref;
-                }} />,
+                <PreviewWrapper
+                    onRef={(ref) => {
+                        previewRef.current = ref;
+                    }}
+                    onFullscreenToggle={(fullScreen) => {
+                        setStateContext({
+                            side: "preview",
+                            fullScreen,
+                        })
+                    }}
+                />,
+                <EditorWrapper 
+                    onRef={(ref) => {
+                        editorRef.current = ref;
+                    }}
+                    onFullscreenToggle={(fullScreen) => {
+                        setStateContext({
+                            side: "editor",
+                            fullScreen,
+                        })
+                    }}
+                />,
             ];
         }
         return [
-            <EditorWrapper onRef={(ref) => {
-                editorRef.current = ref;
-            }} />,
-            <PreviewWrapper onRef={(ref) => {
-                previewRef.current = ref;
-            }} />,
+            <EditorWrapper
+                onRef={(ref) => {
+                    editorRef.current = ref;
+                }}
+                onFullscreenToggle={(fullScreen) => {
+                    setStateContext({
+                        side: "editor",
+                        fullScreen,
+                    })
+                }}
+            />,
+            <PreviewWrapper
+                onRef={(ref) => {
+                    previewRef.current = ref;
+                }}
+                onFullscreenToggle={(fullScreen) => {
+                    setStateContext({
+                        side: "preview",
+                        fullScreen,
+                    })
+                }}
+            />,
         ];
     }
 

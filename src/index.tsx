@@ -17,6 +17,7 @@ import createCache from "@emotion/cache";
 import { createRoot } from "react-dom/client";
 import App from "./components/App";
 import { LoaderProvider } from "./hooks/useLoader";
+import { IState, StateContextProvider } from "./context/useStateContext";
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw-cache.js");
@@ -33,18 +34,25 @@ const tssCache = createCache({
     key: "tss",
 });
 
+const INITIAL_STATE: IState = {
+    side: "editor",
+    fullScreen: false,
+};
+
 const wrappedApp = (
     <CacheProvider value={muiCache}>
         <TssCacheProvider value={tssCache}>
             <ThemeProvider theme={THEME_DARK}>
                 <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
-                    <LoaderProvider initialState={0}>
-                        <SnackProvider>
-                            <ModalProvider>
-                                <App />
-                            </ModalProvider>
-                        </SnackProvider>
-                    </LoaderProvider>
+                    <StateContextProvider initialState={INITIAL_STATE}>
+                        <LoaderProvider initialState={0}>
+                            <SnackProvider>
+                                <ModalProvider>
+                                    <App />
+                                </ModalProvider>
+                            </SnackProvider>
+                        </LoaderProvider>
+                    </StateContextProvider>  
                 </LocalizationProvider>
             </ThemeProvider>
         </TssCacheProvider>

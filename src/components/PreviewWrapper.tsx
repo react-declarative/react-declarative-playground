@@ -6,6 +6,7 @@ import { makeStyles } from '../styles';
 import Box from "@mui/material/Box";
 import { Fab } from "@mui/material";
 import { Fullscreen, FullscreenExit } from "@mui/icons-material";
+import useStateContext from "../context/useStateContext";
 
 const useStyles = makeStyles()((theme) => ({
     root: {
@@ -17,11 +18,15 @@ const useStyles = makeStyles()((theme) => ({
     },
     fullScreen: {
         position: "fixed",
+        background: theme.palette.background.default,
         top: 0,
         left: 0,
         height: "100dvh",
         width: "100dvw",
         zIndex: 999,
+    },
+    hidden: {
+        visibility: "hidden",
     },
     container: {
         flex: 1,
@@ -46,15 +51,31 @@ const useStyles = makeStyles()((theme) => ({
 
 interface IPreviewWrapperProps {
     onRef: (ref: HTMLIFrameElement) => void;
+    onFullscreenToggle: (fullScreen: boolean) => void;
 }
 
 export const PreviewWrapper = ({
     onRef,
+    onFullscreenToggle,
 }: IPreviewWrapperProps) => { 
     
     const { classes, cx } = useStyles();
 
-    const [fullScreen, setFullScreen] = useState(false);
+    const [state] = useStateContext();
+
+    const fullScreen = useMemo(() => {
+        if (state.side === "preview") {
+            return state.fullScreen;
+        }
+        return false;
+    }, [state]);
+
+    const hidden = useMemo(() => {
+        if (state.side !== "preview") {
+            return state.fullScreen;
+        }
+        return false;
+    }, [state]);
     
     const { elementRef, size } = useElementSize<HTMLDivElement>();
 
@@ -69,6 +90,7 @@ export const PreviewWrapper = ({
             <div 
                 className={cx(classes.root, {
                     [classes.fullScreen]: fullScreen,
+                    [classes.hidden]: hidden,
                 })}
             >
                 <div ref={elementRef} className={classes.container}>
@@ -83,7 +105,10 @@ export const PreviewWrapper = ({
                         }}
                         src={previewUrl}
                     />
-                    <Fab className={classes.fab} size="small" color="primary" onClick={() => setFullScreen(f => !f)}>
+                    <Fab className={classes.fab} size="small" color="primary" onClick={(e) => {
+                        e.stopPropagation();
+                        onFullscreenToggle(!fullScreen);
+                    }}>
                         {fullScreen ? <FullscreenExit /> : <Fullscreen />}
                     </Fab>
                 </div>
