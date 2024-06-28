@@ -77,6 +77,10 @@ const itemList = [
         url: 'code16.txt',
         label: 'Stocks Chart',
     },
+    {
+        url: 'code17.txt',
+        label: 'Schema mapping',
+    },
 ];
 
 interface IHeaderProps {

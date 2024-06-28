@@ -1,0 +1,264 @@
+import { TypedField, FieldType, IFeatureGroup } from "react-declarative";
+
+const features: IFeatureGroup[] = [
+    {
+        title: 'Dashboard',
+        children: [
+            {
+                name: 'dashboard_read',
+                description: 'User can access dashbord page',
+            },
+        ],
+    },
+    {
+        title: 'Ticket',
+        children: [
+            {
+                name: 'ticket_create',
+                description: 'User can create ticket through list form',
+            },
+            {
+                name: 'ticket_read',
+                description: 'User can access ticket list form',
+            },
+            {
+                name: 'ticket_update',
+                description: 'User can update ticket through list form',
+            },
+            {
+                name: 'ticket_delete',
+                description: 'User can delete ticket through list form',
+            },
+        ],
+    },
+    {
+        title: 'Profile',
+        children: [
+            {
+                name: 'profile_create',
+                description: 'User can create profile through list form',
+            },
+            {
+                name: 'profile_read',
+                description: 'User can access profile list form',
+            },
+            {
+                name: 'profile_update',
+                description: 'User can update profile through list form',
+            },
+            {
+                name: 'profile_delete',
+                description: 'User can delete profile through list form',
+            },
+        ],
+    },
+    {
+        title: 'Profile group',
+        children: [
+            {
+                name: 'profile_group_create',
+                description: 'User can create profile group through list form',
+            },
+            {
+                name: 'profile_group_read',
+                description: 'User can access profile group list form',
+            },
+            {
+                name: 'profile_group_update',
+                description: 'User can update profile group through list form',
+            },
+            {
+                name: 'profile_group_delete',
+                description: 'User can delete profile group through list form',
+            },
+        ],
+    },
+    {
+        title: 'Profile source',
+        children: [
+            {
+                name: 'profile_source_create',
+                description: 'User can create profile source through list form',
+            },
+            {
+                name: 'profile_source_read',
+                description: 'User can access profile source list form',
+            },
+            {
+                name: 'profile_source_update',
+                description: 'User can update profile source through list form',
+            },
+            {
+                name: 'profile_source_delete',
+                description: 'User can delete profile source through list form',
+            },
+        ],
+    },
+    {
+        title: 'Profile looking for',
+        children: [
+            {
+                name: 'profile_looking_for_create',
+                description: 'User can create profile "looking for" through list form',
+            },
+            {
+                name: 'profile_looking_for_read',
+                description: 'User can access profile "looking for" list form',
+            },
+            {
+                name: 'profile_looking_for_update',
+                description: 'User can update profile "looking for" through list form',
+            },
+            {
+                name: 'profile_looking_for_delete',
+                description: 'User can delete profile "looking for" through list form',
+            },
+        ],
+    },
+    {
+        title: 'Apartment',
+        children: [
+            {
+                name: 'apartment_create',
+                description: 'User can create apartment through list form',
+            },
+            {
+                name: 'apartment_read',
+                description: 'User can access apartment list form',
+            },
+            {
+                name: 'apartment_update',
+                description: 'User can update apartment through list form',
+            },
+            {
+                name: 'apartment_delete',
+                description: 'User can delete apartment through list form',
+            },
+        ],
+    },
+    {
+        title: 'Apartment group',
+        children: [
+            {
+                name: 'apartment_group_create',
+                description: 'User can create apartment group through list form',
+            },
+            {
+                name: 'apartment_group_read',
+                description: 'User can access apartment group list form',
+            },
+            {
+                name: 'apartment_group_update',
+                description: 'User can update apartment group through list form',
+            },
+            {
+                name: 'apartment_group_delete',
+                description: 'User can delete apartment group through list form',
+            },
+        ],
+    },
+    {
+        title: 'Apartment district',
+        children: [
+            {
+                name: 'apartment_district_create',
+                description: 'User can create apartment district through list form',
+            },
+            {
+                name: 'apartment_district_read',
+                description: 'User can access apartment district list form',
+            },
+            {
+                name: 'apartment_district_update',
+                description: 'User can update apartment district through list form',
+            },
+            {
+                name: 'apartment_district_delete',
+                description: 'User can delete apartment district through list form',
+            },
+        ],
+    },
+    {
+        title: 'Apartment housing type',
+        children: [
+            {
+                name: 'apartment_housing_type_create',
+                description: 'User can create apartment housing type through list form',
+            },
+            {
+                name: 'apartment_housing_type_read',
+                description: 'User can access apartment housing type list form',
+            },
+            {
+                name: 'apartment_housing_type_update',
+                description: 'User can update apartment housing type through list form',
+            },
+            {
+                name: 'apartment_housing_type_delete',
+                description: 'User can delete apartment housing type through list form',
+            },
+        ],
+    },
+    {
+        title: 'Apartment material type',
+        children: [
+            {
+                name: 'apartment_material_type_create',
+                description: 'User can create apartment material type through list form',
+            },
+            {
+                name: 'apartment_material_type_read',
+                description: 'User can access apartment material type list form',
+            },
+            {
+                name: 'apartment_material_type_update',
+                description: 'User can update apartment material type through list form',
+            },
+            {
+                name: 'apartment_material_type_delete',
+                description: 'User can delete apartment material type through list form',
+            },
+        ],
+    },
+    {
+        title: 'Apartment metro',
+        children: [
+            {
+                name: 'apartment_metro_create',
+                description: 'User can create apartment metro through list form',
+            },
+            {
+                name: 'apartment_metro_read',
+                description: 'User can access apartment metro list form',
+            },
+            {
+                name: 'apartment_metro_update',
+                description: 'User can update apartment metro through list form',
+            },
+            {
+                name: 'apartment_metro_delete',
+                description: 'User can delete apartment metro through list form',
+            },
+        ],
+    },
+];
+
+export const fields: TypedField[] = features.map(({
+  children,
+  title,
+}) => ({
+  type: FieldType.Expansion,
+  fieldBottomMargin: "1",
+  expansionOpened: true,
+  title,
+  fields: children.map(({
+    name,
+    description,
+  }) => ({
+    type: FieldType.Checkbox,
+    fieldBottomMargin: "0",
+    fieldRightMargin: "0",
+    title: description,
+    name,
+  })),
+}));
