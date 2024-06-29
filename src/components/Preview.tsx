@@ -1,10 +1,12 @@
-import { Box, Typography } from "@mui/material";
-import { useCallback, useEffect, useMemo } from "react";
-import { Async, ErrorBoundary, IField, One, ScrollView, TSubject, cached, debounce, getErrorMessage, useSnack, useSubject } from "react-declarative";
+import { Typography } from "@mui/material";
+import { useEffect, useMemo } from "react";
+import { Async, ErrorBoundary, IField, One, ScrollView, cached, debounce, getErrorMessage, useOnce, useSubject } from "react-declarative";
 
 import plugin from "@babel/plugin-transform-modules-umd";
 
 import { transform, registerPlugin } from "@babel/standalone";
+
+import { codeManager } from "../config";
 
 registerPlugin("plugin-transform-modules-umd", plugin);
 
@@ -83,6 +85,13 @@ export const Preview = ({
             }
         });
     }, [handleTranspile]);
+
+    useOnce(() => {
+        const code = codeManager.getValue();
+        if (code) {
+            doTranspile(code);
+        }
+    });
 
     return (
         <ScrollView sx={{ height: '100vh', width: '100vw' }} hideOverflowX>

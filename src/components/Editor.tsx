@@ -2,7 +2,9 @@ import MonacoEditor from '@monaco-editor/react';
 import { Typography } from '@mui/material';
 import { useEffect, useRef } from 'react';
 
-import { useAsyncValue, createLsManager } from 'react-declarative';
+import { useAsyncValue } from 'react-declarative';
+
+import { codeManager } from '../config';
 
 const fetchText = async (url: string) => {
     const responce = await fetch(url);
@@ -12,8 +14,6 @@ const fetchText = async (url: string) => {
 interface IEditorProps {
     onChange: (value: string) => void;
 }
-
-const codeManager = createLsManager<string>("react-declarative-playground-code");
 
 export const Editor = ({
     onChange,
