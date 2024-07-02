@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useEffect, useRef, useState } from "react";
-import { ActionButton, chooseFile, downloadBlank, openBlank, useMediaContext } from "react-declarative";
+import { chooseFile, downloadBlank, openBlank } from "react-declarative";
 
 const fetchText = async (url: string) => {
     const responce = await fetch(url);
@@ -97,8 +97,6 @@ export const Header = ({
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const codeRef = useRef<string>("");
 
-    const { isMobile } = useMediaContext();
-
     useEffect(() => {
         window.addEventListener("message", ({ data }) => {
             if (data.type === "code-action" && data.code) {
@@ -141,7 +139,7 @@ export const Header = ({
                 >
                     <Button
                         size="small"
-                        sx={{ color: '#fff', ml: 2 }}
+                        sx={{ color: '#fff', ml: 2, display: { xs: 'none', sm: 'flex' } }}
                         onClick={async () => {
                             const file = await chooseFile(".ts");
                             if (!file) {
@@ -164,7 +162,7 @@ export const Header = ({
                     </Button>
                     <Button
                         size="small"
-                        sx={{ color: '#fff', ml: 1 }}
+                        sx={{ color: '#fff', ml: 1, display: { xs: 'none', sm: 'flex' } }}
                         onClick={() => {
                             const blob = new Blob([codeRef.current]);
                             const url = URL.createObjectURL(blob);
@@ -179,7 +177,7 @@ export const Header = ({
                         sx={{ color: '#fff', ml: 1 }}
                         onClick={({ currentTarget }) => setAnchorEl(currentTarget)}
                     >
-                        {isMobile ? "" : "Demos"}
+                        Demos
                     </Button>
                 </Box>
                 {renderMenu()}
