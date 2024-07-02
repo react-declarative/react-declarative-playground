@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { useEffect, useRef, useState } from "react";
-import { ActionButton, chooseFile, downloadBlank, openBlank } from "react-declarative";
+import { ActionButton, chooseFile, downloadBlank, openBlank, useMediaContext } from "react-declarative";
 
 const fetchText = async (url: string) => {
     const responce = await fetch(url);
@@ -97,6 +97,8 @@ export const Header = ({
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const codeRef = useRef<string>("");
 
+    const { isMobile } = useMediaContext();
+
     useEffect(() => {
         window.addEventListener("message", ({ data }) => {
             if (data.type === "code-action" && data.code) {
@@ -124,48 +126,62 @@ export const Header = ({
                 >
                     Playground
                 </Typography>
-                <Button
-                    size="small"
-                    sx={{ color: '#fff', ml: 2 }}
-                    onClick={async () => {
-                        const file = await chooseFile(".ts");
-                        if (!file) {
-                            return;
-                        }
-                        const reader = new FileReader();
-                        reader.addEventListener(
-                            "load",
-                            () => {
-                                onCode(reader.result as string);
-                            },
-                            false,
-                        );
-                        if (file) {
-                            reader.readAsText(file);
-                        }
+                <Box
+                    sx={{
+                        display: 'flex',
+                        overflowX: 'auto',
+                        overflowY: 'hidden',
+                        flexWrap: 'nowrap',
+                        gap: 1,
+                        ml: 1,
+                        maxWidth: { xs: 'calc(100vw - 200px)', sm: 'inherit' },
+                        minWidth: { xs: 'calc(100vw - 200px)', sm: 'inherit' },
+                        scrollbarWidth: 'none',
                     }}
                 >
-                    Open
-                </Button>
-                <Button
-                    size="small"
-                    sx={{ color: '#fff', ml: 1 }}
-                    onClick={() => {
-                        const blob = new Blob([codeRef.current]);
-                        const url = URL.createObjectURL(blob);
-                        downloadBlank(url, "form.assets.ts");
-                    }}
-                >
-                    Download
-                </Button>
-                <Button
-                    size="small"
-                    endIcon={<KeyboardArrowDown />}
-                    sx={{ color: '#fff', ml: 1, display: { xs: 'none', sm: 'flex' } }}
-                    onClick={({ currentTarget }) => setAnchorEl(currentTarget)}
-                >
-                    Demos
-                </Button>
+                    <Button
+                        size="small"
+                        sx={{ color: '#fff', ml: 2 }}
+                        onClick={async () => {
+                            const file = await chooseFile(".ts");
+                            if (!file) {
+                                return;
+                            }
+                            const reader = new FileReader();
+                            reader.addEventListener(
+                                "load",
+                                () => {
+                                    onCode(reader.result as string);
+                                },
+                                false,
+                            );
+                            if (file) {
+                                reader.readAsText(file);
+                            }
+                        }}
+                    >
+                        Open
+                    </Button>
+                    <Button
+                        size="small"
+                        sx={{ color: '#fff', ml: 1 }}
+                        onClick={() => {
+                            const blob = new Blob([codeRef.current]);
+                            const url = URL.createObjectURL(blob);
+                            downloadBlank(url, "form.assets.ts");
+                        }}
+                    >
+                        Download
+                    </Button>
+                    <Button
+                        size="small"
+                        endIcon={<KeyboardArrowDown />}
+                        sx={{ color: '#fff', ml: 1 }}
+                        onClick={({ currentTarget }) => setAnchorEl(currentTarget)}
+                    >
+                        {isMobile ? "" : "Demos"}
+                    </Button>
+                </Box>
                 {renderMenu()}
                 <div style={{ flex: 1 }} />
                 <IconButton onClick={() => openBlank('https://github.com/react-declarative/react-declarative')}>
