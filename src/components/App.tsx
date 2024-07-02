@@ -57,6 +57,7 @@ export const App = () => {
         (window as any).pickOne = pickOne;
         (window as any).pickDate = pickDate;
         (window as any).pickTime = pickTime;
+        (window as any).notify = notify;
     }, []);
 
     const previewRef = useRef<HTMLIFrameElement>(null as never);

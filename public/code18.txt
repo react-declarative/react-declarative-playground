@@ -1,0 +1,54 @@
+import { TypedField, FieldType, getInvalidFields } from "react-declarative";
+
+declare var notify;
+
+export const fields: TypedField[] = [
+    {
+        type: FieldType.Outline,
+        fields: [
+            {
+                type: FieldType.Typography,
+                typoVariant: 'h6',
+                placeholder: 'Example form',
+            },
+            {
+                type: FieldType.Text,
+                validation: {
+                    required: true,
+                },
+                name: 'first_field',
+            },
+            {
+                type: FieldType.Text,
+                validation: {
+                    required: true,
+                },
+                name: 'second_field',
+            },
+            {
+                type: FieldType.Text,
+                validation: {
+                    required: true,
+                },
+                name: 'third_field',
+            },
+            {
+                type: FieldType.Button,
+                sx: {
+                    mt: 3
+                },
+                buttonVariant: 'contained',
+                title: 'Submit',
+                click: (name, e, data, payload) => {
+                    const errors = getInvalidFields(fields, data, payload);
+                    if (errors) {
+                        const [error] = errors;
+                        notify(`${error.title}: ${error.error}`);
+                    } else {
+                        notify("The form is valid");
+                    }
+                },
+            }
+        ]
+    }
+];
