@@ -85,6 +85,10 @@ const itemList = [
         url: 'code18.txt',
         label: 'Snackbar validation',
     },
+    {
+        url: 'code19.txt',
+        label: 'Mapbox interop',
+    },
 ];
 
 interface IHeaderProps {
@@ -106,7 +110,18 @@ export const Header = ({
     }, []);
 
     const renderMenu = () => (
-        <Popover open={!!anchorEl} anchorEl={anchorEl} onClose={() => setAnchorEl(null)} anchorOrigin={{ horizontal: "left", vertical: "bottom" }}>
+        <Popover 
+            open={!!anchorEl} 
+            anchorEl={anchorEl} 
+            onClose={() => setAnchorEl(null)}
+            anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
+            sx={{
+                maxHeight: '80vh',
+                overflowY: 'scroll',
+                overflowX: 'hidden',
+                scrollbarWidth: 'thin'
+            }}
+        >
             {itemList.map(({ label, url }) => (
                 <MenuItem key={url} onClick={async () => { const code = await fetchText(url); onCode(code); setAnchorEl(null); }}>
                     {label}

@@ -14,6 +14,7 @@
 //   ../../@mui/material/Stack
 //   ../../@mui/material/Paper
 //   ../../@mui/material/styles
+//   ../../mapbox-gl
 
 declare module "react-declarative" {
   import "./polyfills";
@@ -570,6 +571,7 @@ declare module "react-declarative" {
   export { CopyButton } from "react-declarative/components";
   export { Copy } from "react-declarative/components";
   export { Chip } from "react-declarative/components";
+  export { Map } from "react-declarative/components";
   export {
     OneSlotFactory,
     OneDefaultSlots,
@@ -837,6 +839,7 @@ declare module "react-declarative" {
   export { getFilterCount } from "react-declarative/utils/getFilterCount";
   export { getInvalidFields } from "react-declarative/utils/getInvalidFields";
   export { getFieldsError } from "react-declarative/utils/getFieldsError";
+  export { isInvalidFieldData } from "react-declarative/utils/isInvalidFieldData";
   export { flatArray } from "react-declarative/utils/flatArray";
   export { removeExtraSpaces } from "react-declarative/utils/removeExtraSpaces";
   export { replaceSubstring } from "react-declarative/utils/replaceSubstring";
@@ -1069,6 +1072,7 @@ declare module "react-declarative/components" {
   export * from "react-declarative/components/Async";
   export * from "react-declarative/components/Copy";
   export * from "react-declarative/components/If";
+  export * from "react-declarative/components/Map";
   export * from "react-declarative/components/CopyButton";
   export * from "react-declarative/components/SubjectBinding";
   export * from "react-declarative/components/Countdown";
@@ -9534,6 +9538,23 @@ declare module "react-declarative/utils/getFieldsError" {
   export default getFieldsError;
 }
 
+declare module "react-declarative/utils/isInvalidFieldData" {
+  import IField from "react-declarative/model/IField";
+  export const isInvalidFieldData: <Data = any, Payload = any>(
+    fields: IField<Data, Payload>[],
+    data: Data,
+    payload: Payload,
+    fallback?:
+      | ((
+          error: string,
+          title: string | undefined,
+          name: string | undefined,
+        ) => void)
+      | undefined,
+  ) => boolean;
+  export default isInvalidFieldData;
+}
+
 declare module "react-declarative/utils/flatArray" {
   /**
    * A function that flattens a given array to a single level.
@@ -11545,6 +11566,11 @@ declare module "react-declarative/components/Copy" {
 declare module "react-declarative/components/If" {
   export * from "react-declarative/components/If/If";
   export { default } from "react-declarative/components/If/If";
+}
+
+declare module "react-declarative/components/Map" {
+  export * from "react-declarative/components/Map/Map";
+  export { default } from "react-declarative/components/Map/Map";
 }
 
 declare module "react-declarative/components/CopyButton" {
@@ -28009,6 +28035,38 @@ declare module "react-declarative/components/If/If" {
     throwError,
   }: IIfProps<T>) => JSX.Element;
   export default If;
+}
+
+declare module "react-declarative/components/Map/Map" {
+  import type mapboxglInternal from "mapbox-gl";
+  import { BoxProps } from "@mui/material/Box";
+  global {
+    var mapboxgl: typeof mapboxglInternal;
+  }
+  interface IPosition {
+    lng: number;
+    lat: number;
+  }
+  interface IMapProps
+    extends Omit<
+      BoxProps,
+      keyof {
+        onChange: never;
+      }
+    > {
+    readonly?: boolean;
+    value?: IPosition;
+    zoom?: number;
+    onChange?: (position: IPosition) => void;
+  }
+  export const Map: ({
+    value: pos,
+    readonly,
+    zoom,
+    onChange,
+    ...otherProps
+  }: IMapProps) => JSX.Element;
+  export default Map;
 }
 
 declare module "react-declarative/components/CopyButton/CopyButton" {

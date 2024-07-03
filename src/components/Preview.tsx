@@ -1,6 +1,6 @@
 import { Typography } from "@mui/material";
 import { useEffect, useMemo } from "react";
-import { Async, ErrorBoundary, IField, One, ScrollView, cached, debounce, getErrorMessage, useOnce, useSubject } from "react-declarative";
+import { Async, ErrorBoundary, IField, One, ScrollView, cached, debounce, getErrorMessage, loadScript, singleshot, useOnce, useSubject } from "react-declarative";
 
 import plugin from "@babel/plugin-transform-modules-umd";
 
@@ -21,6 +21,11 @@ declare global {
 interface IPreviewProps {
     onNotify: (notify: string) => void;
 }
+
+const loadScripts = singleshot(async () => {
+    await loadScript("https://api.mapbox.com/mapbox-gl-js/v3.4.0/mapbox-gl.js");
+    mapboxgl.accessToken = 'pk.eyJ1IjoidHJpcG9sc2t5cGV0ciIsImEiOiJjbHk0YWgzNmUwMGRiMmpzN3hzbjB4Z3J2In0.3oxAilQNCBFw7zO0AIbxfQ';
+});
 
 export const Preview = ({ 
     onNotify,
@@ -97,10 +102,11 @@ export const Preview = ({
         <ScrollView sx={{ height: '100vh', width: '100vw' }} hideOverflowX>
             <ErrorBoundary reloadSubject={transpileSubject} onError={(error) => onNotify(getErrorMessage(error) || "Execution failed")}>
                 <Async reloadSubject={transpileSubject}>
-                    {() => {
+                    {async () => {
                         if (!window.Executor) {
                             return <Typography variant="body1" sx={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading preview...</Typography>;
                         }
+                        await loadScripts();
                         return (
                             <One
                                 fields={window.Executor.fields}

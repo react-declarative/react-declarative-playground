@@ -1,0 +1,48 @@
+import { TypedField, FieldType, Map } from "react-declarative";
+
+const DEFAULT_POS = {
+    lat: 25.954167,
+    lng: -80.1212952,
+};
+
+export const fields: TypedField[] = [
+    {
+        type: FieldType.Component,
+        sx: {
+            height: 275,
+        },
+        element: ({
+            pos = DEFAULT_POS,
+            map_readonly,
+            onChange,
+        }) => (
+            <Map
+                value={pos}
+                readonly={map_readonly}
+                onChange={(pos) => {
+                    onChange({pos})
+                }}
+            />
+        ),
+    },
+    {
+        type: FieldType.Component,
+        element: ({ pos = DEFAULT_POS }) => (
+            <pre>
+                {JSON.stringify(
+                    {
+                        lat: pos.lat.toFixed(4),
+                        lng: pos.lng.toFixed(4),
+                    }, 
+                    null,
+                    2
+                )}
+            </pre>
+        ),
+    },
+    {
+        type: FieldType.Checkbox,
+        name: 'map_readonly',
+        title: "Readonly",
+    },
+];
