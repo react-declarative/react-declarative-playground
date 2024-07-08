@@ -28054,15 +28054,19 @@ declare module "react-declarative/components/Map/Map" {
         onChange: never;
       }
     > {
+    withZoomAdjust?: boolean;
     readonly?: boolean;
     value?: IPosition;
     zoom?: number;
+    token?: string;
     onChange?: (position: IPosition) => void;
   }
   export const Map: ({
+    withZoomAdjust,
     value: pos,
     readonly,
     zoom,
+    token,
     onChange,
     ...otherProps
   }: IMapProps) => JSX.Element;

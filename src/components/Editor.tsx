@@ -30,9 +30,10 @@ export const Editor = ({
     }, []);
 
     const [value] = useAsyncValue(async () => {
-        const [types, react, mui, icons, code] = await Promise.all([
+        const [types, react, global, mui, icons, code] = await Promise.all([
             fetchText("react-declarative.d.ts"),
             fetchText("react.d.ts"),
+            fetchText("global.d.ts"),
             fetchText("mui-material.d.ts"),
             fetchText("mui-icons.d.ts"),
             fetchText("code1.txt"),
@@ -41,6 +42,7 @@ export const Editor = ({
             types,
             code: codeManager.getValue() || code,
             react,
+            global,
             mui,
             icons,
         };
@@ -71,6 +73,7 @@ export const Editor = ({
                 editor.setModel(codeModel);
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(value.types!, 'file:///node_modules/react-declarative/index.d.ts');
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(value.react!, 'file:///node_modules/react/index.d.ts');
+                monaco.languages.typescript.typescriptDefaults.addExtraLib(value.global!, 'file:///node_modules/global/index.d.ts');
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(value.mui!, 'file:///node_modules/@mui/material/index.d.ts');
                 monaco.languages.typescript.typescriptDefaults.addExtraLib(value.icons!, 'file:///node_modules/@mui/icons-material/index.d.ts');
                 getValueRef.current = () => editor.getValue();

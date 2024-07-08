@@ -1,0 +1,123 @@
+import { useMemo } from "react";
+
+import { TypedField, FieldType, deepFlat } from "react-declarative";
+
+const ReflectFields = ({ _fieldData: data }) => {
+
+  const plainText = useMemo(() => {
+    const result: string[] = [];
+
+    deepFlat(fields).forEach(({ name }) => {
+      if (name) {
+        result.push(`${name} - ${data[name] || "empty"}`)
+      }
+    });
+
+    return result.join('\n');
+  }, [data]);
+
+  return (
+    <pre>
+      {plainText}
+    </pre>
+  );
+}
+
+export const fields: TypedField[] = [
+  {
+    type: FieldType.Outline,
+    fieldBottomMargin: '1',
+    fieldRightMargin: '1',
+    desktopColumns: '4',
+    tabletColumns: '6',
+    phoneColumns: '12',
+    fields: [
+      {
+        type: FieldType.Typography,
+        placeholder: 'Group 1',
+      },
+      {
+        type: FieldType.Text,
+        name: 'property_1'
+      },
+      {
+        type: FieldType.Text,
+        name: 'property_2'
+      },
+      {
+        type: FieldType.Text,
+        name: 'property_3'
+      }
+    ],
+  },
+  {
+    type: FieldType.Outline,
+    fieldBottomMargin: '1',
+    fieldRightMargin: '1',
+    desktopColumns: '4',
+    tabletColumns: '6',
+    phoneColumns: '12',
+    fields: [
+      {
+        type: FieldType.Typography,
+        placeholder: 'Group 2',
+      },
+      {
+        type: FieldType.Text,
+        name: 'property_4'
+      },
+      {
+        type: FieldType.Text,
+        name: 'property_5'
+      },
+      {
+        type: FieldType.Text,
+        name: 'property_6'
+      }
+    ],
+  },
+  {
+    type: FieldType.Outline,
+    fieldBottomMargin: '1',
+    fieldRightMargin: '1',
+    desktopColumns: '4',
+    tabletColumns: '6',
+    phoneColumns: '12',
+    fields: [
+      {
+        type: FieldType.Typography,
+        placeholder: 'Group 3',
+      },
+      {
+        type: FieldType.Text,
+        name: 'property_7'
+      },
+      {
+        type: FieldType.Text,
+        name: 'property_8'
+      },
+      {
+        type: FieldType.Text,
+        name: 'property_9'
+      }
+    ],
+  },
+  {
+    type: FieldType.Outline,
+    fieldBottomMargin: '1',
+    fieldRightMargin: '1',
+    desktopColumns: '4',
+    tabletColumns: '6',
+    phoneColumns: '12',
+    sx: (theme) => ({ 
+      height: '300px',
+      [theme.breakpoints.down("md")] : {
+        order: -3
+      }
+    }),
+    child: {
+      type: FieldType.Component,
+      element: ReflectFields,
+    }
+  }
+];
