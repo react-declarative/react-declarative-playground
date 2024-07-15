@@ -1,0 +1,53 @@
+import { TypedField, FieldType, RoiView, randomString} from "react-declarative";
+
+const AREA_SRC = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Putnam_House_-_floor_plans.jpg/1280px-Putnam_House_-_floor_plans.jpg";
+
+const createCord = () => ({
+    type: "rect",
+    id: randomString(),
+    top: 50, 
+    left: 50, 
+    height: 100, 
+    width: 100, 
+    color: "#EFE771"
+})
+
+export const data = {
+    cords: [
+        createCord(),
+    ],
+};
+
+export const fields: TypedField[] = [
+    {
+        type: FieldType.Component,
+        sx: {
+            minHeight: 275,
+        },
+        element: ({
+            cords,
+            map_readonly,
+            onChange,
+        }) => (
+            <RoiView
+                readonly={map_readonly}
+                src={AREA_SRC}
+                cords={cords}
+                onChange={(cords) => {
+                    onChange({cords})
+                }}
+            />
+        ),
+    },
+    {
+        type: FieldType.Checkbox,
+        name: 'map_readonly',
+        title: "Readonly",
+    },
+    {
+        type: FieldType.Button,
+        buttonVariant: "contained",
+        title: 'Add rect',
+        click: (name, e, { cords }, {}, {}, onChange) => onChange({ cords: [...cords, createCord()] }),
+    }
+];

@@ -93,6 +93,10 @@ const itemList = [
         url: 'code20.txt',
         label: 'Reflection',
     },
+    {
+        url: 'code21.txt',
+        label: 'Mall map',
+    },
 ];
 
 interface IHeaderProps {
