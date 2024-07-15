@@ -1,53 +1,147 @@
-import { TypedField, FieldType, RoiView, randomString} from "react-declarative";
+import {
+  TypedField,
+  FieldType,
+  RoiView,
+  randomString,
+} from "react-declarative";
 
-const AREA_SRC = "https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/Putnam_House_-_floor_plans.jpg/1280px-Putnam_House_-_floor_plans.jpg";
+const AREA_SRC = "/floor.jpg";
 
 const createCord = () => ({
-    type: "rect",
-    id: randomString(),
-    top: 50, 
-    left: 50, 
-    height: 100, 
-    width: 100, 
-    color: "#EFE771"
-})
+  type: "rect",
+  id: randomString(),
+  top: 50,
+  left: 50,
+  height: 100,
+  width: 100,
+  color: "#EFE771",
+  label: "ROOM №? ",
+});
 
 export const data = {
-    cords: [
-        createCord(),
-    ],
+  cords: [
+    {
+      type: "rect",
+      id: "c79b6bf1-c1aa-4889-8229-935daccd2aac",
+      top: 106,
+      left: 214,
+      height: 190,
+      width: 320,
+      color: "green",
+      label: "ROOM №1 ",
+    },
+    {
+      type: "rect",
+      id: "c4bea369-c381-48bd-bfc7-4d4f7682f6ed",
+      top: 105,
+      left: 823,
+      height: 182,
+      width: 332,
+      color: "orange",
+      label: "ROOM №2 ",
+    },
+    {
+      type: "rect",
+      id: "0e5b78e6-7fea-4c9b-afc4-fb22aa4e6c42",
+      top: 579,
+      left: 710,
+      height: 213,
+      width: 445,
+      color: "magenta",
+      label: "ROOM №3 ",
+    },
+    {
+      type: "rect",
+      id: "f7c64e13-489b-4112-a11c-e6cae5592172",
+      top: 469,
+      left: 713,
+      height: 103,
+      width: 441,
+      color: "cyan",
+      label: "ROOM №4 ",
+    },
+    {
+      type: "rect",
+      id: "e02fdf44-4a18-448e-bf26-40ae89de35c1",
+      top: 291,
+      left: 713,
+      height: 176,
+      width: 441,
+      color: "red",
+      label: "ROOM №5 ",
+    },
+    {
+      type: "rect",
+      id: "21f23e89-d91e-4a90-a546-7b8cdb39d95c",
+      top: 296,
+      left: 95,
+      height: 163,
+      width: 439,
+      color: "navy",
+      label: "ROOM №6 ",
+    },
+    {
+      type: "rect",
+      id: "5398fbad-2be1-4f32-a495-f47ca7a1bdbd",
+      top: 462,
+      left: 98,
+      height: 100,
+      width: 100,
+      color: "pink",
+      label: "ROOM №7 ",
+    },
+    {
+      type: "rect",
+      id: "8f398bdc-16e2-44a9-9c51-fd6a08106b0e",
+      top: 465,
+      left: 363,
+      height: 104,
+      width: 166,
+      color: "oil",
+      label: "ROOM №8 ",
+    },
+    {
+      type: "rect",
+      id: "81be5804-b90b-46ad-b3d3-5b185c64965e",
+      top: 574,
+      left: 94,
+      height: 224,
+      width: 436,
+      color: "yellow",
+      label: "ROOM №9 ",
+    },
+  ],
+  map_readonly: true,
 };
 
 export const fields: TypedField[] = [
-    {
-        type: FieldType.Component,
-        sx: {
-            minHeight: 275,
-        },
-        element: ({
-            cords,
-            map_readonly,
-            onChange,
-        }) => (
-            <RoiView
-                readonly={map_readonly}
-                src={AREA_SRC}
-                cords={cords}
-                onChange={(cords) => {
-                    onChange({cords})
-                }}
-            />
-        ),
+  {
+    type: FieldType.Component,
+    sx: {
+      minHeight: 275,
     },
-    {
-        type: FieldType.Checkbox,
-        name: 'map_readonly',
-        title: "Readonly",
-    },
-    {
-        type: FieldType.Button,
-        buttonVariant: "contained",
-        title: 'Add rect',
-        click: (name, e, { cords }, {}, {}, onChange) => onChange({ cords: [...cords, createCord()] }),
-    }
+    element: ({ cords, map_readonly, onChange }) => (
+      <RoiView
+        readonly={map_readonly}
+        src={AREA_SRC}
+        cords={cords}
+        onChange={(cords) => {
+          onChange({ cords });
+        }}
+        onClick={(e, id) => alert(id)}
+      />
+    ),
+  },
+  {
+    type: FieldType.Checkbox,
+    name: "map_readonly",
+    title: "Readonly",
+  },
+  {
+    type: FieldType.Button,
+    buttonVariant: "contained",
+    title: "Add rect",
+    click: (name, e, { cords }, {}, {}, onChange) =>
+      onChange({ cords: [...cords, createCord()] }),
+  },
 ];
