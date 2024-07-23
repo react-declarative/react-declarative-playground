@@ -97,6 +97,10 @@ const itemList = [
         url: 'code21.txt',
         label: 'Mall map',
     },
+    {
+        url: 'code22.txt',
+        label: 'Rate card',
+    },
 ];
 
 interface IHeaderProps {

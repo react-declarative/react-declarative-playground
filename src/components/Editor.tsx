@@ -62,6 +62,7 @@ export const Editor = ({
                     ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),
                     jsx: monaco.languages.typescript.JsxEmit.React,
                     jsxFactory: 'React.createElement',
+                    jsxFragmentFactory: "React.Fragment",
                     reactNamespace: 'React',
                     target: monaco.languages.typescript.ScriptTarget.ES2020,
                   });
