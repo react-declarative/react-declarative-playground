@@ -105,10 +105,12 @@ const itemList = [
 
 interface IHeaderProps {
     onCode: (code: string) => void;
+    onFormat: () => void;
 }
 
 export const Header = ({
     onCode,
+    onFormat,
 }: IHeaderProps) => {
     const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
     const codeRef = useRef<string>("");
@@ -122,9 +124,9 @@ export const Header = ({
     }, []);
 
     const renderMenu = () => (
-        <Popover 
-            open={!!anchorEl} 
-            anchorEl={anchorEl} 
+        <Popover
+            open={!!anchorEl}
+            anchorEl={anchorEl}
             onClose={() => setAnchorEl(null)}
             anchorOrigin={{ horizontal: "left", vertical: "bottom" }}
             sx={{
@@ -209,6 +211,13 @@ export const Header = ({
                 </Box>
                 {renderMenu()}
                 <div style={{ flex: 1 }} />
+                <Button
+                    size="small"
+                    sx={{ color: '#fff', mr: 2, display: { xs: 'none', sm: 'flex' } }}
+                    onClick={onFormat}
+                >
+                    Prettier
+                </Button>
                 <IconButton onClick={() => openBlank('https://github.com/react-declarative/react-declarative')}>
                     <GitHub />
                 </IconButton>

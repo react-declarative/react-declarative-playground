@@ -1,10 +1,15 @@
 import MonacoEditor from '@monaco-editor/react';
 import { Typography } from '@mui/material';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 import { useAsyncValue } from 'react-declarative';
 
 import { codeManager } from '../config';
+
+import * as parserTypeScript from "prettier/plugins/typescript";
+import * as prettierPluginEstree from "prettier/plugins/estree";
+
+import { format } from "prettier";
 
 const fetchText = async (url: string) => {
     const responce = await fetch(url);
@@ -21,10 +26,31 @@ export const Editor = ({
     const getValueRef = useRef<() => string>(null as never);
     const setValueRef = useRef<(text: string) => void>(null as never);
 
+    const formatCode = useCallback(async () => {
+        if (!getValueRef.current || !setValueRef.current) {
+            return;
+        }
+        const code = getValueRef.current();
+        const formatcode = await format(code, {
+            semi: true,
+            endOfLine: "auto",
+            trailingComma: "all",
+            singleQuote: false,
+            printWidth: 80,
+            tabWidth: 2,
+            parser: 'typescript',
+            plugins: [parserTypeScript, prettierPluginEstree],
+        });
+        formatcode && setValueRef.current(formatcode);
+    }, []);
+
     useEffect(() => {
         window.addEventListener("message", ({ data }) => {
             if (data.type === "code-action" && data.code) {
                 setValueRef.current(data.code);
+            }
+            if (data.type === "format-action") {
+                formatCode();
             }
         });
     }, []);

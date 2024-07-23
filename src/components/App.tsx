@@ -202,6 +202,12 @@ export const App = () => {
                         code,
                     });
                 }}
+                onFormat={() => {
+                    editorRef.current?.contentWindow?.postMessage({
+                        type: "format-action",
+                        force: true,
+                    });
+                }}
             />
             {loader && (
                 <LinearProgress
