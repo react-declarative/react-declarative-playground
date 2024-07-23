@@ -139,4 +139,21 @@ declare module "@mui/material" {
     const getPanelId: React.Component;
     const getTabId: React.Component;
     const AvatarGroup: React.Component;
+    function hexToRgb(...args: any): any;
+    function rgbToHex(...args: any): any;
+    function hslToRgb(...args: any): any;
+    function decomposeColor(...args: any): any;
+    function recomposeColor(...args: any): any;
+    function getContrastRatio(...args: any): any;
+    function getLuminance(...args: any): any;
+    function emphasize(...args: any): any;
+    function alpha(...args: any): any;
+    function fade(...args: any): any;
+    function darken(...args: any): any;
+    function lighten(...args: any): any;
+    function useEventCallback(...args: any): any;
+    function useForkRef(...args: any): any;
+    function useIsFocusVisible(...args: any): any;
+    function useMediaQuery(...args: any): any;
+    function useScrollTrigger(...args: any): any;
 }
