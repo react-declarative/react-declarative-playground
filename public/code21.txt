@@ -97,7 +97,7 @@ export const data = {
       left: 363,
       height: 104,
       width: 166,
-      color: "oil",
+      color: "orange",
       label: "ROOM №8 ",
     },
     {
@@ -129,6 +129,7 @@ export const fields: TypedField[] = [
           onChange({ cords });
         }}
         onClick={(e, id) => alert(id)}
+        onHover={(e, id) => console.log(id)}
       />
     ),
   },

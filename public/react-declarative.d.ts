@@ -27378,11 +27378,11 @@ declare module "react-declarative/components/RoiView/RoiView" {
     > {
     withNaturalSize?: boolean;
     src: string;
-    readonly: boolean;
+    readonly?: boolean;
     cords: ICord[];
     onChange?: (cords: ICord[]) => void;
-    onClick?: (e: MouseEvent, id: string) => void;
-    onHover?: (e: MouseEvent, id: string) => void;
+    onClick?: (e: React.MouseEvent<HTMLDivElement>, id: string) => void;
+    onHover?: (e: React.MouseEvent<HTMLDivElement>, id: string) => void;
     onLoadStart?: () => void;
     onLoadEnd?: (isOk: boolean) => void;
   }
@@ -27408,7 +27408,7 @@ declare module "react-declarative/components/RoiView/RoiView" {
 
 declare module "react-declarative/components/RoiView/model/ICord" {
   export interface ICord {
-    type: "rect" | "square" | "roi";
+    type: "rect" | "roi";
     color: string;
     id: string;
     top: number;
@@ -27416,6 +27416,7 @@ declare module "react-declarative/components/RoiView/model/ICord" {
     width: number;
     height: number;
     label: string;
+    angle: number;
   }
   export interface ICordInternal
     extends Omit<
