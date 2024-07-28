@@ -16,9 +16,9 @@ export const fields: TypedField[] = [
         tabletColumns: "6",
         phoneColumns: "12",
         name: "input",
-        element: ({ input, onValueChange }) => (
+        element: ({ value, onValueChange }) => (
           <input
-            value={input}
+            value={value}
             placeholder="debounced"
             onChange={({ target }) => onValueChange(target.value)}
           />
