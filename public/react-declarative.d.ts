@@ -1648,6 +1648,8 @@ declare module "react-declarative/model/IValidation" {
     minNum?: number;
     maxNum?: number;
     pattern?: RegExp;
+    date?: boolean;
+    time?: boolean;
   }
   export default IValidation;
 }
@@ -10775,6 +10777,10 @@ declare module "react-declarative/utils/datetime" {
   export class Time {
     readonly hour: number;
     readonly minute: number;
+    /**
+     * Check if time is valid
+     */
+    get isValid(): boolean;
     constructor(hour: number, minute: number);
     /**
      * Converts the object to a string representation.
@@ -10803,6 +10809,10 @@ declare module "react-declarative/utils/datetime" {
     readonly day: number;
     readonly month: number;
     readonly year: number;
+    /**
+     * Check if date is valid
+     */
+    get isValid(): boolean;
     constructor(day: number, month: number, year: number);
     /**
      * Returns a string representation of the current object.
@@ -13904,6 +13914,7 @@ declare module "react-declarative/components/One/fields/ComponentField" {
   interface IComponentFieldPrivate<Data = IAnything> {
     object: PickProp<IManaged<Data>, "object">;
     disabled: PickProp<IManaged<Data>, "disabled">;
+    value: PickProp<IManaged<Data>, "value">;
     invalid: PickProp<IManaged<Data>, "invalid">;
     incorrect: PickProp<IManaged<Data>, "incorrect">;
     readonly: PickProp<IManaged<Data>, "readonly">;
@@ -13930,6 +13941,7 @@ declare module "react-declarative/components/One/fields/ComponentField" {
       invalid,
       incorrect,
       readonly,
+      value,
       watchOneContext,
       element: Element,
       outlinePaper,
@@ -17718,6 +17730,7 @@ declare module "react-declarative/model/ComponentFieldInstance" {
      * @type {boolean}
      */
     invalid: IManaged<Data, Payload>["invalid"];
+    value: IManaged<Data, Payload>["value"];
     features: string[];
   };
   /**
