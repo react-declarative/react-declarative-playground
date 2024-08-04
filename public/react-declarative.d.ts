@@ -579,6 +579,11 @@ declare module "react-declarative" {
     OneDefaultSlots,
   } from "react-declarative/components";
   export {
+    isBaseline,
+    isBaselineSimple,
+    isBaselineForRoot,
+  } from "react-declarative/components";
+  export {
     ListSlotFactory,
     ListDefaultSlots,
   } from "react-declarative/components";
@@ -1793,6 +1798,10 @@ declare module "react-declarative/model/IField" {
      */
     noBaseline?: boolean;
     /**
+     * Принудительно включает нижний baseline для текущей компоновки
+     */
+    baseline?: boolean;
+    /**
      * Флаг, удерживающий подпись текстового поля при пустом
      * значении
      */
@@ -2583,6 +2592,17 @@ declare module "react-declarative/model/IManaged" {
      * @property [noBaseline] - Specifies whether the field has a baseline or not.
      */
     noBaseline?: PickProp<IField<Data, Payload>, "noBaseline">;
+    /**
+     * Represents an optional property `baseline` that is picked from the interface `IField` using the `PickProp` utility type.
+     *
+     * @template Data - The type of data associated with the field.
+     * @template Payload - The type of payload associated with the field.
+     *
+     * @typedef baseline
+     *
+     * @property [baseline] - Specifies whether the field has a baseline or not.
+     */
+    baseline?: PickProp<IField<Data, Payload>, "baseline">;
   }
   /**
    * Типизацию компоновки следует вынести отдельно
@@ -3592,6 +3612,7 @@ declare module "react-declarative/model/IListProps" {
   import ActionType from "react-declarative/model/ActionType";
   import SelectionMode from "react-declarative/model/SelectionMode";
   import IAnything from "react-declarative/model/IAnything";
+  import IOneProps from "react-declarative/model/IOneProps";
   import IRowData, { RowId } from "react-declarative/model/IRowData";
   import IColumn from "react-declarative/model/IColumn";
   import IListOperation from "react-declarative/model/IListOperation";
@@ -4032,6 +4053,8 @@ declare module "react-declarative/model/IListProps" {
     Payload extends IAnything = IAnything,
     Field extends IField = IField<FilterData, Payload>,
   > {
+    isBaseline?: IOneProps["isBaseline"];
+    isBaselineForRoot?: IOneProps["isBaselineForRoot"];
     apiRef?: Ref<IListApi<FilterData, RowData>>;
     /**
      * Represents a React component that will be rendered after the chip list.
@@ -5170,6 +5193,14 @@ declare module "react-declarative/model/IOneProps" {
     Field = IField<Data, Payload>,
   > {
     /**
+     * Привязывет поля к нижнему краю
+     */
+    baseline?: boolean;
+    /**
+     * Привязывает поля и компоновки к верхнему краю
+     */
+    noBaseline?: boolean;
+    /**
      * Ссылка на объект API
      */
     apiRef?: React.Ref<IOneApi>;
@@ -5194,6 +5225,16 @@ declare module "react-declarative/model/IOneProps" {
      * Эмиттер для изменения данных. Вызывает change(data, false)
      */
     updateSubject?: TSubject<Data>;
+    /**
+     * Функция, определяющая, нужно ли включить baseline зависимо от
+     * расположения поля в иерархии композиции потомков
+     */
+    isBaseline?: (field: IField) => boolean;
+    /**
+     * Корневой компонент привязывает поля к нижнему краю только если
+     * нет ни одной компоновки
+     */
+    isBaselineForRoot?: (field: IField) => boolean;
     /**
      * Фабрика для создания полей пользователя
      */
@@ -6971,6 +7012,8 @@ declare module "react-declarative/hooks/useOne" {
     large?: boolean;
     handler?: OneHandler<Data, Payload>;
     payload?: IOneProps<Data, Payload, Field>["payload"];
+    isBaseline?: IOneProps<Data, Payload, Field>["isBaseline"];
+    isBaselineForRoot?: IOneProps<Data, Payload, Field>["isBaselineForRoot"];
     readTransform?: IOnePublicProps<Data, Payload, Field>["readTransform"];
     writeTransform?: IOnePublicProps<Data, Payload, Field>["writeTransform"];
     features?: IOnePublicProps<Data, Payload, Field>["features"];
@@ -7007,6 +7050,8 @@ declare module "react-declarative/hooks/useOne" {
     waitForChangesDelay,
     readTransform,
     writeTransform,
+    isBaseline,
+    isBaselineForRoot,
     features,
   }: IParams<Data, Payload, Field>) => ({
     handler,
@@ -11230,6 +11275,9 @@ declare module "react-declarative/components/One" {
   export { usePreventLeave } from "react-declarative/components/One/api/usePreventLeave";
   export { default as OneSlotFactory } from "react-declarative/components/One/components/SlotFactory";
   export { defaultSlots as OneDefaultSlots } from "react-declarative/components/One/components/SlotFactory";
+  export { isBaseline } from "react-declarative/components/One/config/isBaseline";
+  export { isBaselineSimple } from "react-declarative/components/One/config/isBaselineSimple";
+  export { isBaselineForField as isBaselineForRoot } from "react-declarative/components/One/config/isBaseline";
   export { default } from "react-declarative/components/One/One";
 }
 
@@ -19148,7 +19196,7 @@ declare module "react-declarative/components/List/hooks/useStateAction" {
       children,
       payload,
     }: {
-      children: import("react").ReactNode /** The total number of rows, or null if unknown. */;
+      children: import("react").ReactNode;
       payload: TSubject<IStateAction>;
     }) => JSX.Element,
     useStateAction: () => TSubject<IStateAction>;
@@ -21555,6 +21603,28 @@ declare module "react-declarative/components/One/api/usePreventLeave" {
   export default usePreventLeave;
 }
 
+declare module "react-declarative/components/One/config/isBaseline" {
+  import FieldType from "react-declarative/model/FieldType";
+  import IField from "react-declarative/model/IField";
+  /**
+   * Set of FieldType values representing the baseline fields.
+   */
+  export const baselineFields: Set<FieldType>;
+  /**
+   * Для поля нужно проверить флаги и наличие в списке. Флаги baseline компоновок
+   * действуют только на потомков и на родительский элемент не распространяются
+   */
+  export const isBaselineForField: (field: IField) => boolean;
+  export const isBaseline: (field: IField) => boolean;
+  export default isBaseline;
+}
+
+declare module "react-declarative/components/One/config/isBaselineSimple" {
+  import IField from "react-declarative/model/IField";
+  export const isBaselineSimple: ({ noBaseline }: IField) => boolean;
+  export default isBaselineSimple;
+}
+
 declare module "react-declarative/components/OneIcon/OneIcon" {
   import IOneIconProps from "react-declarative/components/OneIcon/model/IOneIconProps";
   /** *
@@ -21589,6 +21659,8 @@ declare module "react-declarative/components/OneIcon/OneIcon" {
     badgeOverlap,
     badgeSx,
     oneSx,
+    isBaseline,
+    isBaselineForRoot,
     onChange,
     onFocus,
     onBlur,
@@ -21644,6 +21716,8 @@ declare module "react-declarative/components/OneButton/OneButton" {
     onChange,
     onFocus,
     onBlur,
+    isBaseline,
+    isBaselineForRoot,
     onInvalid,
     readTransform,
     writeTransform,
@@ -23054,6 +23128,8 @@ declare module "react-declarative/components/ActionModal/ActionModal" {
     title?: string;
     dirty?: boolean;
     param?: Param;
+    isBaselineForRoot?: IOneProps<Data, Payload>["isBaselineForRoot"];
+    isBaseline?: IOneProps<Data, Payload>["isBaseline"];
     features?: IOnePublicProps<Data, Payload>["features"];
     outlinePaper?: IOneProps<Data, Payload>["outlinePaper"];
     transparentPaper?: IOneProps<Data, Payload>["transparentPaper"];
@@ -23182,6 +23258,8 @@ declare module "react-declarative/components/ActionModal/ActionModal" {
     features,
     changeSubject,
     reloadSubject,
+    isBaselineForRoot,
+    isBaseline,
     outlinePaper,
     transparentPaper,
     open,
@@ -23297,6 +23375,8 @@ declare module "react-declarative/components/ActionModal/useActionModal" {
     onInvalid,
     readTransform,
     writeTransform,
+    isBaseline,
+    isBaselineForRoot,
     AfterTitle,
     outlinePaper,
     transparentPaper,
@@ -26248,7 +26328,7 @@ declare module "react-declarative/components/ErrorView/ErrorView" {
 declare module "react-declarative/components/AuthView/AuthView" {
   import * as React from "react";
   import { SxProps } from "@mui/material";
-  import { OneHandler } from "react-declarative/model/IOneProps";
+  import IOneProps, { OneHandler } from "react-declarative/model/IOneProps";
   import IAnything from "react-declarative/model/IAnything";
   import IField from "react-declarative/model/IField";
   /**
@@ -26270,6 +26350,8 @@ declare module "react-declarative/components/AuthView/AuthView" {
     appName?: string;
     fields?: Field[];
     handler?: OneHandler<Data, Payload>;
+    isBaseline?: IOneProps["isBaseline"];
+    isBaselineForRoot?: IOneProps["isBaselineForRoot"];
     Logo?: React.ComponentType<any>;
     onAuth?: (data: Data) => void | Promise<void>;
     onLoadStart?: () => void;
@@ -26320,6 +26402,8 @@ declare module "react-declarative/components/AuthView/AuthView" {
     throwError,
     handler,
     fallback,
+    isBaseline,
+    isBaselineForRoot,
     onAuth,
     BeforeSubmit,
     AfterSubmit,
@@ -30469,6 +30553,8 @@ declare module "react-declarative/components/OneIcon/model/IOneIconProps" {
     onInvalid?: IOneProps<Data, Payload>["invalidity"];
     onFocus?: IOneProps<Data, Payload>["focus"];
     onBlur?: IOneProps<Data, Payload>["blur"];
+    isBaseline?: IOneProps<Data, Payload>["isBaseline"];
+    isBaselineForRoot?: IOneProps<Data, Payload>["isBaselineForRoot"];
     badgeColor?:
       | "primary"
       | "secondary"
@@ -30545,6 +30631,8 @@ declare module "react-declarative/components/OneButton/model/IOneButtonProps" {
     onInvalid?: IOneProps<Data, Payload>["invalidity"];
     onFocus?: IOneProps<Data, Payload>["focus"];
     onBlur?: IOneProps<Data, Payload>["blur"];
+    isBaseline?: IOneProps<Data, Payload>["isBaseline"];
+    isBaselineForRoot?: IOneProps<Data, Payload>["isBaselineForRoot"];
     readTransform?: IOnePublicProps<Data, Payload>["readTransform"];
     writeTransform?: IOnePublicProps<Data, Payload>["writeTransform"];
     badgeColor?:
