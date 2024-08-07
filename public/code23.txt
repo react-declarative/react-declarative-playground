@@ -1,5 +1,7 @@
 import { IField, TypedField, FieldType } from "react-declarative";
 
+import { ArrowBack } from "@mui/icons-material";
+
 interface IBooleanGroupParams<Data extends object = any> {
   validation?: IField<Data>["validation"];
   phoneColumns?: IField<Data>["phoneColumns"];
@@ -272,6 +274,35 @@ export const createTextGroup = ({
 });
 
 export const fields: TypedField[] = [
+  {
+    type: FieldType.Box,
+    sx: {
+      display: "grid",
+      gridTemplateColumns: "auto 1fr auto",
+      alignItems: "center",
+    },
+    fields: [
+      {
+        type: FieldType.Button,
+        fieldBottomMargin: '1',
+        fieldRightMargin: '0',
+        buttonVariant: "outlined",
+        icon: ArrowBack,
+        title: "Назад",
+      },
+      {
+        type: FieldType.Div,
+      },
+      {
+        type: FieldType.Button,
+        fieldBottomMargin: '1',
+        fieldRightMargin: '0',
+        buttonVariant: "contained",
+        name: "submit",
+        title: "Отправить",
+      },
+    ],
+  },
   createComboGroup({
     name: "district",
     title: "District",
@@ -383,4 +414,14 @@ export const fields: TypedField[] = [
     name: "comment",
     title: "Comment",
   }),
+  {
+    type: FieldType.Button,
+    fieldRightMargin: "0",
+    buttonVariant: "contained",
+    sx: {
+      minHeight: "65px",
+    },
+    name: "submit",
+    title: "Отправить",
+  },
 ];
