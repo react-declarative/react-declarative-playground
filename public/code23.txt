@@ -167,6 +167,62 @@ export const createItemsGroup = ({
   ],
 });
 
+
+interface INode { label: string; value: string; child?: Omit<INode, "child">[]; }
+
+interface IItemsGroupParams<Data extends object = any> {
+    validation?: IField<Data>["validation"];
+    phoneColumns?: IField<Data>["phoneColumns"];
+    tabletColumns?: IField<Data>["tabletColumns"];
+    desktopColumns?: IField<Data>["desktopColumns"];
+    columns?: IField<Data>["columns"];
+    name: IField<Data>["name"];
+    title: IField<Data>["title"];
+    isVisible?: IField<Data>["isVisible"];
+    hidden?: IField<Data>["hidden"];
+    itemTree?: INode[];
+}
+
+export const createTreeGroup = ({
+    phoneColumns,
+    tabletColumns,
+    desktopColumns,
+    columns,
+    name,
+    title,
+    isVisible,
+    validation,
+    itemTree = [],
+    hidden,
+}: IItemsGroupParams): TypedField => ({
+    type: FieldType.Paper,
+    fieldBottomMargin: "1",
+    isVisible,
+    hidden,
+    phoneColumns,
+    tabletColumns,
+    desktopColumns,
+    columns,
+    fields: [
+        {
+            type: FieldType.Typography,
+            typoVariant: "body1",
+            placeholder: title,
+        },
+        {
+            type: FieldType.Tree,
+            validation,
+            desktopColumns: "6",
+            tabletColumns: "8",
+            phoneColumns: "12",
+            itemTree,
+            name,
+            title: "",
+            placeholder: "Мой ответ",
+        },
+    ],
+});
+
 interface IRadioGroupParams<Data extends object = any> {
   phoneColumns?: IField<Data>["phoneColumns"];
   tabletColumns?: IField<Data>["tabletColumns"];
@@ -200,9 +256,39 @@ export const createRadioGroup = ({
   columns,
   fields: [
     {
-      type: FieldType.Typography,
-      typoVariant: "body1",
-      placeholder: title,
+      type: FieldType.Box,
+      sx: {
+        display: "grid",
+        gridTemplateColumns: "auto 1fr auto",
+      },
+      fields: [
+        {
+          type: FieldType.Typography,
+          typoVariant: "body1",
+          placeholder: title,
+        },
+        {
+          type: FieldType.Div,
+        },
+        {
+          type: FieldType.Button,
+          fieldBottomMargin: '0',
+          fieldRightMargin: '0',
+          sx: {
+            width: "125px",
+          },
+          isVisible: (data) => {
+            return !!data[name];
+          },
+          title: "Deselect",
+          buttonSize: 'small',
+          click: (name, e, data, payload, onValueChange, onChange) => {
+            onChange({
+              [name]: null,
+            });
+          },
+        },
+      ],
     },
     ...radioItems.map(
       (radioValue): TypedField => ({
@@ -284,22 +370,22 @@ export const fields: TypedField[] = [
     fields: [
       {
         type: FieldType.Button,
-        fieldBottomMargin: '1',
-        fieldRightMargin: '0',
+        fieldBottomMargin: "1",
+        fieldRightMargin: "0",
         buttonVariant: "outlined",
         icon: ArrowBack,
-        title: "Назад",
+        title: "Back",
       },
       {
         type: FieldType.Div,
       },
       {
         type: FieldType.Button,
-        fieldBottomMargin: '1',
-        fieldRightMargin: '0',
+        fieldBottomMargin: "1",
+        fieldRightMargin: "0",
         buttonVariant: "contained",
         name: "submit",
-        title: "Отправить",
+        title: "Submit",
       },
     ],
   },
@@ -422,6 +508,6 @@ export const fields: TypedField[] = [
       minHeight: "65px",
     },
     name: "submit",
-    title: "Отправить",
+    title: "Submit",
   },
 ];
