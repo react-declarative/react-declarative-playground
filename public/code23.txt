@@ -282,7 +282,7 @@ export const createRadioGroup = ({
           },
           title: "Deselect",
           buttonSize: 'small',
-          click: (name, e, data, payload, onValueChange, onChange) => {
+          click: ({}, {}, {}, {}, {}, onChange) => {
             onChange({
               [name]: null,
             });
