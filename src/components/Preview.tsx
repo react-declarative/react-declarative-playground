@@ -104,7 +104,7 @@ export const Preview = ({
                 <Async reloadSubject={transpileSubject}>
                     {async () => {
                         if (!window.Executor) {
-                            return <Typography variant="body1" sx={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading preview...</Typography>;
+                            return <Typography variant="body1" sx={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Compiling...</Typography>;
                         }
                         await loadScripts();
                         return (

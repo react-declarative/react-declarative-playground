@@ -75,7 +75,7 @@ export const Editor = ({
     });
 
     if (!value) {
-        return <Typography variant='body1' sx={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading editor...</Typography>;
+        return <Typography variant='body1' sx={{ height: '100vh', width: '100vw', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>Loading VSCode...</Typography>;
     }
 
     return (
