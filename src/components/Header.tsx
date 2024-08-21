@@ -154,6 +154,8 @@ export const Header = ({
                 <Typography
                     variant="h6"
                     component="div"
+                    sx={{ cursor: 'pointer' }}
+                    onClick={() => openBlank("https://github.com/react-declarative/react-declarative")}
                 >
                     Playground
                 </Typography>
@@ -211,6 +213,14 @@ export const Header = ({
                         onClick={({ currentTarget }) => setAnchorEl(currentTarget)}
                     >
                         Demos
+                    </Button>
+                    <Button
+                        size="small"
+                        endIcon={<KeyboardArrowDown />}
+                        sx={{ color: '#fff', ml: 1, display: { xs: 'none', sm: 'flex' } }}
+                        onClick={() => openBlank("https://github.com/react-declarative/react-declarative/tree/master/docs")}
+                    >
+                        Docs
                     </Button>
                 </Box>
                 {renderMenu()}
