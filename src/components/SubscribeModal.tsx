@@ -24,7 +24,7 @@ const useStyles = makeStyles()((theme) => ({
         right: 0,
         bottom: 0,
         zIndex: 9999,
-        background: alpha('#000', 0.2),
+        background: alpha('#999999', 0.2),
         backdropFilter: 'saturate(180%) blur(20px)',
         height: '100%',
         width: '100%',
@@ -37,7 +37,7 @@ const useStyles = makeStyles()((theme) => ({
     },
     container: {
         position: "relative",
-        marginBottom: '10vw',
+        marginBottom: '3.5vw',
         overflow: "hidden",
         maxWidth: 375,
         padding: 15,
