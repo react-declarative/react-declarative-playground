@@ -29,6 +29,7 @@ import './common/RemoveAccount';
 import "./common/Currency";
 import "./common/StockChart";
 import useStateContext from "../context/useStateContext";
+import SubscribeModal from "./SubscribeModal";
 
 const isDevelopment = () => {
     return process.env.CC_NODE_ENV === "development";
@@ -222,6 +223,7 @@ export const App = () => {
             <Split direction={isMobile ? "vertical" : "horizontal"}>
                 {renderInner()}
             </Split>
+            <SubscribeModal />
         </Box>
     );
 };

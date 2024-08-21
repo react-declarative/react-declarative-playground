@@ -214,20 +214,19 @@ export const Header = ({
                     >
                         Demos
                     </Button>
-                    <Button
-                        size="small"
-                        endIcon={<KeyboardArrowDown />}
-                        sx={{ color: '#fff', ml: 1, display: { xs: 'none', sm: 'flex' } }}
-                        onClick={() => openBlank("https://github.com/react-declarative/react-declarative/tree/master/docs")}
-                    >
-                        Docs
-                    </Button>
                 </Box>
                 {renderMenu()}
                 <div style={{ flex: 1 }} />
                 <Button
                     size="small"
-                    sx={{ color: '#fff', mr: 2, display: { xs: 'none', sm: 'flex' } }}
+                    sx={{ color: '#fff', display: { xs: 'none', sm: 'flex' } }}
+                    onClick={() => openBlank("https://github.com/react-declarative/react-declarative/tree/master/docs")}
+                >
+                    Docs
+                </Button>
+                <Button
+                    size="small"
+                    sx={{ color: '#fff', ml: 1, mr: 2, display: { xs: 'none', sm: 'flex' } }}
                     onClick={onFormat}
                 >
                     Prettier
