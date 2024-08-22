@@ -107,7 +107,7 @@ export const ConnectPage = () => {
 
     return (
         <PortalView>
-            <Box className={classes.root}>
+            <Box className={classes.root} onClick={() => !disabled && handleClose()}>
                 <RevealView className={classes.reveal}>
                     <Paper className={classes.container}>
                         <Stack direction='column' gap="15px">
