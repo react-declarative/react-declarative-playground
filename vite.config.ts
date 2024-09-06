@@ -29,4 +29,7 @@ export default defineConfig({
   server: {
     hmr: false,
   },
+  optimizeDeps: {
+    include: ['@mui/material/Tooltip', '@emotion/styled'],
+  },
 });

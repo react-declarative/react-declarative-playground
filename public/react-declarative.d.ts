@@ -398,8 +398,11 @@ declare module "react-declarative" {
   > = IFeatureInternal<Data, Payload>;
   export { FeatureType } from "react-declarative/components/FeatureView";
   export { IVisibilityGroup } from "react-declarative/components/VisibilityView";
-  import { recordToExcelExport } from "react-declarative/components/RecordView";
-  export { recordToExcelExport };
+  import {
+    recordToExcelExport,
+    RECORD_NEVER_VALUE,
+  } from "react-declarative/components/RecordView";
+  export { recordToExcelExport, RECORD_NEVER_VALUE };
   export { ErrorBoundary } from "react-declarative/components";
   export { AutoSizer } from "react-declarative/components";
   export { ActionStopIcon } from "react-declarative/components";
@@ -712,6 +715,7 @@ declare module "react-declarative" {
   import { ITextSlot as ITextSlotInternal } from "react-declarative/components";
   import { ICompleteSlot as ICompleteSlotInternal } from "react-declarative/components";
   import { ITypographySlot as ITypographySlotInternal } from "react-declarative/components";
+  import { IButtonSlot as IButtonSlotInternal } from "react-declarative/components";
   import { IActionAddSlot as IActionAddSlotInternal } from "react-declarative/components";
   import { IActionFabSlot as IActionFabSlotInternal } from "react-declarative/components";
   import { IActionMenuSlot as IActionMenuSlotInternal } from "react-declarative/components";
@@ -728,6 +732,7 @@ declare module "react-declarative" {
   import { History as HistoryInternal } from "react-declarative/model/History";
   export type History = HistoryInternal;
   export type ICheckBoxSlot = ICheckBoxSlotInternal;
+  export type IButtonSlot = IButtonSlotInternal;
   export type IComboSlot = IComboSlotInternal;
   export type IYesNoSlot = IYesNoSlotInternal;
   export type IItemsSlot = IItemsSlotInternal;
@@ -761,7 +766,6 @@ declare module "react-declarative" {
   export type IPositionActionListSlot = IPositionActionListSlotInternal;
   import type { IAwaiter as IAwaiterInternal } from "react-declarative/utils/createAwaiter";
   export type IAwaiter<T extends IAnything> = IAwaiterInternal<T>;
-  export { VirtualListBox } from "react-declarative/components/One/components/common/VirtualListBox";
   export { list2grid } from "react-declarative/utils/list2grid";
   export { openBlank } from "react-declarative/utils/openBlank";
   export { createDict } from "react-declarative/utils/createDict";
@@ -976,6 +980,11 @@ declare module "react-declarative" {
   export { iterateList } from "react-declarative/api/iterateList";
   export { useOpenDocument } from "react-declarative/view/useOpenDocument";
   export { heavy } from "react-declarative/utils/heavy";
+  export { useDebounce } from "react-declarative/components/One/hooks/useDebounce";
+  export { useDebouncedCallback } from "react-declarative/components/One/hooks/useDebouncedCallback";
+  export { DatePicker } from "react-declarative/components/common/DatePicker/DatePicker";
+  export { TimePicker } from "react-declarative/components/common/TimePicker/TimePicker";
+  export { VirtualListBox } from "react-declarative/components/One/components/common/VirtualListBox";
 }
 
 declare module "react-declarative/components" {
@@ -2108,6 +2117,10 @@ declare module "react-declarative/model/IField" {
      * Включает change-detection для выпадающих меню. По умолчанию выключено
      */
     watchItemList?: boolean;
+    /**
+     * Включает change-detection для выпадающих меню. По умолчанию выключено
+     */
+    watchItemTree?: boolean;
     /**
      * Включает change-detection для поля компонента. По умолчанию выключено
      */
@@ -7209,6 +7222,7 @@ declare module "react-declarative/components/VisibilityView" {
 
 declare module "react-declarative/components/RecordView" {
   export * from "react-declarative/components/RecordView/RecordView";
+  export { RECORD_NEVER_VALUE } from "react-declarative/components/RecordView/constant/RECORD_NEVER_VALUE";
   export { excelExport as recordToExcelExport } from "react-declarative/components/RecordView/helpers/excelExport";
   export { default } from "react-declarative/components/RecordView/RecordView";
 }
@@ -7455,33 +7469,6 @@ declare module "react-declarative/utils/createAwaiter" {
     IAwaiter<T>,
   ];
   export default createAwaiter;
-}
-
-declare module "react-declarative/components/One/components/common/VirtualListBox" {
-  import * as React from "react";
-  /**
-   * Interface for the props of the VirtualListBox component.
-   */
-  interface IVirtualListBoxProps extends React.HTMLAttributes<HTMLElement> {
-    children?: React.ReactNode;
-  }
-  /**
-   * A virtual list box component that renders a list of items in a virtualized manner.
-   *
-   * @component
-   *
-   * @param props - The props object.
-   * @param props.className - The class name to apply to the list box container.
-   * @param props.children - The children to render within the list box.
-   * @param props.role - The role attribute value for the list box container.
-   * @param ref - The ref object for accessing the underlying HTMLDivElement.
-   *
-   * @returns The rendered list box component.
-   */
-  export const VirtualListBox: React.ForwardRefExoticComponent<
-    IVirtualListBoxProps & React.RefAttributes<HTMLDivElement>
-  >;
-  export default VirtualListBox;
 }
 
 declare module "react-declarative/utils/list2grid" {
@@ -11279,6 +11266,162 @@ declare module "react-declarative/utils/heavy" {
   export default heavy;
 }
 
+declare module "react-declarative/components/One/hooks/useDebounce" {
+  import { DebouncedControlFunctions } from "react-declarative/components/One/hooks/useDebouncedCallback";
+  import { Value } from "react-declarative/model/IField";
+  /**
+   * Debounces the given value with the specified delay.
+   *
+   * @param value - The value to be debounced.
+   * @param delay - The delay in milliseconds before invoking the debounced value.
+   * @param options - The optional configuration options for debounce behavior.
+   * @param options.maxWait - The maximum wait time in milliseconds before invoking the debounced value.
+   * @param options.leading - Determines if the debounced value should be invoked on the leading edge.
+   * @param options.trailing - Determines if the debounced value should be invoked on the trailing edge.
+   * @param options.equalityFn - The custom equality function to compare previous and current values.
+   * @returns An array containing the debounced value and control functions for the debounced callback.
+   */
+  export function useDebounce<T extends any = Value>(
+    value: T,
+    delay: number,
+    options?: {
+      maxWait?: number;
+      leading?: boolean;
+      trailing?: boolean;
+      equalityFn?: (left: T, right: T) => boolean;
+    },
+  ): [T, DebouncedControlFunctions];
+  export default useDebounce;
+}
+
+declare module "react-declarative/components/One/hooks/useDebouncedCallback" {
+  /**
+   * Represents the options for a class.
+   */
+  export interface Options {
+    maxWait?: number;
+    leading?: boolean;
+    trailing?: boolean;
+  }
+  /**
+   * Interface for DebouncedControlFunctions.
+   *
+   * @interface
+   */
+  export interface DebouncedControlFunctions {
+    cancel: () => void;
+    flush: () => void;
+    pending: () => boolean;
+  }
+  type value = object | string | number | boolean;
+  /**
+   * Subsequent calls to the debounced function `debounced.callback` return the result of the last func invocation.
+   * Note, that if there are no previous invocations it's mean you will get undefined. You should check it in your
+   * code properly.
+   */
+  export interface DebouncedState<T extends (...args: value[]) => ReturnType<T>>
+    extends DebouncedControlFunctions {
+    callback: (...args: Parameters<T>) => ReturnType<T>;
+  }
+  /**
+   * Returns a debounced version of the provided callback function.
+   *
+   * @template T - The type of the original callback function.
+   * @param func - The original callback function.
+   * @param [wait] - The debounce wait time in milliseconds (default: 0).
+   * @param [options] - Additional options for debouncing (default: {}).
+   * @returns - An object containing the debounced callback and utility functions.
+   */
+  export function useDebouncedCallback<
+    T extends (...args: value[]) => ReturnType<T>,
+  >(func: T, wait?: number, options?: Options): DebouncedState<T>;
+  export default useDebouncedCallback;
+}
+
+declare module "react-declarative/components/common/DatePicker/DatePicker" {
+  import dayjs from "dayjs";
+  /**
+   * A customizable date picker component.
+   *
+   * @param props - The component props.
+   * @param props.date - The initial date to display in the date picker.
+   * @param props.minDate - The minimum selectable date in the date picker. Defaults to '1900-01-01'.
+   * @param props.maxDate - The maximum selectable date in the date picker. Defaults to '2100-01-01'.
+   * @param props.onChange - The callback function triggered when the selected date is changed.
+   * @param props.disableFuture - Boolean indicating whether future dates should be disabled. Defaults to false.
+   * @param props.animateYearScrolling - Boolean indicating whether to animate the year scrolling. Defaults to true.
+   * @param props.openToYearSelection - Boolean indicating whether to open the date picker in year selection mode. Defaults to false.
+   *
+   * @returns The date picker component.
+   */
+  export const DatePicker: ({
+    date: upperDate,
+    minDate,
+    maxDate,
+    onChange,
+    disableFuture,
+    animateYearScrolling,
+    openToYearSelection,
+  }: {
+    date?: dayjs.Dayjs | undefined;
+    minDate?: string | undefined;
+    maxDate?: string | undefined;
+    onChange?: ((change: any) => void) | undefined;
+    disableFuture?: boolean | undefined;
+    animateYearScrolling?: boolean | undefined;
+    openToYearSelection?: boolean | undefined;
+  }) => JSX.Element;
+  export default DatePicker;
+}
+
+declare module "react-declarative/components/common/TimePicker/TimePicker" {
+  import dayjs from "dayjs";
+  /**
+   * A TimePicker component that allows users to select a time.
+   *
+   * @param [options] - The options for the TimePicker.
+   * @param [options.onChange] - The callback function triggered when the selected time changes.
+   * @param [options.date] - The initial date and time to display in the TimePicker.
+   *
+   * @returns The TimePicker component.
+   */
+  export const TimePicker: ({
+    onChange,
+    date: upperDate,
+  }: {
+    onChange?: ((change: any) => void) | undefined;
+    date?: dayjs.Dayjs | undefined;
+  }) => JSX.Element;
+  export default TimePicker;
+}
+
+declare module "react-declarative/components/One/components/common/VirtualListBox" {
+  import * as React from "react";
+  /**
+   * Interface for the props of the VirtualListBox component.
+   */
+  interface IVirtualListBoxProps extends React.HTMLAttributes<HTMLElement> {
+    children?: React.ReactNode;
+  }
+  /**
+   * A virtual list box component that renders a list of items in a virtualized manner.
+   *
+   * @component
+   *
+   * @param props - The props object.
+   * @param props.className - The class name to apply to the list box container.
+   * @param props.children - The children to render within the list box.
+   * @param props.role - The role attribute value for the list box container.
+   * @param ref - The ref object for accessing the underlying HTMLDivElement.
+   *
+   * @returns The rendered list box component.
+   */
+  export const VirtualListBox: React.ForwardRefExoticComponent<
+    IVirtualListBoxProps & React.RefAttributes<HTMLDivElement>
+  >;
+  export default VirtualListBox;
+}
+
 declare module "react-declarative/components/One" {
   export * from "react-declarative/components/One/One";
   export * from "react-declarative/components/One/slots";
@@ -13826,6 +13969,7 @@ declare module "react-declarative/components/One/fields/ComboField" {
     fieldReadonly: PickProp<IManaged<Data>, "fieldReadonly">;
     onChange: PickProp<IManaged<Data>, "onChange">;
     dirty: PickProp<IManaged<Data>, "dirty">;
+    loading: PickProp<IManaged<Data>, "loading">;
     invalid: PickProp<IManaged<Data>, "invalid">;
     incorrect: PickProp<IManaged<Data>, "incorrect">;
     withContextMenu: PickProp<IManaged<Data>, "withContextMenu">;
@@ -13872,6 +14016,7 @@ declare module "react-declarative/components/One/fields/ComboField" {
       labelShrink,
       title,
       dirty,
+      loading,
       invalid,
       incorrect,
       fieldReadonly,
@@ -14270,6 +14415,7 @@ declare module "react-declarative/components/One/fields/ItemsField" {
     value: PickProp<IManaged<Data>, "value">;
     dirty: PickProp<IManaged<Data>, "dirty">;
     invalid: PickProp<IManaged<Data>, "invalid">;
+    loading: PickProp<IManaged<Data>, "loading">;
     incorrect: PickProp<IManaged<Data>, "incorrect">;
     fieldReadonly: PickProp<IManaged<Data>, "fieldReadonly">;
     withContextMenu: PickProp<IManaged<Data>, "withContextMenu">;
@@ -14307,6 +14453,7 @@ declare module "react-declarative/components/One/fields/ItemsField" {
       readonly,
       description,
       placeholder,
+      loading,
       outlined,
       itemList,
       freeSolo,
@@ -17652,6 +17799,12 @@ declare module "react-declarative/components/One/fields/TreeField" {
      * @typedef ItemTree
      */
     itemTree?: PickProp<IField<Data, Payload>, "itemTree">;
+    /**
+     * Represents the change detection flag for item tree
+     *
+     * @typedef boolean
+     */
+    watchItemTree?: PickProp<IField<Data, Payload>, "watchItemTree">;
   }
   /**
    * Represents the private interface for the TreeField component.
@@ -17708,6 +17861,7 @@ declare module "react-declarative/components/One/fields/TreeField" {
       onChange,
       name,
       withContextMenu,
+      watchItemTree,
     }: ITreeFieldProps & ITreeFieldPrivate): JSX.Element;
     displayName: string;
   };
@@ -20271,6 +20425,7 @@ declare module "react-declarative/components/RecordView/RecordView" {
       onSearchChanged,
       formatValue,
       formatKey,
+      formatSearch,
       withExpandAll,
       withExpandRoot,
       withExpandLevel,
@@ -20281,12 +20436,23 @@ declare module "react-declarative/components/RecordView/RecordView" {
       background,
       BeforeSearch,
       AfterSearch,
+      BeforeCollapseLabel,
+      AfterCollapseLabel,
       payload,
+      className,
+      style,
+      sx,
+      EmptyItem,
+      CustomItem,
       ...otherProps
     }: IRecordViewProps<Data, Payload>): JSX.Element;
     excelExport: (data: IData, sheetName?: string) => void;
   };
   export default RecordView;
+}
+
+declare module "react-declarative/components/RecordView/constant/RECORD_NEVER_VALUE" {
+  export const RECORD_NEVER_VALUE = "react-declarative__recordView_never_value";
 }
 
 declare module "react-declarative/components/RecordView/helpers/excelExport" {
@@ -20438,7 +20604,7 @@ declare module "react-declarative/components/Scaffold2/model/IScaffold2Option" {
    */
   export interface IScaffold2Option<T = Payload> {
     id: string;
-    label?: string;
+    label?: React.ReactNode;
     lifted?: boolean;
     pin?: boolean;
     sx?: SxProps<any>;
@@ -21103,6 +21269,7 @@ declare module "react-declarative/components/One/slots" {
   export * from "react-declarative/components/One/slots/YesNoSlot";
   export * from "react-declarative/components/One/slots/DictSlot";
   export * from "react-declarative/components/One/slots/TreeSlot";
+  export * from "react-declarative/components/One/slots/ButtonSlot";
 }
 
 declare module "react-declarative/components/One/components/OneConfig" {
@@ -21244,6 +21411,7 @@ declare module "react-declarative/components/One/context/StateProvider" {
   interface IState<Data = IAnything> {
     object: Data | null;
     setObject: (data: Data, invalidMap: Record<string, boolean>) => void;
+    getObjectRef: () => Data;
     changeObject: (data: Data) => void;
   }
   /**
@@ -29167,6 +29335,7 @@ declare module "react-declarative/components/One/components/SlotFactory/SlotCont
       labelShrink,
       noDeselect,
       freeSolo,
+      loading: upperLoading,
       title,
       dirty,
       invalid,
@@ -29189,6 +29358,7 @@ declare module "react-declarative/components/One/components/SlotFactory/SlotCont
       virtualListBox,
       watchItemList,
       labelShrink,
+      loading: upperLoading,
       dirty,
       invalid,
       incorrect,
@@ -29237,7 +29407,7 @@ declare module "react-declarative/components/One/components/SlotFactory/SlotCont
       buttonVariant,
       buttonSize,
       buttonColor,
-    }: import("../../slots/ButtonSlot").IButtonSlot) => JSX.Element;
+    }: import("../..").IButtonSlot) => JSX.Element;
     Text: ({
       invalid,
       incorrect,
@@ -29819,6 +29989,7 @@ declare module "react-declarative/components/RecordView/model/IRecordViewProps" 
   import { GridSize, BoxProps } from "@mui/material";
   import IData from "react-declarative/components/RecordView/model/IData";
   import IAnything from "react-declarative/model/IAnything";
+  import { IItemProps } from "react-declarative/components/RecordView/components/Item";
   /**
    * Interface for the props of the RecordView component.
    *
@@ -29838,15 +30009,32 @@ declare module "react-declarative/components/RecordView/model/IRecordViewProps" 
     withExpandRoot?: boolean;
     expandList?: Array<string>;
     withExpandLevel?: number;
+    EmptyItem?: React.ComponentType<any>;
+    CustomItem?: React.ComponentType<IItemProps>;
     formatValue?: (
       key: string,
       value: boolean | number | string | null,
       path: string,
     ) => React.ReactNode;
     formatKey?: (key: string, path: string) => React.ReactNode;
+    formatSearch?: (
+      key: string,
+      value: boolean | number | string | null,
+      path: string,
+    ) => string;
     onSearchChanged?: (search: string) => void;
     BeforeSearch?: React.ComponentType<any>;
     AfterSearch?: React.ComponentType<any>;
+    BeforeCollapseLabel?: React.ComponentType<{
+      itemKey: string;
+      payload: Payload;
+      path: string;
+    }>;
+    AfterCollapseLabel?: React.ComponentType<{
+      itemKey: string;
+      payload: Payload;
+      path: string;
+    }>;
     payload?: Payload;
   }
   export default IRecordViewProps;
@@ -30416,6 +30604,12 @@ declare module "react-declarative/components/One/slots/TreeSlot" {
   export * from "react-declarative/components/One/slots/TreeSlot/ITreeSlot";
   export * from "react-declarative/components/One/slots/TreeSlot/TreeSlot";
   export { default } from "react-declarative/components/One/slots/TreeSlot/TreeSlot";
+}
+
+declare module "react-declarative/components/One/slots/ButtonSlot" {
+  export * from "react-declarative/components/One/slots/ButtonSlot/IButtonSlot";
+  export * from "react-declarative/components/One/slots/ButtonSlot/ButtonSlot";
+  export { default } from "react-declarative/components/One/slots/ButtonSlot/ButtonSlot";
 }
 
 declare module "react-declarative/components/One/components/OneConfig/OneConfig" {
@@ -32603,16 +32797,15 @@ declare module "react-declarative/components/One/slots/FileSlot/IFileSlot" {
   export default IFileSlot;
 }
 
-declare module "react-declarative/components/One/slots/ButtonSlot" {
-  export * from "react-declarative/components/One/slots/ButtonSlot/IButtonSlot";
-  export * from "react-declarative/components/One/slots/ButtonSlot/ButtonSlot";
-  export { default } from "react-declarative/components/One/slots/ButtonSlot/ButtonSlot";
-}
-
 declare module "react-declarative/components/One/slots/IconSlot" {
   export * from "react-declarative/components/One/slots/IconSlot/IIconSlot";
   export * from "react-declarative/components/One/slots/IconSlot/IconSlot";
   export { default } from "react-declarative/components/One/slots/IconSlot/IconSlot";
+}
+
+declare module "react-declarative/components/RecordView/components/Item" {
+  export * from "react-declarative/components/RecordView/components/Item/Item";
+  export { default } from "react-declarative/components/RecordView/components/Item/Item";
 }
 
 declare module "react-declarative/components/One/slots/CheckBoxSlot/ICheckBoxSlot" {
@@ -33130,6 +33323,34 @@ declare module "react-declarative/components/One/slots/TreeSlot/TreeSlot" {
   export default TreeSlot;
 }
 
+declare module "react-declarative/components/One/slots/ButtonSlot/IButtonSlot" {
+  import {
+    IButtonFieldPrivate,
+    IButtonFieldProps,
+  } from "react-declarative/components/One/fields/ButtonField";
+  /**
+   * Represents a checkbox slot for a checkbox field.
+   *
+   * @interface IButtonSlot
+   * @extends IButtonFieldProps
+   * @extends IButtonFieldPrivate
+   */
+  export interface IButtonSlot extends IButtonFieldProps, IButtonFieldPrivate {}
+  export default IButtonSlot;
+}
+
+declare module "react-declarative/components/One/slots/ButtonSlot/ButtonSlot" {
+  import IButtonSlot from "react-declarative/components/One/slots/ButtonSlot/IButtonSlot";
+  /**
+   * Represents a checkbox slot component.
+   *
+   * @param props - The props for the checkbox slot component.
+   * @returns - The rendered checkbox element.
+   */
+  export const ButtonSlot: (props: IButtonSlot) => JSX.Element;
+  export default ButtonSlot;
+}
+
 declare module "react-declarative/components/One/components/OneConfig/OneConfigInstance" {
   /**
    * Represents a configuration object for the one component.
@@ -33228,34 +33449,6 @@ declare module "react-declarative/components/List/components/SlotFactory/compone
   export default CheckboxCell;
 }
 
-declare module "react-declarative/components/One/slots/ButtonSlot/IButtonSlot" {
-  import {
-    IButtonFieldPrivate,
-    IButtonFieldProps,
-  } from "react-declarative/components/One/fields/ButtonField";
-  /**
-   * Represents a checkbox slot for a checkbox field.
-   *
-   * @interface IButtonSlot
-   * @extends IButtonFieldProps
-   * @extends IButtonFieldPrivate
-   */
-  export interface IButtonSlot extends IButtonFieldProps, IButtonFieldPrivate {}
-  export default IButtonSlot;
-}
-
-declare module "react-declarative/components/One/slots/ButtonSlot/ButtonSlot" {
-  import IButtonSlot from "react-declarative/components/One/slots/ButtonSlot/IButtonSlot";
-  /**
-   * Represents a checkbox slot component.
-   *
-   * @param props - The props for the checkbox slot component.
-   * @returns - The rendered checkbox element.
-   */
-  export const ButtonSlot: (props: IButtonSlot) => JSX.Element;
-  export default ButtonSlot;
-}
-
 declare module "react-declarative/components/One/slots/IconSlot/IIconSlot" {
   import {
     IIconFieldPrivate,
@@ -33282,4 +33475,87 @@ declare module "react-declarative/components/One/slots/IconSlot/IconSlot" {
    */
   export const IconSlot: (props: IIconSlot) => JSX.Element;
   export default IconSlot;
+}
+
+declare module "react-declarative/components/RecordView/components/Item/Item" {
+  import * as React from "react";
+  import { SxProps } from "@mui/material";
+  import IRecordViewProps from "react-declarative/components/RecordView/model/IRecordViewProps";
+  /**
+   * Represents the properties of an item in a record view.
+   */
+  export interface IItemProps
+    extends Pick<
+      IRecordViewProps,
+      keyof {
+        keyWidth: never;
+        valueWidth: never;
+        totalWidth: never;
+      }
+    > {
+    background?: IRecordViewProps["background"];
+    formatValue: Exclude<IRecordViewProps["formatValue"], undefined>;
+    formatKey: Exclude<IRecordViewProps["formatKey"], undefined>;
+    index: number;
+    path: string;
+    itemKey: string;
+    value: unknown;
+    className?: string;
+    style?: React.CSSProperties;
+    sx?: SxProps<any>;
+    withDarkParent?: boolean;
+  }
+  /**
+   * Represents the props for an item in a record view.
+   */
+  export interface IItemProps
+    extends Pick<
+      IRecordViewProps,
+      keyof {
+        keyWidth: never;
+        valueWidth: never;
+        totalWidth: never;
+      }
+    > {
+    formatValue: Exclude<IRecordViewProps["formatValue"], undefined>;
+    index: number;
+    path: string;
+    itemKey: string;
+    value: unknown;
+    className?: string;
+    style?: React.CSSProperties;
+    sx?: SxProps<any>;
+    withDarkParent?: boolean;
+  }
+  /**
+   * Represents an item component.
+   *
+   * @param ItemProps - The props for the item component.
+   * @param ItemProps.formatValue - The formatting function for the item's value.
+   * @param ItemProps.formatKey - The formatting function for the item's key.
+   * @param ItemProps.keyWidth - The width of the item's key column.
+   * @param ItemProps.valueWidth - The width of the item's value column.
+   * @param ItemProps.totalWidth - The total width of the item component.
+   * @param ItemProps.value - The value of the item.
+   * @param ItemProps.itemKey - The key of the item.
+   * @param ItemProps.path - The path of the item.
+   * @param ItemProps.index - The index of the item.
+   * @param ItemProps.background - The background color of the item.
+   * @param ItemProps.withDarkParent - Indicates if the item has a dark parent.
+   * @returns The rendered item component.
+   */
+  export const Item: ({
+    formatValue,
+    formatKey,
+    keyWidth,
+    valueWidth,
+    totalWidth,
+    value: upperValue,
+    itemKey,
+    path,
+    index,
+    background,
+    withDarkParent,
+  }: IItemProps) => JSX.Element;
+  export default Item;
 }
