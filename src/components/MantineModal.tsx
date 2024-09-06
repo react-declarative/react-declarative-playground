@@ -88,11 +88,20 @@ export const MantineModal = () => {
                     />
                     <CardContent>
                         <Typography variant="body2">
-                            Take a look how your app will look after installing the new theme
+                            Take a look how your app will look after installing the new theme🎉<br />
+                            You don't have to change any JSON schema 😊
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Button size="small" onClick={() => openBlank("https://react-declarative-mantine.github.io?skip_first_view=1")}>Continue</Button>
+                        <Button
+                            size="small"
+                            onClick={() => {
+                                openBlank("https://react-declarative-mantine.github.io?skip_first_view=1");
+                                setOpen(false);
+                            }}
+                        >
+                            Continue
+                        </Button>
                     </CardActions>
                 </Card>
             </ActionBounce>
