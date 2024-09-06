@@ -92,7 +92,7 @@ export const MantineModal = () => {
                         </Typography>
                     </CardContent>
                     <CardActions>
-                        <Button size="small" onClick={() => openBlank("https://react-declarative-mantine.github.io")}>Continue</Button>
+                        <Button size="small" onClick={() => openBlank("https://react-declarative-mantine.github.io?skip_first_view=1")}>Continue</Button>
                     </CardActions>
                 </Card>
             </ActionBounce>

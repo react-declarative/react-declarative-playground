@@ -121,7 +121,17 @@ export const ConnectPage = () => {
                                 variant="contained"
                                 onClick={handleClose}
                             >
-                                <Countdown expireAt={expireAt} onExpire={() => setDisabled(false)}>
+                                <Countdown
+                                    expireAt={expireAt}
+                                    onExpire={() => {
+                                        const url = new URL(location.href, location.origin);
+                                        if (url.searchParams.has("skip_first_view")) {
+                                            handleClose();
+                                            return;
+                                        }
+                                        setDisabled(false)
+                                    }}
+                                >
                                     Continue to playground
                                 </Countdown>
                             </Button>
