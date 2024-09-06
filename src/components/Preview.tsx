@@ -20,6 +20,7 @@ declare global {
 
 interface IPreviewProps {
     onNotify: (notify: string) => void;
+    onClick: () => void;
 }
 
 const loadScripts = singleshot(async () => {
@@ -29,6 +30,7 @@ const loadScripts = singleshot(async () => {
 
 export const Preview = ({ 
     onNotify,
+    onClick,
 }: IPreviewProps) => {
     const transpileSubject = useSubject<void>();
 
@@ -112,6 +114,7 @@ export const Preview = ({
                                 fields={window.Executor.fields}
                                 data={window.Executor.data}
                                 onChange={(data, initial) => !initial && onNotify(JSON.stringify(data, null, 2))}
+                                onClick={onClick}
                                 sx={{ p: 1 }}
                                 payload={window.Executor.payload}
                             />

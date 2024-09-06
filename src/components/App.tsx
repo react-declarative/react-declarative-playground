@@ -30,6 +30,7 @@ import "./common/Currency";
 import "./common/StockChart";
 import useStateContext from "../context/useStateContext";
 import SubscribeModal from "./SubscribeModal";
+import MantineModal from "./MantineModal";
 
 const isDevelopment = () => {
     return process.env.CC_NODE_ENV === "development";
@@ -118,6 +119,14 @@ export const App = () => {
                             {
                                 type: "notify-action",
                                 notify,
+                            },
+                            "*",
+                        );
+                    }}
+                    onClick={() => {
+                        window.top?.postMessage(
+                            {
+                                type: "click-action",
                             },
                             "*",
                         );
@@ -223,6 +232,7 @@ export const App = () => {
             <Split direction={isMobile ? "vertical" : "horizontal"}>
                 {renderInner()}
             </Split>
+            <MantineModal />
             <SubscribeModal />
         </Box>
     );
