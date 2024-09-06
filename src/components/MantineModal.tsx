@@ -88,7 +88,8 @@ export const MantineModal = () => {
                     />
                     <CardContent>
                         <Typography variant="body2">
-                            Take a look how your app will look after installing the new theme
+                            Take a look how your app will look after installing the new theme🎉<br />
+                            You don't have to change any JSON schema 😊
                         </Typography>
                     </CardContent>
                     <CardActions>
