@@ -82,7 +82,7 @@ export const Editor = ({
         <MonacoEditor
             height="100vh"
             defaultLanguage="typescript"
-            theme="vs-dark"
+            theme="vs-light"
             onMount={(editor, monaco) => {
                 monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
                     ...monaco.languages.typescript.typescriptDefaults.getCompilerOptions(),

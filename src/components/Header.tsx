@@ -231,7 +231,7 @@ export const Header = ({
                 >
                     Prettier
                 </Button>
-                <IconButton onClick={() => openBlank('https://github.com/react-declarative/react-declarative')}>
+                <IconButton sx={{ color: '#fff' }} onClick={() => openBlank('https://github.com/react-declarative/react-declarative')}>
                     <GitHub />
                 </IconButton>
             </Toolbar>

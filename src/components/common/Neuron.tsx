@@ -34,7 +34,7 @@ export const Neuron = ({ hiddenLayers }: IPreviewProps) => {
       line: {
         className: "net-preview__line",
         width: 0.5,
-        color: "rgba(255,255,255,1)",
+        color: "rgba(0,0,0,1)",
       },
       hidden: {
         className: "net-preview__hidden",
@@ -65,6 +65,7 @@ export const Neuron = ({ hiddenLayers }: IPreviewProps) => {
         position: 'relative',
         marginTop: "20px",
         width: "100%",
+        background: "#ccc",
       }}
     >
       <Box

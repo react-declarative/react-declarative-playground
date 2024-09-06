@@ -1,5 +1,8 @@
 import "./config/polyfills";
 
+import "@mantine/core/styles.css";
+import "@mantine/dates/styles.css";
+
 import {
     ModalProvider,
     OneConfig,
@@ -10,14 +13,17 @@ import {
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { CacheProvider } from "@emotion/react";
 import { LocalizationProvider } from "@mui/x-date-pickers";
-import THEME_DARK from "./config/theme";
+import muiTheme from "./config/muiTheme";
+import mantineTheme from "./config/mantineTheme";
 import { ThemeProvider } from "@mui/material/styles";
+import { MantineProvider } from "@mantine/core";
 import { TssCacheProvider } from "tss-react";
 import createCache from "@emotion/cache";
 import { createRoot } from "react-dom/client";
 import App from "./components/App";
 import { LoaderProvider } from "./hooks/useLoader";
 import { IState, StateContextProvider } from "./context/useStateContext";
+import { OneSlotFactory } from "react-declarative-mantine";
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("/sw-cache.js");
@@ -42,19 +48,23 @@ const INITIAL_STATE: IState = {
 const wrappedApp = (
     <CacheProvider value={muiCache}>
         <TssCacheProvider value={tssCache}>
-            <ThemeProvider theme={THEME_DARK}>
-                <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
-                    <StateContextProvider initialState={INITIAL_STATE}>
-                        <LoaderProvider initialState={0}>
-                            <SnackProvider>
-                                <ModalProvider>
-                                    <App />
-                                </ModalProvider>
-                            </SnackProvider>
-                        </LoaderProvider>
-                    </StateContextProvider>  
-                </LocalizationProvider>
-            </ThemeProvider>
+            <MantineProvider theme={mantineTheme}>
+                <ThemeProvider theme={muiTheme}>
+                    <OneSlotFactory>
+                        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="en-gb">
+                            <StateContextProvider initialState={INITIAL_STATE}>
+                                <LoaderProvider initialState={0}>
+                                    <SnackProvider>
+                                        <ModalProvider>
+                                            <App />
+                                        </ModalProvider>
+                                    </SnackProvider>
+                                </LoaderProvider>
+                            </StateContextProvider>
+                        </LocalizationProvider>
+                    </OneSlotFactory>
+                </ThemeProvider>
+            </MantineProvider>
         </TssCacheProvider>
     </CacheProvider>
 );

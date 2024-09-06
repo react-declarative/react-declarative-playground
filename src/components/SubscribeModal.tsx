@@ -24,7 +24,7 @@ const useStyles = makeStyles()((theme) => ({
         right: 0,
         bottom: 0,
         zIndex: 9999,
-        background: alpha('#999999', 0.2),
+        background: alpha('#000', 0.3),
         backdropFilter: 'saturate(180%) blur(20px)',
         height: '100%',
         width: '100%',
