@@ -10,7 +10,7 @@ import { Close } from "@mui/icons-material";
 const STORAGE = createLsManager<boolean>("REACT_DECLARATIVE_PLAYGROUND_FIRST_MANTINE");
 
 const THEME = createTheme();
-const EMIT_CLICK_COUNT = 3;
+const EMIT_CLICK_COUNT = 15;
 const ANIMATION_DELAY = 100;
 
 export const MantineModal = () => {
