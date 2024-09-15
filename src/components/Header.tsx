@@ -231,11 +231,11 @@ export const Header = ({
                 >
                     Prettier
                 </Button>
-                <IconButton sx={{ mr: { sm: 2 } }} onClick={() => openBlank('https://github.com/react-declarative/react-declarative')}>
+                <IconButton sx={{ color: '#fff', mr: { sm: 2 } }} onClick={() => openBlank('https://github.com/react-declarative/react-declarative')}>
                     <GitHub />
                 </IconButton>
                 <IconButton
-                    sx={{ display: { xs: 'none', sm: 'flex' } }}
+                    sx={{ color: '#fff', display: { xs: 'none', sm: 'flex' } }}
                     onClick={() => {
                         if (process.env.CC_ENABLE_MANTINE_PROMOTE) {
                             openBlank("https://react-declarative-mantine.github.io");
