@@ -1,4 +1,4 @@
-import { GitHub, KeyboardArrowDown } from "@mui/icons-material";
+import { Brightness4, Brightness7, GitHub, KeyboardArrowDown } from "@mui/icons-material";
 import { Button, IconButton, MenuItem, Popover } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
@@ -231,8 +231,20 @@ export const Header = ({
                 >
                     Prettier
                 </Button>
-                <IconButton onClick={() => openBlank('https://github.com/react-declarative/react-declarative')}>
+                <IconButton sx={{ mr: { sm: 2 } }} onClick={() => openBlank('https://github.com/react-declarative/react-declarative')}>
                     <GitHub />
+                </IconButton>
+                <IconButton
+                    sx={{ display: { xs: 'none', sm: 'flex' } }}
+                    onClick={() => {
+                        if (process.env.CC_ENABLE_MANTINE_PROMOTE) {
+                            openBlank("https://react-declarative-mantine.github.io");
+                        } else {
+                            openBlank("https://react-declarative-playground.github.io");
+                        }
+                    }}
+                >
+                    {process.env.CC_ENABLE_MANTINE_PROMOTE ? <Brightness7 /> : <Brightness4 />}
                 </IconButton>
             </Toolbar>
         </AppBar>
