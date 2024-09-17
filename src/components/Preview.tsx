@@ -115,6 +115,7 @@ export const Preview = ({
                                 data={window.Executor.data}
                                 onChange={(data, initial) => !initial && onNotify(JSON.stringify(data, null, 2))}
                                 onClick={onClick}
+                                onReady={() => console.log("ready")}
                                 sx={{ p: 1 }}
                                 payload={window.Executor.payload}
                             />
