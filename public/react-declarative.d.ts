@@ -281,8 +281,10 @@ declare module "react-declarative" {
   > = ITileInternal<RowData, Payload>;
   export type TGridSort<RowData extends IRowData = any> =
     TGridSortInternal<RowData>;
-  export type IGridColumn<RowData extends IRowData = any> =
-    IGridColumnInternal<RowData>;
+  export type IGridColumn<
+    RowData extends IRowData = any,
+    Payload = any,
+  > = IGridColumnInternal<RowData, Payload>;
   export type IGridAction<RowData extends IRowData = any> =
     IGridActionInternal<RowData>;
   export type IBreadcrumbsOption<Data = any> = IBreadcrumbsOptionInternal<Data>;
@@ -988,6 +990,11 @@ declare module "react-declarative" {
   export { DatePicker } from "react-declarative/components/common/DatePicker/DatePicker";
   export { TimePicker } from "react-declarative/components/common/TimePicker/TimePicker";
   export { VirtualListBox } from "react-declarative/components/One/components/common/VirtualListBox";
+  export {
+    MetroView,
+    IMetroGroup,
+    IMetroRoute,
+  } from "react-declarative/components";
 }
 
 declare module "react-declarative/components" {
@@ -1068,6 +1075,7 @@ declare module "react-declarative/components" {
   export * from "react-declarative/components/PingView";
   export * from "react-declarative/components/HtmlView";
   export * from "react-declarative/components/OfflineView";
+  export * from "react-declarative/components/MetroView";
   export * from "react-declarative/components/RevealView";
   export * from "react-declarative/components/SecretView";
   export * from "react-declarative/components/VisibilityView";
@@ -4081,6 +4089,10 @@ declare module "react-declarative/model/IListProps" {
     isBaselineForRoot?: IOneProps["isBaselineForRoot"];
     apiRef?: Ref<IListApi<FilterData, RowData>>;
     /**
+     * Subject for trigger action externally
+     */
+    actionSubject?: TSubject<string>;
+    /**
      * Represents a React component that will be rendered after the chip list.
      */
     AfterChips?: React.ComponentType<IChipListSlot>;
@@ -5074,6 +5086,7 @@ declare module "react-declarative/hooks/usePointer" {
 }
 
 declare module "react-declarative/hooks/useLocalHistory" {
+  import { Update } from "history";
   import History from "react-declarative/model/History";
   /**
    * Represents the parameters for navigating to a specific pathname in a web application.
@@ -5083,6 +5096,7 @@ declare module "react-declarative/hooks/useLocalHistory" {
   interface IParams {
     history?: History;
     pathname: string;
+    onNavigate?: (update: Update) => void;
   }
   /**
    * Initializes and manages a local history object.
@@ -5096,6 +5110,7 @@ declare module "react-declarative/hooks/useLocalHistory" {
   export const useLocalHistory: ({
     history: upperHistory,
     pathname,
+    onNavigate,
   }?: Partial<IParams>) => {
     history: import("history").MemoryHistory;
   };
@@ -5669,6 +5684,7 @@ declare module "react-declarative/hooks/useAsyncAction" {
 }
 
 declare module "react-declarative/hooks/useAsyncValue" {
+  import { MutableRefObject } from "react";
   import { IResult } from "react-declarative/hooks/useAsyncAction";
   /**
    * Represents the options for configuring various parameters.
@@ -5698,6 +5714,7 @@ declare module "react-declarative/hooks/useAsyncValue" {
     (data: Data) => void,
     {
       waitForResult: () => Promise<Data>;
+      data$: MutableRefObject<Data | null>;
     },
   ];
   export default useAsyncValue;
@@ -7493,7 +7510,6 @@ declare module "react-declarative/utils/list2grid" {
    */
   export const list2grid: (
     columns: IColumn[],
-    payload: Record<string, any>,
     { minWidth }?: Partial<IConfig>,
   ) => IGridColumn[];
   export default list2grid;
@@ -8354,6 +8370,7 @@ declare module "react-declarative/utils/hof/debounce" {
   export interface IClearable {
     clear: () => void;
     flush: () => void;
+    pending: () => boolean;
   }
   /**
    * Creates a debounced version of a function.
@@ -11707,6 +11724,13 @@ declare module "react-declarative/components/HtmlView" {
 declare module "react-declarative/components/OfflineView" {
   export * from "react-declarative/components/OfflineView/OfflineView";
   export { default } from "react-declarative/components/OfflineView/OfflineView";
+}
+
+declare module "react-declarative/components/MetroView" {
+  export * from "react-declarative/components/MetroView/MetroView";
+  export * from "react-declarative/components/MetroView/model/IMetroGroup";
+  export * from "react-declarative/components/MetroView/model/IMetroRoute";
+  export { default } from "react-declarative/components/MetroView/MetroView";
 }
 
 declare module "react-declarative/components/RevealView" {
@@ -19660,7 +19684,7 @@ declare module "react-declarative/components/List/components/common/ListActionMe
   export const ListActionMenu: ({
     options,
     deps,
-  }: IActionMenuSlot) => JSX.Element;
+  }: IActionMenuSlot) => JSX.Element | null;
   export default ListActionMenu;
 }
 
@@ -21062,6 +21086,7 @@ declare module "react-declarative/components/Breadcrumbs2/model/Breadcrumbs2Type
   export enum Breadcrumbs2Type {
     Link = "breadcrumbs2-link",
     Button = "breadcrumbs2-button",
+    Fab = "breadcrumbs2-fab",
     ActionGroup = "breadcrumbs2-actiongroup",
     Component = "breadcrumbs2-component",
   }
@@ -21120,6 +21145,14 @@ declare module "react-declarative/components/Breadcrumbs2/model/IBreadcrumbs2Opt
     actions?: IBreadcrumbs2Action<Data>[];
     buttonVariant?: "text" | "outlined" | "contained";
     buttonColor?:
+      | "inherit"
+      | "primary"
+      | "secondary"
+      | "success"
+      | "error"
+      | "info"
+      | "warning";
+    fabColor?:
       | "inherit"
       | "primary"
       | "secondary"
@@ -25386,6 +25419,7 @@ declare module "react-declarative/components/TabsView/TabsView" {
     className,
     style,
     sx,
+    withScroll,
     outlinePaper,
     transparentPaper,
     transparentHeader,
@@ -25400,10 +25434,13 @@ declare module "react-declarative/components/TabsView/TabsView" {
     onSubmit,
     BeforeTabs,
     AfterTabs,
+    BeforePaper,
+    AfterPaper,
     fullScreen,
+    onNavigate,
     otherProps: upperOtherProps,
     ...outletProps
-  }: ITabsViewProps<Data, Payload>) => JSX.Element;
+  }: ITabsViewProps<Data, Payload, any>) => JSX.Element;
   export default TabsView;
 }
 
@@ -25428,6 +25465,7 @@ declare module "react-declarative/components/TabsView/model/ITabsOutlet" {
     progress: number;
     setLoading: (loading: boolean) => void;
     setProgress: (progress: number) => void;
+    onClose: () => void;
   };
   /**
    * Represents a tab outlet component.
@@ -25475,7 +25513,8 @@ declare module "react-declarative/components/TabsView/model/ITabsStep" {
     id?: string;
     isMatch?: (id: string) => boolean;
     isVisible?: (payload: Payload) => boolean;
-    label: string;
+    label?: string;
+    passthrough?: boolean;
     icon?: React.ComponentType<any>;
   }
   export default ITabsStep;
@@ -25513,10 +25552,12 @@ declare module "react-declarative/components/TabsView/model/ITabsModalProps" {
    * @template Data The type of data.
    * @template Payload The type of payload.
    */
-  export type ITabsModalProps<
-    Data = IAnything,
-    Payload = IAnything,
-  > = ITabsOutletProps<Data, Payload, ModalOtherProps> &
+  export type ITabsModalProps<Data = IAnything, Payload = IAnything> = Omit<
+    ITabsOutletProps<Data, Payload, ModalOtherProps>,
+    keyof {
+      withScroll: never;
+    }
+  > &
     ModalOtherProps &
     OtherProps;
   export default ITabsModalProps;
@@ -26078,6 +26119,49 @@ declare module "react-declarative/components/OfflineView/OfflineView" {
   export default OfflineView;
 }
 
+declare module "react-declarative/components/MetroView/MetroView" {
+  import { OneHandler } from "react-declarative/model/IOneProps";
+  import IMetroGroup from "react-declarative/components/MetroView/model/IMetroGroup";
+  import IAnything from "react-declarative/model/IAnything";
+  interface IMetroViewProps<Data = IAnything, Payload = IAnything> {
+    routes: IMetroGroup<Data, Payload>[];
+    data?: OneHandler<Data>;
+    payload?: Payload | (() => Payload);
+    onNavigate?: (to: string, payload: Payload) => void;
+  }
+  export const MetroView: <Data = any, Payload extends object = any>({
+    routes,
+    data,
+    payload: upperPayload,
+    onNavigate,
+  }: IMetroViewProps<Data, Payload>) => JSX.Element;
+  export default MetroView;
+}
+
+declare module "react-declarative/components/MetroView/model/IMetroGroup" {
+  import IAnything from "react-declarative/model/IAnything";
+  import IField from "react-declarative/model/IField";
+  import IMetroRoute from "react-declarative/components/MetroView/model/IMetroRoute";
+  export interface IMetroGroup<Data = IAnything, Payload = IAnything> {
+    label: string;
+    isVisible?: IField<Data, Payload>["isVisible"];
+    routes?: IMetroRoute<Data, Payload>[];
+  }
+  export default IMetroGroup;
+}
+
+declare module "react-declarative/components/MetroView/model/IMetroRoute" {
+  import IAnything from "react-declarative/model/IAnything";
+  import IField from "react-declarative/model/IField";
+  export interface IMetroRoute<Data = IAnything, Payload = IAnything> {
+    label: string;
+    icon?: React.ComponentType<any>;
+    isVisible?: IField<Data, Payload>["isVisible"];
+    to: string;
+  }
+  export default IMetroRoute;
+}
+
 declare module "react-declarative/components/RevealView/RevealView" {
   import * as React from "react";
   import { IRevealProps } from "react-declarative/components/FetchView/components/Reveal";
@@ -26185,7 +26269,11 @@ declare module "react-declarative/components/WizardView/WizardView" {
    *
    * @returns The rendered WizardView component.
    */
-  export const WizardView: <Data extends {} = any, Payload = any>({
+  export const WizardView: <
+    Data extends {} = any,
+    Payload = any,
+    Params = any,
+  >({
     className,
     style,
     sx,
@@ -26193,16 +26281,18 @@ declare module "react-declarative/components/WizardView/WizardView" {
     fullScreen,
     outlinePaper,
     transparentPaper,
+    withScroll,
     history: upperHistory,
     pathname,
     steps: upperSteps,
     routes,
     onLoadStart,
     onLoadEnd,
+    onNavigate,
     onSubmit,
     otherProps: upperOtherProps,
     ...outletProps
-  }: IWizardViewProps<Data, Payload>) => JSX.Element;
+  }: IWizardViewProps<Data, Payload, Params>) => JSX.Element;
   export default WizardView;
 }
 
@@ -26328,6 +26418,7 @@ declare module "react-declarative/components/WizardView/model/IWizardOutlet" {
     setLoading: (loading: boolean) => void;
     progress: number;
     setProgress: (progress: number) => void;
+    onClose: () => void;
   };
   /**
    * Represents an interface for a wizard outlet.
@@ -26375,7 +26466,8 @@ declare module "react-declarative/components/WizardView/model/IWizardStep" {
     id?: string;
     isMatch?: (id: string) => boolean;
     isVisible?: (payload: Payload) => boolean;
-    label: string;
+    passthrough?: boolean;
+    label?: string;
     icon?: React.ComponentType<any>;
   }
   export default IWizardStep;
@@ -27790,6 +27882,10 @@ declare module "react-declarative/components/RoiView/RoiView" {
       }
     > {
     withNaturalSize?: boolean;
+    imageSize?: {
+      naturalHeight: number;
+      naturalWidth: number;
+    };
     src: string;
     readonly?: boolean;
     cords: ICord[];
@@ -27802,6 +27898,7 @@ declare module "react-declarative/components/RoiView/RoiView" {
   export const RoiView: (
     {
       withNaturalSize,
+      imageSize,
       className,
       src,
       cords: upperCords,
@@ -28115,7 +28212,7 @@ declare module "react-declarative/components/Grid/model/IGridProps" {
     sx?: SxProps<any>;
     header?: React.ReactNode;
     data: Array<T>;
-    columns: Array<IColumn<T>>;
+    columns: Array<IColumn<T, P>>;
     scrollXSubject?: TSubject<number>;
     scrollYSubject?: TSubject<number>;
     onTableRowClick?: (evt: React.MouseEvent, row: T) => void;
@@ -28149,6 +28246,7 @@ declare module "react-declarative/components/Grid/model/RowData" {
 }
 
 declare module "react-declarative/components/Grid/model/IColumn" {
+  import IAnything from "react-declarative/model/IAnything";
   import Dimension from "react-declarative/components/Grid/model/Dimension";
   import RowData from "react-declarative/components/Grid/model/RowData";
   /**
@@ -28156,11 +28254,11 @@ declare module "react-declarative/components/Grid/model/IColumn" {
    *
    * @template T - The type of the row data.
    */
-  export interface IColumn<T = RowData> {
+  export interface IColumn<T = RowData, Payload = IAnything> {
     field?: keyof T;
     label: string;
     align?: "center" | "left" | "right" | "stretch";
-    format?: (row: T) => React.ReactElement | string;
+    format?: (row: T, payload: Payload) => React.ReactElement | string;
     minWidth?: number;
     width?: Dimension | ((containerWidth: number) => Dimension);
   }
@@ -29107,7 +29205,7 @@ declare module "react-declarative/components/List/components/SlotFactory/SlotCon
     ActionMenu: ({
       options,
       deps,
-    }: import("../..").IActionMenuSlot) => JSX.Element;
+    }: import("../..").IActionMenuSlot) => JSX.Element | null;
     ActionFab: ({
       action,
       label,
@@ -31373,7 +31471,7 @@ declare module "react-declarative/components/TabsView/model/ITabsViewProps" {
     OtherProps,
   } from "react-declarative/components/TabsView/model/ITabsOutlet";
   import ITabsStep from "react-declarative/components/TabsView/model/ITabsStep";
-  import { MemoryHistory } from "history";
+  import { MemoryHistory, Update } from "history";
   /**
    * Represents the props for the ITabsView component.
    *
@@ -31383,17 +31481,38 @@ declare module "react-declarative/components/TabsView/model/ITabsViewProps" {
   export interface ITabsViewProps<
     Data extends {} = IAnything,
     Payload = IAnything,
+    Params = IAnything,
   > extends Omit<
-      IOutletViewProps<Data, Payload, OtherProps>,
+      IOutletViewProps<Data, Payload, Params, Partial<OtherProps>>,
       keyof {
         history: never;
         routes: never;
       }
     > {
+    withScroll?: boolean;
     fullScreen?: boolean;
     transparentHeader?: boolean;
-    BeforeTabs?: React.ComponentType<any>;
-    AfterTabs?: React.ComponentType<any>;
+    onNavigate?: (update: Update) => void;
+    BeforePaper?: React.ComponentType<{
+      payload: Payload;
+      history: History;
+      activeTab: ITabsStep<Payload>;
+    }>;
+    AfterPaper?: React.ComponentType<{
+      payload: Payload;
+      history: History;
+      activeTab: ITabsStep<Payload>;
+    }>;
+    BeforeTabs?: React.ComponentType<{
+      payload: Payload;
+      history: History;
+      activeTab: ITabsStep<Payload>;
+    }>;
+    AfterTabs?: React.ComponentType<{
+      payload: Payload;
+      history: History;
+      activeTab: ITabsStep<Payload>;
+    }>;
     className?: string;
     outlinePaper?: boolean;
     transparentPaper?: boolean;
@@ -31417,6 +31536,7 @@ declare module "react-declarative/components/WizardView/model/IWizardViewProps" 
     OtherProps,
   } from "react-declarative/components/WizardView/model/IWizardOutlet";
   import IWizardStep from "react-declarative/components/WizardView/model/IWizardStep";
+  import { Update } from "history";
   /**
    * Interface representing the props for the WizardView component.
    *
@@ -31426,13 +31546,16 @@ declare module "react-declarative/components/WizardView/model/IWizardViewProps" 
   export interface IWizardViewProps<
     Data extends {} = IAnything,
     Payload = IAnything,
+    Params = IAnything,
   > extends Omit<
-      IOutletViewProps<Data, Payload, OtherProps>,
+      IOutletViewProps<Data, Payload, Params, Partial<OtherProps>>,
       keyof {
         history: never;
         routes: never;
       }
     > {
+    onNavigate?: (update: Update) => void;
+    withScroll?: boolean;
     className?: string;
     outlinePaper?: boolean;
     fullScreen?: boolean;

@@ -1,0 +1,74 @@
+import {
+  TypedField,
+  FieldType,
+  MetroView,
+  IMetroGroup,
+} from "react-declarative";
+
+const groups: IMetroGroup[] = [
+  {
+    label: "User Management API",
+  },
+  {
+    label: "User Accounts",
+    routes: [
+      {
+        label: "Add User",
+        to: "/admin/add_user",
+      },
+      {
+        label: "User List",
+        to: "/admin/user_list",
+      },
+      {
+        label: "User Roles",
+        to: "/admin/user_roles",
+      },
+    ],
+  },
+  {
+    label: "System Data",
+    routes: [
+      {
+        label: "Login History",
+        to: "/admin/login_history",
+      },
+    ],
+  },
+  {
+    label: "User Management API",
+  },
+  {
+    label: "User Accounts",
+    routes: [
+      {
+        label: "Add User",
+        to: "/admin/add_user",
+      },
+      {
+        label: "User List",
+        to: "/admin/user_list",
+      },
+      {
+        label: "User Roles",
+        to: "/admin/user_roles",
+      },
+    ],
+  },
+  {
+    label: "System Data",
+    routes: [
+      {
+        label: "Login History",
+        to: "/admin/login_history",
+      },
+    ],
+  },
+];
+
+export const fields: TypedField[] = [
+  {
+    type: FieldType.Component,
+    element: () => <MetroView payload={{}} routes={groups} />,
+  },
+];
