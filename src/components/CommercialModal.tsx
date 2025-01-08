@@ -115,7 +115,7 @@ export const CommercialModal = () => {
                         <Stack direction='column' gap="15px">
                             {renderLogo()}
                             <span style={{ marginTop: -10 }}>
-                                Move faster by hiring Outsource Company 👷. We have developed 💻 a lot IT of projects<br /><br />
+                                Move faster by hiring Outsource Company 👷. We have developed 💻 a lot of IT projects<br /><br />
                                 This includes AI and enterprise software development 😃<br /><br />
                             </span>
                             <Button
