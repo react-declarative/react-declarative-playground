@@ -122,7 +122,7 @@ export const CommercialModal = () => {
                                 variant="contained"
                                 onClick={handleSubmit}
                             >
-                                Schedule the meeting
+                                Schedule a meeting
                             </Button>
                         </Stack>
                     </Paper>
