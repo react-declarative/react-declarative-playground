@@ -31,6 +31,7 @@ import "./common/StockChart";
 import useStateContext from "../context/useStateContext";
 import SubscribeModal from "./SubscribeModal";
 import MantineModal from "./MantineModal";
+import CommercialModal from "./CommercialModal";
 
 const isDevelopment = () => {
     return process.env.CC_NODE_ENV === "development";
@@ -149,6 +150,9 @@ export const App = () => {
                             fullScreen,
                         })
                     }}
+                    onCommercialClick={() => {
+                        CommercialModal.open();
+                    }}
                 />,
                 <EditorWrapper 
                     onRef={(ref) => {
@@ -184,6 +188,9 @@ export const App = () => {
                         side: "preview",
                         fullScreen,
                     })
+                }}
+                onCommercialClick={() => {
+                    CommercialModal.open();
                 }}
             />,
         ];
@@ -234,6 +241,7 @@ export const App = () => {
             </Split>
             <MantineModal />
             <SubscribeModal />
+            <CommercialModal />
         </Box>
     );
 };
