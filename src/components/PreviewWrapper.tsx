@@ -7,6 +7,7 @@ import Box from "@mui/material/Box";
 import { Fab } from "@mui/material";
 import { Fullscreen, FullscreenExit } from "@mui/icons-material";
 import useStateContext from "../context/useStateContext";
+import CommercialFab from "./CommercialFab";
 
 const useStyles = makeStyles()((theme) => ({
     root: {
@@ -52,11 +53,13 @@ const useStyles = makeStyles()((theme) => ({
 interface IPreviewWrapperProps {
     onRef: (ref: HTMLIFrameElement) => void;
     onFullscreenToggle: (fullScreen: boolean) => void;
+    onCommercialClick: () => void;
 }
 
 export const PreviewWrapper = ({
     onRef,
     onFullscreenToggle,
+    onCommercialClick,
 }: IPreviewWrapperProps) => { 
     
     const { classes, cx } = useStyles();
@@ -111,6 +114,7 @@ export const PreviewWrapper = ({
                     }}>
                         {fullScreen ? <FullscreenExit /> : <Fullscreen />}
                     </Fab>
+                    <CommercialFab onClick={onCommercialClick} />
                 </div>
             </div>
         </div>

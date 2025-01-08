@@ -1,4 +1,5 @@
 import "./config/polyfills";
+import "./config/setup";
 
 import {
     ModalProvider,
