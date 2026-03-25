@@ -19,6 +19,15 @@ export const THEME_LIGHT = createTheme({
       paper: "#fff",
     },
   },
+  components: {
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          overflow: "clip"
+        }
+      }
+    },
+  }
 });
 
 export default THEME_LIGHT;

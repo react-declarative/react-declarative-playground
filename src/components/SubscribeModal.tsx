@@ -38,7 +38,7 @@ const useStyles = makeStyles()((theme) => ({
     container: {
         position: "relative",
         marginBottom: '3.5vw',
-        overflow: "hidden",
+        overflow: "clip",
         maxWidth: 375,
         padding: 15,
     },
@@ -47,7 +47,7 @@ const useStyles = makeStyles()((theme) => ({
     },
     avatarRoot: {
         position: "absolute",
-        overflow: "hidden",
+        overflow: "clip",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
