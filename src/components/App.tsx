@@ -200,7 +200,7 @@ export const App = () => {
         <Box
             sx={{
                 position: "relative",
-                overflow: "hidden",
+                overflow: "clip",
                 height: `100vh`,
                 width: "100vw",
             }}
