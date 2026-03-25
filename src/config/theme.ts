@@ -17,7 +17,14 @@ export const THEME_DARK = createTheme({
           backgroundImage: "unset",
         }
       }
-    }
+    },
+    MuiCard: {
+      styleOverrides: {
+        root: {
+          overflow: "clip"
+        }
+      }
+    },
   },
   palette: {
     mode: "dark",
